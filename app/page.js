@@ -37,8 +37,7 @@ export default function Home() {
     <main>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Ripehouse Advisory home">
-          <span className="brand-mark">R</span>
-          <span>RIPEHOUSE <em>ADVISORY</em></span>
+          <img className="brand-logo" src="https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png" alt="Ripehouse Advisory" />
         </a>
         <nav className="desktop-nav" aria-label="Main navigation">
           {navLinks.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}
@@ -86,7 +85,7 @@ export default function Home() {
 
       <section className="contact section-shell" id="contact"><div className="contact-panel"><p className="eyebrow light"><span /> No pressure, just a conversation</p><h2>Ready to make<br /><i>your next move?</i></h2><p>Book a free 15-minute discovery call with one of our specialists. We will listen to where you are now and talk through where you want to go.</p><a className="button button-light" href="mailto:info@ripehouseadvisory.com.au">Book your discovery call <Arrow /></a><div className="contact-details"><span>127–131 Macquarie St, Hobart TAS</span><a href="tel:+61361460121">(03) 6146 0121</a><a href="mailto:info@ripehouseadvisory.com.au">info@ripehouseadvisory.com.au</a></div></div></section>
 
-      <footer className="site-footer"><a className="brand footer-brand" href="#top"><span className="brand-mark">R</span><span>RIPEHOUSE <em>ADVISORY</em></span></a><p>© 2026 Ripehouse Advisory. All rights reserved.</p><div><a href="#">Privacy</a><a href="#">Terms</a><a href="#top">Back to top ↑</a></div></footer>
+      <footer className="site-footer"><a className="brand footer-brand" href="#top"><img className="brand-logo" src="https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png" alt="Ripehouse Advisory" /></a><p>© 2026 Ripehouse Advisory. All rights reserved.</p><div><a href="#">Privacy</a><a href="#">Terms</a><a href="#top">Back to top ↑</a></div></footer>
     </main>
   );
 }
