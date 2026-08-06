@@ -12,6 +12,9 @@ export async function POST(request) {
   try {
     const result = await forwardToRha(process.env.RHA_PUBLIC_LEAD_PATH || '/api/public/leads', {
       method: 'POST',
+      headers: {
+        'X-API-Key': process.env.RHA_LEADS_API_KEY || '',
+      },
       body: JSON.stringify({ name, email, phone, message, source: 'rha-website' }),
     });
     return NextResponse.json(result.payload, { status: result.status });

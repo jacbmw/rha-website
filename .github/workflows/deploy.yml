@@ -1,0 +1,60 @@
+name: Deploy to AWS Amplify
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+concurrency:
+  group: amplify-develop
+  cancel-in-progress: true
+
+env:
+  AWS_REGION: ap-southeast-2
+  AMPLIFY_APP_ID: d6ddvqy1r2nlw
+  AMPLIFY_BRANCH: develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Start Amplify deployment
+        id: start
+        run: |
+          JOB_ID=$(aws amplify start-job \
+            --app-id "$AMPLIFY_APP_ID" \
+            --branch-name "$AMPLIFY_BRANCH" \
+            --job-type RELEASE \
+            --query 'jobSummary.jobId' \
+            --output text)
+          echo "job_id=$JOB_ID" >> "$GITHUB_OUTPUT"
+          echo "Started Amplify job $JOB_ID"
+
+      - name: Wait for deployment
+        run: |
+          for attempt in {1..60}; do
+            STATUS=$(aws amplify get-job \
+              --app-id "$AMPLIFY_APP_ID" \
+              --branch-name "$AMPLIFY_BRANCH" \
+              --job-id "${{ steps.start.outputs.job_id }}" \
+              --query 'job.summary.status' \
+              --output text)
+            echo "Amplify deployment status: $STATUS"
+            case "$STATUS" in
+              SUCCEED) exit 0 ;;
+              FAILED|CANCELLED) exit 1 ;;
+            esac
+            sleep 10
+          done
+          echo 'Amplify deployment did not finish within the wait window.'
+          exit 1
