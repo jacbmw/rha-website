@@ -2,7 +2,7 @@ const Arrow = () => <span aria-hidden="true">↗</span>;
 
 const navLinks = [
   { label: 'Our story', href: '/about/story' },
-  { label: 'Our approach', href: '#approach' },
+  { label: 'Our approach', href: '/about/approach' },
   { label: 'Market intel', href: '/resources/blog' },
   { label: 'Contact', href: '#contact' },
 ];
