@@ -1,4 +1,5 @@
 import './globals.css';
+import ExitIntentModal from './components/ExitIntentModal';
 
 export const metadata = {
   title: 'Ripehouse Advisory | Property investment, done differently',
@@ -8,7 +9,10 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en-AU">
-      <body>{children}</body>
+      <body>
+        {children}
+        <ExitIntentModal />
+      </body>
     </html>
   );
 }
