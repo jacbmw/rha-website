@@ -26,10 +26,10 @@ const principles = [
 ];
 
 const stats = [
-  ['15+', 'years of property experience'],
   ['$634M+', 'invested on behalf of clients'],
   ['1,352', 'properties acquired across Australia'],
   ['19.0%', 'median portfolio growth p.a.*'],
+  ['5 yr', 'rolling measurement window'],
 ];
 
 export default function Home() {
@@ -72,7 +72,13 @@ export default function Home() {
       </section>
 
       <section className="numbers" id="intel">
-        <div className="section-shell"><div className="numbers-heading"><p className="eyebrow light"><span /> The numbers behind the work</p><p className="numbers-note">Live, anonymised client portfolio data<br />measured across a 5-year rolling window.</p></div><div className="stats-grid">{stats.map(([value, label]) => <div className="stat" key={label}><strong>{value}</strong><span>{label}</span></div>)}</div><p className="fine-print">* Figures reflect aggregate, anonymised client portfolio data. Market benchmark: combined capital-city dwelling values. Data updated periodically.</p></div>
+        <div className="section-shell">
+          <div className="numbers-heading"><p className="eyebrow light"><span /> The numbers behind the work</p><p className="numbers-note">Live, anonymised client portfolio data<br />measured across a 5-year rolling window.</p></div>
+          <div className="numbers-lifetime"><span>All-time Ripehouse footprint</span><strong>$2B+</strong><span>in property purchases across Australia</span></div>
+          <div className="numbers-timeline" aria-label="Measurement timeline from 2011 to 2026"><div className="timeline-track"><span className="timeline-focus" /></div><div className="timeline-labels"><span><b>2011</b><small>Ripehouse founded</small></span><span><b>2015</b><small>Research system established</small></span><span className="timeline-window"><b>2022</b><small>5-year rolling window begins</small></span><span className="timeline-now"><b>2026</b><small>Current measurement</small></span></div></div>
+          <p className="numbers-window-note"><b>The four panels below focus only on the highlighted 2022–2026 window.</b> This is the period used to measure recent client portfolio outcomes — not the full lifetime history of Ripehouse.</p>
+          <div className="stats-grid">{stats.map(([value, label]) => <div className="stat" key={label}><strong>{value}</strong><span>{label}</span></div>)}</div><p className="fine-print">* Figures reflect aggregate, anonymised client portfolio data measured over the five years ending June 2026. Market benchmark: combined capital-city dwelling values. Data updated periodically.</p>
+        </div>
       </section>
 
       <section className="approach section-shell" id="approach">
