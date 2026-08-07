@@ -1,7 +1,7 @@
 const Arrow = () => <span aria-hidden="true">↗</span>;
 
 const navLinks = [
-  { label: 'Our story', href: '#story' },
+  { label: 'Our story', href: '/about/story' },
   { label: 'Our approach', href: '#approach' },
   { label: 'Market intel', href: '/resources/blog' },
   { label: 'Contact', href: '#contact' },
@@ -67,7 +67,7 @@ export default function Home() {
         <div className="section-label">A different kind of advisory</div>
         <div className="intro-content">
           <h2>Real strategy.<br /><i>Real progress.</i></h2>
-          <div className="intro-body"><p>Property investment is not about collecting houses. It is about creating choices for your future.</p><p>We combine rigorous research with a genuinely personal approach to help everyday Australians build sustainable, high-performing portfolios—without the noise, shortcuts or sales pitch.</p><a className="text-link dark-link" href="#approach">Meet Ripehouse <Arrow /></a></div>
+          <div className="intro-body"><p>Property investment is not about collecting houses. It is about creating choices for your future.</p><p>We combine rigorous research with a genuinely personal approach to help everyday Australians build sustainable, high-performing portfolios—without the noise, shortcuts or sales pitch.</p><a className="text-link dark-link" href="/about/story">Meet Ripehouse <Arrow /></a></div>
         </div>
       </section>
 
