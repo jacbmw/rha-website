@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export const metadata = { title: 'Client Results | Ripehouse Advisory', description: 'See how Ripehouse clients have built property portfolios through strategy, research and long-term discipline.' };
 
 async function getStudies() {
-  try { const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://new.ripehouseadvisory.com.au'}/api/case-studies`, { next: { revalidate: 900 } }); return (await response.json()).caseStudies || []; } catch { return []; }
+  try { const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://new.ripehouseadvisory.com.au'}/api/case-studies`, { next: { revalidate: 900, tags: ['case-studies'] } }); return (await response.json()).caseStudies || []; } catch { return []; }
 }
 
 export default async function CaseStudiesPage() {

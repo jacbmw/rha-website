@@ -6,7 +6,7 @@ export const dynamic = 'force-dynamic';
 
 const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
 
-async function getStudy(id) { try { const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://new.ripehouseadvisory.com.au'}/api/case-studies`, { next: { revalidate: 900 } }); return (await response.json()).caseStudies?.find((study) => String(study.id) === String(id)); } catch { return null; } }
+async function getStudy(id) { try { const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL || 'https://new.ripehouseadvisory.com.au'}/api/case-studies`, { next: { revalidate: 900, tags: ['case-studies'] } }); return (await response.json()).caseStudies?.find((study) => String(study.id) === String(id)); } catch { return null; } }
 
 export async function generateMetadata({ params }) { const study = await getStudy((await params).id); return { title: study ? `${study.title} | Ripehouse Advisory` : 'Client Results | Ripehouse Advisory', description: study?.subtitle || study?.description || 'Measured client outcomes from Ripehouse Advisory.' }; }
 

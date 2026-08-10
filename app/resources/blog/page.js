@@ -36,6 +36,7 @@ export default async function BlogPage() {
       </section>
       <section className="blog-content section-shell"><BlogGrid posts={posts} /></section>
       <section className="blog-cta section-shell"><div><p className="eyebrow light"><span /> Want the bigger picture?</p><h2>Strategy starts<br />with <i>context.</i></h2><p>Talk to our team about what the market means for your next move.</p><Link className="button button-light" href="/#contact">Start a conversation <span>↗</span></Link></div></section>
+
       <footer className="site-footer"><Link className="brand footer-brand" href="/"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><p>© 2026 Ripehouse Advisory. All rights reserved.</p><div><a href="#">Privacy</a><a href="#">Terms</a><Link href="/">Back home ↑</Link></div></footer>
     </main>
   );

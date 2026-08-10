@@ -6,12 +6,17 @@ const fmtMoney = (value) => value == null ? '—' : `$${Math.round(value).toLoca
 const fmtPct = (value) => value == null ? '—' : `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`;
 const fmtDate = (value) => value ? new Intl.DateTimeFormat('en-AU', { month: 'short', year: 'numeric' }).format(new Date(value)) : '—';
 
+const STATE_POINTS = { NSW: [-32, 147], VIC: [-37, 144], QLD: [-22, 144], SA: [-30, 135], WA: [-25, 122], TAS: [-42, 146.5], NT: [-19, 133], ACT: [-35.3, 149.1] };
+const project = (lat, lng) => ({ x: 30 + (lng - 112) * (300 / 42), y: 25 + (-10 - lat) * (230 / 34) });
+const AUSTRALIA_OUTLINE = 'M247.9 29.7L271.4 71.7L278.6 87.9L295.7 100.1L307.1 115.6L322.1 128.5L323.6 143.4L326.4 148.1L327.1 162.3L322.1 179.9L310.7 186.6L302.9 196.2L300.7 208.4L282.1 217.1L265.7 215.1L247.9 216.5L236.4 214.4L226.4 201.6L214.3 195.5L205 198.9L188.6 179.9L167.9 170.4L150.7 173.1L115.7 186L77.1 194.1L56.4 184.6L48.6 152.2L40 137.3L48.6 104.8L65.7 97.4L92.1 81.2L112.1 71.7L136.4 58.1L152.1 58.1L164.3 41.2L172.9 33.8L197.9 37.9L207.9 41.9L208.6 69.6L228.6 75L241.4 58.1Z';
+const TASMANIA_OUTLINE = 'M280 233.2L289.3 233.9L290 245.6L282.1 251.7L273.6 251L263.6 236Z';
 function AustraliaMap({ properties }) {
-  const valid = properties.filter((property) => property.lat != null && property.lng != null);
-  const point = (property) => ({ x: 50 + ((property.lng + 153) / 40) * 260, y: 35 + ((-property.lat - 10) / 34) * 205 });
+  const valid = properties.filter((property) => property.lat != null && property.lng != null || STATE_POINTS[property.state]);
+  const point = (property) => { const [lat, lng] = property.lat != null && property.lng != null ? [property.lat, property.lng] : (STATE_POINTS[property.state] || [-31, 135]); return project(lat, lng); };
   return <div className="case-map-wrap"><svg className="case-map" viewBox="0 0 360 280" role="img" aria-label="Approximate locations of purchased properties across Australia">
-    <path className="australia-outline" d="M44 105l13-31 21-19 28-7 19-18 26 6 17-9 25 7 17-13 25 9 18 21 31 10 18 28 22 13 1 20-15 20-12 29-23 8-21 29-29 9-15 21-28-5-20 13-30-9-20 4-22-18-26-3-15-22-23-10-4-26-16-16 2-20zM275 231l10 3 6 11-10 11-13-5z" />
-    {valid.map((property, index) => { const p = point(property); return <g key={`${property.id}-${index}`}><circle className="case-map-ring" cx={p.x} cy={p.y} r="10" /><circle className="case-map-dot" cx={p.x} cy={p.y} r="5"><title>{property.suburb}, {property.state}</title></circle></g>; })}
+    <path className="australia-outline" d={AUSTRALIA_OUTLINE} />
+    <path className="australia-outline" d={TASMANIA_OUTLINE} />
+    {valid.map((property, index) => { const p = point(property); return <g className="case-map-pin" key={`${property.id}-${index}`} transform={`translate(${p.x} ${p.y})`}><path className="case-map-pin-shape" d="M0 1C-7.5 1 -11.5 -7 -11.5 -13C-11.5 -21 -6.4 -27 0 -27C6.4 -27 11.5 -21 11.5 -13C11.5 -7 7.5 1 0 1Z" /><circle className="case-map-pin-hole" cx="0" cy="-13" r="4.5" /><title>{`${property.suburb}, ${property.state}`}</title></g>; })}
   </svg><div className="case-map-legend"><span><i /> Approximate LGA location</span><small>Locations shown at council-area level</small></div></div>;
 }
 
