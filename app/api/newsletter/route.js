@@ -3,10 +3,21 @@ import { forwardToRha } from '../../../lib/rha-api';
 
 export async function POST(request) {
   const body = await request.json();
-  const { email, name, phone, source, formSource, visitorId, attribution } = body || {};
+  const { email, name, phone, source, formSource, visitorId, attribution, suburbQuery } = body || {};
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ message: 'A valid email is required.' }, { status: 400 });
+  }
+
+  const tag = source === 'ebook' ? 'Ebook — Top Five Markets'
+    : source === 'suburb-miss' ? 'Suburb Widget — Missing Suburb'
+    : 'Newsletter';
+  const leadSource = source === 'ebook' ? 'rha-website-ebook'
+    : source === 'suburb-miss' ? 'rha-website-suburb-widget'
+    : 'rha-website-newsletter';
+  // Coverage prioritisation: log which suburb the reader wanted and couldn't get.
+  if (source === 'suburb-miss' && suburbQuery) {
+    console.info('Suburb widget miss:', { query: String(suburbQuery).slice(0, 80), email });
   }
 
   try {
@@ -17,9 +28,10 @@ export async function POST(request) {
         email,
         fullname: name || '',
         phone: phone || undefined,
-        tag: source === 'ebook' ? 'Ebook — Top Five Markets' : 'Newsletter',
-        leadSource: source === 'ebook' ? 'rha-website-ebook' : 'rha-website-newsletter',
+        tag,
+        leadSource,
         form_source: formSource || undefined,
+        suburbQuery: source === 'suburb-miss' ? String(suburbQuery || '').slice(0, 80) : undefined,
         vid: visitorId || undefined,
         page_url: attribution?.pageUrl || undefined,
         ref: attribution?.referrer || undefined,

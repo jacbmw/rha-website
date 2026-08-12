@@ -6,6 +6,7 @@ import { getBlogItemBySlug, listBlogItems } from '../../../../lib/webflow';
 import ArticleInlinePanel from '../../../components/panels/ArticleInlinePanel';
 import ArticleFooterPanel from '../../../components/panels/ArticleFooterPanel';
 import ArticleEbookPanel from '../../../components/panels/ArticleEbookPanel';
+import SuburbScoreWidget from '../../../components/SuburbScoreWidget';
 import { resolvePanel } from '../../../../lib/panelVariants';
 import { pageMetadata } from '../../../../lib/seo';
 
@@ -68,9 +69,13 @@ export default async function BlogArticle({ params }) {
         {post.summary && <p className="article-summary">{post.summary}</p>}
         {post.image && <img className="article-image" src={post.image} alt={post.imageAlt} />}
 
-        <ArticleInlinePanel variant={inlinePanel} />
+        {/* Suburb widget owns the mid-article slot; the newsletter inline
+            panel moves to end-of-article (before the footer panel). */}
+        <SuburbScoreWidget variant="article" />
 
         <div className="article-body" dangerouslySetInnerHTML={{ __html: post.body }} />
+
+        <ArticleInlinePanel variant={inlinePanel} />
 
         <ArticleFooterPanel variant={footerPanel} />
 

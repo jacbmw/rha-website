@@ -504,3 +504,150 @@
 /* Stats inside the gold frame need breathing room from the frame lines */
 .stats-frame .stat:first-child{padding-left:24px}
 @media(max-width:800px){.stats-frame .stat:nth-child(3){padding-left:24px}}
+
+/* ── Your Suburb, Scored — widget ─────────────────────────────────────────── */
+.suburb-widget{background:var(--cream);border-left:3px solid var(--lime);margin:45px 0;padding:30px 32px;position:relative}
+.suburb-widget-label{color:#8a6a0c;font-size:10px;font-weight:700;letter-spacing:.15em;margin:0 0 12px;text-transform:uppercase}
+.suburb-widget-heading{font-family:Georgia,serif;font-size:clamp(24px,3vw,32px);font-weight:400;letter-spacing:-.04em;line-height:1.05;margin:0 0 10px}
+.suburb-widget-heading i{font-style:italic}
+.suburb-widget-copy{color:var(--muted);font-size:13px;line-height:1.55;margin:0 0 18px;max-width:430px}
+.suburb-widget-search{max-width:430px;position:relative}
+.suburb-widget-search input{background:#fff;border:1px solid var(--line);border-radius:2px;font:inherit;font-size:14px;padding:14px 15px;width:100%}
+.suburb-widget-search input:focus{border-color:var(--lime);outline:none}
+.suburb-widget-results{background:#fff;border:1px solid var(--line);border-top:0;box-shadow:0 14px 30px rgba(20,26,50,.12);left:0;list-style:none;margin:0;max-height:330px;overflow:auto;padding:0;position:absolute;right:0;top:100%;z-index:30}
+.suburb-widget-results li{margin:0}
+.suburb-widget-results button{background:none;border:0;border-bottom:1px solid rgba(20,26,50,.06);cursor:pointer;display:flex;font:inherit;font-size:13px;justify-content:space-between;padding:12px 15px;text-align:left;width:100%}
+.suburb-widget-results button span{color:var(--muted);font-size:12px}
+.suburb-widget-results button.active,.suburb-widget-results button:hover{background:var(--cream)}
+.suburb-widget-miss{padding:14px 15px}
+.suburb-widget-miss p{color:var(--muted);font-size:12px;line-height:1.5;margin:0 0 10px}
+.suburb-widget-fine{color:var(--muted);font-size:11px;margin:14px 0 0}
+.suburb-widget-fine a{border-bottom:1px solid var(--ink)}
+.suburb-widget-home{padding-bottom:0;padding-top:90px}
+.suburb-widget-home .suburb-widget{margin:0}
+.suburb-widget-index{background:transparent;border-left:0;margin:34px 0 0;padding:0}
+.suburb-widget-index .suburb-widget-label,.suburb-widget-index .suburb-widget-heading,.suburb-widget-index .suburb-widget-copy{display:none}
+.suburb-honeypot{left:-9999px;position:absolute}
+
+/* ── Suburb page — Layer 0 ────────────────────────────────────────────────── */
+.suburb-hero{padding-bottom:60px;padding-top:40px}
+.suburb-hero h1{font-family:Georgia,serif;font-size:clamp(46px,6vw,84px);font-weight:400;letter-spacing:-.06em;line-height:.95;margin:0 0 14px}
+.suburb-hero h1 i{font-style:italic}
+.suburb-meta{color:var(--muted);font-size:13px;line-height:1.6;margin:0;max-width:640px}
+.suburb-scoreband{align-items:center;border-bottom:1px solid var(--line);border-top:1px solid var(--line);display:flex;gap:44px;margin-top:42px;padding:34px 0}
+.suburb-dial{flex-shrink:0}
+.suburb-scoreline{font-size:15px;margin:0 0 16px}
+.suburb-scoreline strong{font-family:Georgia,serif;font-size:22px;font-weight:400;letter-spacing:-.02em}
+.suburb-verdict{border-left:3px solid var(--lime);padding:4px 0 4px 16px}
+.suburb-verdict-label{font-family:Georgia,serif;font-size:19px;letter-spacing:-.02em;margin:0 0 6px}
+.suburb-verdict-detail{color:var(--muted);font-size:13px;line-height:1.6;margin:0;max-width:560px}
+.verdict-cool,.verdict-thin{border-left-color:rgba(20,26,50,.3)}
+.suburb-compliance{color:var(--muted);font-size:10.5px;letter-spacing:.02em;margin:16px 0 0}
+.suburb-teasers{display:grid;gap:0;grid-template-columns:repeat(3,1fr);margin-top:0}
+.suburb-teaser{border-bottom:1px solid var(--line);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:10px;padding:30px 26px 28px 0}
+.suburb-teaser:not(:first-child){padding-left:26px}
+.suburb-teaser:last-child{border-right:0}
+.suburb-teaser-label{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.suburb-teaser strong{font-family:Georgia,serif;font-size:clamp(30px,3.6vw,44px);font-weight:400;letter-spacing:-.05em}
+.suburb-teaser p{color:var(--muted);font-size:12.5px;line-height:1.55;margin:0;max-width:250px}
+
+/* ── Suburb page — Layer 1 gate + scorecard ───────────────────────────────── */
+.suburb-scorecard{padding-bottom:90px;padding-top:20px}
+.suburb-locked{display:grid;gap:44px;grid-template-columns:1.05fr .95fr;margin-top:46px}
+.suburb-preview{filter:blur(0);overflow:hidden;position:relative}
+.suburb-preview-charts{display:grid;gap:18px;grid-template-columns:1fr 1fr}
+.suburb-preview-chart{background:var(--cream);filter:blur(5px);width:100%}
+.suburb-preview-rows{filter:blur(6px);margin-top:20px}
+.suburb-preview-row{border-bottom:1px solid var(--line);color:var(--muted);display:flex;font-size:13px;justify-content:space-between;padding:13px 2px}
+.suburb-preview:after{background:linear-gradient(180deg,transparent 20%,rgba(251,250,247,.9));content:"";inset:0;pointer-events:none;position:absolute}
+.suburb-gate{background:var(--green);color:#f9f7f0;padding:42px 44px 38px}
+.suburb-gate-heading{font-family:Georgia,serif;font-size:clamp(24px,3vw,32px);letter-spacing:-.035em;line-height:1.08;margin:0 0 12px}
+.suburb-gate-copy{color:rgba(255,255,255,.65);font-size:13.5px;line-height:1.6;margin:0 0 22px}
+.suburb-gate-form{display:flex;flex-direction:column;gap:12px}
+.suburb-gate-fields{display:grid;gap:10px;grid-template-columns:1fr 1.4fr}
+.suburb-gate-form input[type=text],.suburb-gate-form input[type=email],.suburb-gate-form select{background:#fff;border:1px solid rgba(20,26,50,.2);border-radius:2px;color:var(--ink);font:inherit;font-size:13px;padding:13px 14px;width:100%}
+.suburb-gate-form select:invalid{color:var(--muted)}
+.suburb-gate-consent{align-items:flex-start;color:rgba(255,255,255,.75);display:flex;font-size:11.5px;gap:9px;line-height:1.5}
+.suburb-gate-consent input{margin-top:2px}
+.suburb-gate-form button{background:var(--lime);border:0;border-radius:2px;color:var(--ink);cursor:pointer;font:inherit;font-size:13px;font-weight:700;letter-spacing:.03em;padding:15px 18px;transition:transform .2s}
+.suburb-gate-form button:hover{transform:translateY(-2px)}
+.suburb-gate-fine{color:rgba(255,255,255,.45);font-size:10.5px;margin:2px 0 0}
+.suburb-form-error{color:#c0392b;font-size:12px;margin:6px 0 0}
+.suburb-gate .suburb-form-error{color:#f0b8ac}
+
+.suburb-unlocked{margin-top:40px}
+.suburb-greeting{font-family:Georgia,serif;font-size:clamp(20px,2.6vw,27px);letter-spacing:-.03em;margin:0 0 30px}
+.suburb-insight{background:var(--cream);border-left:3px solid var(--lime);margin:0 0 36px;padding:20px 26px}
+.suburb-insight span{color:#8a6a0c;font-size:10px;font-weight:700;letter-spacing:.15em;text-transform:uppercase}
+.suburb-insight p{font-family:Georgia,serif;font-size:18px;letter-spacing:-.015em;line-height:1.4;margin:8px 0 0}
+.suburb-chart-grid{display:grid;gap:34px 44px;grid-template-columns:1fr 1fr}
+.suburb-chart figcaption{display:flex;flex-direction:column;gap:3px;margin-bottom:10px}
+.suburb-chart figcaption b{font-size:13.5px}
+.suburb-chart figcaption span{color:var(--muted);font-size:11.5px}
+.suburb-chart{margin:0}
+.suburb-chart svg{width:100%}
+.suburb-chart-empty{background:var(--cream);color:var(--muted);font-size:12.5px;line-height:1.5;margin:0;padding:26px}
+.suburb-components{display:grid;gap:26px 34px;grid-template-columns:repeat(2,1fr);margin-top:44px}
+.suburb-component-head{align-items:baseline;display:flex;justify-content:space-between;margin-bottom:8px}
+.suburb-component-head b{font-size:13.5px}
+.suburb-component-head strong{font-family:Georgia,serif;font-size:26px;font-weight:400}
+.suburb-component-bar{background:rgba(20,26,50,.1);height:4px}
+.suburb-component-bar span{background:var(--lime);display:block;height:4px}
+.suburb-component p{color:var(--muted);font-size:12px;line-height:1.55;margin:9px 0 0}
+.suburb-supply-note{border-top:1px solid var(--line);color:var(--muted);font-size:13px;line-height:1.6;margin:36px 0 0;padding-top:18px}
+
+/* ── Suburb page — Layer 2 ────────────────────────────────────────────────── */
+.suburb-layer2{background:var(--green);color:#fff;margin-top:66px;padding:66px max(44px,7%) 60px}
+.suburb-layer2 h2{font-family:Georgia,serif;font-size:clamp(34px,4.6vw,58px);font-weight:400;letter-spacing:-.055em;line-height:.98;margin:0 0 20px}
+.suburb-layer2 h2 i{font-style:italic}
+.suburb-layer2-pitch{color:rgba(255,255,255,.72);font-size:15px;line-height:1.65;margin:0 0 24px;max-width:560px}
+.suburb-layer2-list{color:rgba(255,255,255,.72);font-size:13.5px;line-height:1.7;margin:0 0 30px;max-width:560px;padding-left:19px}
+.suburb-layer2-list i{font-style:italic}
+.suburb-phone-form{display:flex;gap:10px;max-width:560px}
+.suburb-phone-form input[type=tel]{background:#fff;border:0;border-radius:2px;flex:1;font:inherit;font-size:13px;min-width:0;padding:15px 15px}
+.suburb-phone-form button{background:var(--lime);border:0;border-radius:2px;color:var(--ink);cursor:pointer;font:inherit;font-size:12.5px;font-weight:700;padding:15px 20px;transition:transform .2s;white-space:nowrap}
+.suburb-phone-form button:hover{transform:translateY(-2px)}
+.suburb-phone-done{color:rgba(255,255,255,.85);font-size:14px;line-height:1.6;margin:0 0 18px}
+.suburb-calendly{background:var(--paper);margin-top:10px}
+.suburb-footnote{padding-bottom:70px}
+.suburb-footnote p{border-top:1px solid var(--line);color:var(--muted);font-size:11px;line-height:1.65;margin:0;padding-top:20px}
+
+/* ── Suburb index pages ───────────────────────────────────────────────────── */
+.suburb-index-hero{padding-bottom:60px;padding-top:50px}
+.suburb-index-hero h1{font-family:Georgia,serif;font-size:clamp(48px,6vw,88px);font-weight:400;letter-spacing:-.06em;line-height:.94;margin:0 0 16px}
+.suburb-index-hero h1 i{font-style:italic}
+.suburb-state-list{display:grid;gap:0;grid-template-columns:repeat(2,1fr);list-style:none;margin:40px 0 0;padding:0}
+.suburb-state-list a{border-bottom:1px solid var(--line);display:flex;font-family:Georgia,serif;font-size:clamp(20px,2.6vw,28px);justify-content:space-between;letter-spacing:-.03em;padding:20px 26px 20px 2px;transition:color .2s}
+.suburb-state-list a:hover{color:#8a6a0c}
+.suburb-index-states{padding-bottom:110px}
+.suburb-index-list{padding-bottom:110px}
+.suburb-letter-group{border-bottom:1px solid var(--line)}
+.suburb-letter-group summary{cursor:pointer;font-family:Georgia,serif;font-size:22px;letter-spacing:-.02em;padding:16px 2px}
+.suburb-letter-group summary span{color:var(--muted);font-size:13px}
+.suburb-letter-group ul{columns:3;list-style:none;margin:0;padding:4px 2px 22px}
+.suburb-letter-group li{font-size:13.5px;line-height:2}
+.suburb-letter-group a{color:var(--muted);transition:color .2s}
+.suburb-letter-group a:hover{color:var(--ink)}
+
+@media(max-width:900px){
+.suburb-locked{grid-template-columns:1fr}
+.suburb-chart-grid,.suburb-components{grid-template-columns:1fr}
+.suburb-teasers{grid-template-columns:1fr}
+.suburb-teaser{border-right:0;padding-left:0!important}
+.suburb-scoreband{flex-direction:column;gap:22px;text-align:left}
+.suburb-gate{padding:32px 26px 28px}
+.suburb-gate-fields{grid-template-columns:1fr}
+.suburb-phone-form{flex-direction:column}
+.suburb-state-list{grid-template-columns:1fr}
+.suburb-letter-group ul{columns:2}
+.suburb-layer2{margin-left:-24px;margin-right:-24px;padding:50px 24px 46px}
+}
+.suburb-letter-nav{display:flex;flex-wrap:wrap;gap:10px;list-style:none;margin:32px 0 0;padding:0}
+.suburb-letter-nav a{border:1px solid var(--line);display:flex;font-family:Georgia,serif;font-size:19px;gap:7px;letter-spacing:-.02em;padding:12px 18px;transition:border-color .2s,color .2s}
+.suburb-letter-nav a span{color:var(--muted);font-family:Arial,sans-serif;font-size:11px;align-self:center}
+.suburb-letter-nav a:hover{border-color:var(--lime);color:#8a6a0c}
+.suburb-plain-list{columns:3;list-style:none;margin:10px 0 0;padding:0}
+.suburb-plain-list li{font-size:13.5px;line-height:2.1}
+.suburb-plain-list a{color:var(--muted);transition:color .2s}
+.suburb-plain-list a:hover{color:var(--ink)}
+@media(max-width:900px){.suburb-plain-list{columns:2}}

@@ -5,6 +5,7 @@ import Principles from './components/Principles';
 import Footer from './components/Footer';
 import HeroArtB from './components/HeroArtB';
 import MobileNav from './components/MobileNav';
+import SuburbScoreWidget from './components/SuburbScoreWidget';
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
 
@@ -77,6 +78,10 @@ export default async function Home({ searchParams }) {
       </section>
 
       <NumbersSection />
+
+      <section className="suburb-widget-home section-shell">
+        <SuburbScoreWidget variant="home" />
+      </section>
 
       <section className="approach section-shell" id="approach">
         <div className="section-label">How we work</div>

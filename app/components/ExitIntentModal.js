@@ -38,7 +38,9 @@ export default function ExitIntentModal() {
     const armedAt = Date.now();
     const onLeave = (event) => {
       // Fire only on a genuine upward exit toward the browser chrome,
-      // after the reader has actually spent time on the page.
+      // after the reader has actually spent time on the page. Suburb pages
+      // run their own scorecard recapture — never stack popups there.
+      if (window.location.pathname.startsWith('/suburbs')) return;
       if (event.clientY > 8 || Date.now() - armedAt < 6000) return;
       if (sessionStorage.getItem(STORAGE_KEY)) return;
       sessionStorage.setItem(STORAGE_KEY, '1');

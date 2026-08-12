@@ -14,6 +14,11 @@ export default async function sitemap() {
     { url: `${baseUrl}/case-studies`, lastModified: new Date(), changeFrequency: 'weekly', priority: 0.8 },
     { url: `${baseUrl}/resources/blog`, lastModified: new Date(), changeFrequency: 'daily', priority: 0.8 },
     { url: `${baseUrl}/five-markets`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/suburbs`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
+    // Individual suburb pages ship in batched sitemaps at /suburbs/sitemap/[id].xml
+    ...['qld', 'nsw', 'vic', 'sa', 'wa', 'tas', 'nt', 'act'].map((state) => ({
+      url: `${baseUrl}/suburbs/${state}`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6,
+    })),
     { url: `${baseUrl}/legal/privacy-policy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.2 },
     { url: `${baseUrl}/legal/terms-and-conditions`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.2 },
   ];
