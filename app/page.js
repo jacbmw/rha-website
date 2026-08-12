@@ -3,6 +3,8 @@ import NumbersSection from './components/NumbersSection';
 import CaseStudyPreview from './components/CaseStudyPreview';
 import Principles from './components/Principles';
 import Footer from './components/Footer';
+import HeroArtB from './components/HeroArtB';
+import MobileNav from './components/MobileNav';
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
 
@@ -14,7 +16,11 @@ const navLinks = [
   { label: 'Contact', href: '#contact' },
 ];
 
-export default function Home() {
+export default async function Home({ searchParams }) {
+  // Hero illustration B is preview-only for now: /?hero=b. A stays the default.
+  const params = await searchParams;
+  const heroB = params?.hero === 'b';
+
   return (
     <main>
       <header className="site-header">
@@ -25,6 +31,7 @@ export default function Home() {
           {navLinks.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}
         </nav>
         <a className="header-cta" href="/discovery-call">Book a call <Arrow /></a>
+        <MobileNav links={navLinks} />
       </header>
 
       <section className="hero" id="top">
@@ -37,23 +44,35 @@ export default function Home() {
             <a className="text-link" href="/about/approach">Discover our approach</a>
           </div>
         </div>
-        <div className="hero-art" aria-hidden="true">
-          <div className="sun" />
-          <div className="arch arch-back" />
-          <div className="arch arch-front">
-            <span className="door-inset" />
-            <span className="door-panel door-panel-top" />
-            <span className="door-panel door-panel-bottom" />
-            <span className="door-handle" />
+        {heroB ? (
+          <HeroArtB />
+        ) : (
+          <div className="hero-art" aria-hidden="true">
+            <div className="sun" />
+            <div className="arch arch-back" />
+            <div className="arch arch-front">
+              <span className="door-inset" />
+              <span className="door-panel door-panel-top" />
+              <span className="door-panel door-panel-bottom" />
+              <span className="door-handle" />
+            </div>
           </div>
-        </div>
+        )}
       </section>
 
       <section className="intro section-shell" id="story">
         <div className="section-label">A different kind of advisory</div>
         <div className="intro-content">
           <h2>Real strategy.<br /><i>Real progress.</i></h2>
-          <div className="intro-body"><p>Property investment is not about collecting houses. It is about creating choices for your future.</p><p>We combine rigorous research with a genuinely personal approach to help everyday Australians build sustainable, high-performing portfolios—without the noise, shortcuts or sales pitch.</p><a className="text-link dark-link" href="/about/story">Meet Ripehouse <Arrow /></a></div>
+          <div className="intro-body">
+            <blockquote className="intro-quote">&ldquo;Property investment is not about collecting houses. It is about creating choices for your future.&rdquo;</blockquote>
+            <div className="intro-founder">
+              <img className="intro-founder-photo" src="/jacob-field-founder.jpg" alt="Jacob Field, founder of Ripehouse Advisory" width="64" height="64" />
+              <div><b>Jacob Field</b><span>Founder and Investor</span></div>
+            </div>
+            <p>We combine rigorous research with a genuinely personal approach to help everyday Australians build sustainable, high-performing portfolios—without the noise, shortcuts or sales pitch.</p>
+            <a className="text-link dark-link" href="/about/story">Meet Ripehouse <Arrow /></a>
+          </div>
         </div>
       </section>
 

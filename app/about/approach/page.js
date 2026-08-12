@@ -1,13 +1,16 @@
 import Link from 'next/link';
 import ApproachChart from './ApproachChart';
 import Footer from '../../components/Footer';
+import MobileNav from '../../components/MobileNav';
+import { pageMetadata } from '../../../lib/seo';
 
 const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: 'Our Approach | Ripehouse Advisory',
   description: 'You can only optimise what you can measure. Discover the research, human judgement and long-term sequence behind Ripehouse Advisory.',
-};
+  path: '/about/approach',
+});
 
 const steps = [
   ['01', 'Discovery call', 'We start with where you are, where you want to go, and what needs to be true to get there.'],
@@ -21,7 +24,7 @@ const steps = [
 
 export default function ApproachPage() {
   return <main className="approach-page">
-    <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/about/story">Our story</Link><Link className="active" href="/about/approach">Our approach</Link><Link href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/discovery-call">Book a call <span>↗</span></Link></header>
+    <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/about/story">Our story</Link><Link className="active" href="/about/approach">Our approach</Link><Link href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/discovery-call">Book a call <span>↗</span></Link><MobileNav links={[{ label: 'Our story', href: '/about/story' }, { label: 'Our approach', href: '/about/approach' }, { label: 'Market intel', href: '/resources/blog' }, { label: 'Contact', href: '/#contact' }]} /></header>
 
     <section className="approach-hero section-shell"><div><p className="eyebrow"><span /> The Ripehouse method</p><h1>You can only<br />optimise what<br />you <i>measure.</i></h1><p>Property investment is not a collection of guesses. It is a sequence of decisions — made clearer by data, stronger through judgement, and designed to compound.</p></div><div className="approach-hero-mark"><span>01</span><p>Measure<br /><i>everything.</i></p></div></section>
 

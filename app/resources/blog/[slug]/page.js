@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import Footer from '../../../components/Footer';
+import MobileNav from '../../../components/MobileNav';
 import { notFound } from 'next/navigation';
 import { getBlogItemBySlug, listBlogItems } from '../../../../lib/webflow';
 import ArticleInlinePanel from '../../../components/panels/ArticleInlinePanel';
 import ArticleFooterPanel from '../../../components/panels/ArticleFooterPanel';
 import ArticleEbookPanel from '../../../components/panels/ArticleEbookPanel';
 import { resolvePanel } from '../../../../lib/panelVariants';
-
-export const dynamic = 'force-dynamic';
+import { pageMetadata } from '../../../../lib/seo';
 
 const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
 
@@ -22,12 +22,21 @@ function readMinutes(body) {
 }
 
 export async function generateMetadata({ params }) {
-  const post = await getBlogItemBySlug((await params).slug).catch(() => null);
+  const slug = (await params).slug;
+  const post = await getBlogItemBySlug(slug).catch(() => null);
   if (!post) return { title: 'Market Intel | Ripehouse Advisory' };
-  return {
+  return pageMetadata({
     title: `${post.seoTitle || post.name} | Ripehouse Advisory`,
     description: post.seoDescription || post.summary,
-  };
+    ogTitle: post.seoTitle || post.name,
+    path: `/resources/blog/${slug}`,
+    image: post.image ? { url: post.image, alt: post.imageAlt || post.name } : undefined,
+    article: {
+      publishedTime: post.publishedDate || undefined,
+      authors: post.author ? [post.author] : undefined,
+      section: post.category || undefined,
+    },
+  });
 }
 
 export default async function BlogArticle({ params }) {
@@ -51,7 +60,7 @@ export default async function BlogArticle({ params }) {
 
   return (
     <main className="article-page">
-      <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/#story">Our story</Link><Link href="/#approach">Our approach</Link><Link className="active" href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/resources/blog">← All stories</Link></header>
+      <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/#story">Our story</Link><Link href="/#approach">Our approach</Link><Link className="active" href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/resources/blog">← All stories</Link><MobileNav links={[{ label: 'Our story', href: '/#story' }, { label: 'Our approach', href: '/#approach' }, { label: 'Market intel', href: '/resources/blog' }, { label: 'Contact', href: '/#contact' }]} /></header>
 
       <article className="article-content">
         <p className="eyebrow"><span /> {post.category || 'Market Intel'} · {fmtDate(post.publishedDate)} · {readMinutes(post.body)} min read</p>

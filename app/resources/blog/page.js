@@ -1,23 +1,39 @@
 import Link from 'next/link';
 import Footer from '../../components/Footer.js';
+import MobileNav from '../../components/MobileNav';
 import { listBlogItems } from '../../../lib/webflow';
 import BlogHeroPanel from '../../components/panels/BlogHeroPanel';
 import BlogGrid from './BlogGrid';
 import { resolvePanel } from '../../../lib/panelVariants';
+import { pageMetadata } from '../../../lib/seo';
 
-export const dynamic = 'force-dynamic';
-
-export const metadata = {
+export const metadata = pageMetadata({
   title: 'Market Intel | Ripehouse Advisory',
   description: 'Independent property market intelligence, practical guides and strategic insight from Ripehouse Advisory.',
-};
+  path: '/resources/blog',
+});
 
 const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
+
+function toCardData(post) {
+  const words = String(post.body || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
+  return {
+    id: post.id,
+    name: post.name,
+    slug: post.slug,
+    summary: post.summary,
+    category: post.category,
+    image: post.image,
+    imageAlt: post.imageAlt,
+    publishedDate: post.publishedDate,
+    readMinutes: Math.max(2, Math.round(words / 220)),
+  };
+}
 
 export default async function BlogPage() {
   let posts = [];
   try {
-    posts = await listBlogItems({ limit: 100 });
+    posts = (await listBlogItems({ limit: 100 })).map(toCardData);
   } catch (error) {
     console.error('Unable to load Market Intel:', error.message);
   }
@@ -25,7 +41,7 @@ export default async function BlogPage() {
 
   return (
     <main className="blog-page">
-      <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/#story">Our story</Link><Link href="/#approach">Our approach</Link><Link className="active" href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/discovery-call">Book a call <span>↗</span></Link></header>
+      <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/#story">Our story</Link><Link href="/#approach">Our approach</Link><Link className="active" href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/discovery-call">Book a call <span>↗</span></Link><MobileNav links={[{ label: 'Our story', href: '/#story' }, { label: 'Our approach', href: '/#approach' }, { label: 'Market intel', href: '/resources/blog' }, { label: 'Contact', href: '/#contact' }]} /></header>
       <section className="blog-hero section-shell">
         <p className="eyebrow"><span /> Ripehouse research &amp; perspective</p>
         <h1>Market <i>Intel.</i></h1>

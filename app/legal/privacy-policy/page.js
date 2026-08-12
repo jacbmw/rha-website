@@ -1,12 +1,14 @@
 import Link from 'next/link';
 import Footer from '../../components/Footer';
+import { pageMetadata } from '../../../lib/seo';
 
 const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: 'Privacy Policy | Ripehouse Advisory',
   description: 'How Ripehouse Advisory collects, uses and safeguards your personal information.',
-};
+  path: '/legal/privacy-policy',
+});
 
 const body = `
 <p>Ripehouse Advisory recognises the importance of your privacy and understands your concerns about the security of your personal information. We are committed to protecting any personal information about you that we hold. This privacy policy details how we generally manage your personal information and safeguard your privacy.</p>

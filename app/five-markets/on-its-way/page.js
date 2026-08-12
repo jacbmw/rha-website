@@ -1,14 +1,16 @@
 import Link from 'next/link';
 import Footer from '../../components/Footer';
 import CalendlyEmbed from '../../components/CalendlyEmbed';
+import { pageMetadata } from '../../../lib/seo';
 
 const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: 'Your Report Is On Its Way | Ripehouse Advisory',
-  description: 'Check your inbox — the Five Market Environments report is on its way. While it lands, book a free 15-minute discovery call with Ripehouse Advisory.',
+  description: 'Check your inbox — your report on the 5 Australian markets we\u2019re buying in for clients in 2026 is on its way. While it lands, book a free 15-minute discovery call with Ripehouse Advisory.',
+  path: '/five-markets/on-its-way',
   robots: { index: false, follow: false },
-};
+});
 
 export default function OnItsWayPage() {
   return (

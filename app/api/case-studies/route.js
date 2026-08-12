@@ -1,27 +1,7 @@
 import { NextResponse } from 'next/server';
-import { getPool, youtubeId } from '../../../lib/case-studies';
+import { getPool, youtubeId, assignSlugs } from '../../../lib/case-studies';
 
 const source = process.env.RHA_CASE_STUDIES_API_URL || 'https://dashboard.picki.com.au/api/public/case-studies';
-
-function generateSlug(name) {
-  return String(name || '')
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
-function assignSlugs(caseStudies) {
-  const seen = new Map();
-  return (caseStudies || []).map((study) => {
-    const baseSlug = study.slug || generateSlug(study.name || study.title || study.fullname);
-    let slug = baseSlug || `case-study-${study.id}`;
-    const count = seen.get(slug) || 0;
-    seen.set(slug, count + 1);
-    if (count > 0) slug = `${slug}-${study.id}`;
-    return { ...study, slug };
-  });
-}
 
 async function attachVideoUrls(caseStudies) {
   if (!process.env.RIPEHOUSE_DB_HOST || !process.env.RIPEHOUSE_DB_USER || !caseStudies?.length) return caseStudies;

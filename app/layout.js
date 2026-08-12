@@ -1,10 +1,15 @@
 import './globals.css';
 import ExitIntentModal from './components/ExitIntentModal';
 import SiteAnalytics from './components/SiteAnalytics';
+import { pageMetadata, SITE_URL } from '../lib/seo';
 
 export const metadata = {
-  title: 'Ripehouse Advisory | Property investment, done differently',
-  description: 'Build a property portfolio with a clear strategy, independent advice and a team invested in your long-term outcome.',
+  metadataBase: new URL(SITE_URL),
+  ...pageMetadata({
+    title: 'Ripehouse Advisory | Property investment, done differently',
+    description: 'Build a property portfolio with a clear strategy, independent advice and a team invested in your long-term outcome.',
+    path: '/',
+  }),
 };
 
 export default function RootLayout({ children }) {

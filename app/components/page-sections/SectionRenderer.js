@@ -60,7 +60,7 @@ function EbookHero({ eyebrow, headline, lede, bullets = [], trustLine, cardHeadi
           {trustLine && <p className="ebook-trust-line"><span className="ebook-stars" aria-hidden="true">★★★★★</span> {trustLine}</p>}
         </div>
         <div className="ebook-hero-card">
-          <img className="ebook-cover" src={ebookCoverUrl} alt="Cover of the Five Market Environments 2026 report" />
+          <img className="ebook-cover" src={ebookCoverUrl} alt="Cover of the report: The 5 Australian Markets We&rsquo;re Buying In For Clients in 2026" />
           <h2>{cardHeading}</h2>
           <p className="ebook-card-sub">{cardSub}</p>
           <EbookLeadForm />

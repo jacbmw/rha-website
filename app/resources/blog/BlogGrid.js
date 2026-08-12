@@ -16,13 +16,8 @@ function fmtDate(value) {
   return new Intl.DateTimeFormat('en-AU', { day: 'numeric', month: 'short', year: 'numeric' }).format(new Date(value));
 }
 
-function readMinutes(post) {
-  const words = String(post.body || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
-  return Math.max(2, Math.round(words / 220));
-}
-
 function Kicker({ post }) {
-  return <p className="blog-kicker"><span className="kicker-cat">{post.category || 'Market Intel'}</span><span>{fmtDate(post.publishedDate)}</span><span>{readMinutes(post)} min read</span></p>;
+  return <p className="blog-kicker"><span className="kicker-cat">{post.category || 'Market Intel'}</span><span>{fmtDate(post.publishedDate)}</span><span>{post.readMinutes} min read</span></p>;
 }
 
 function Card({ post, size = 'standard' }) {

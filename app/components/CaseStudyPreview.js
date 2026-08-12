@@ -1,11 +1,12 @@
 import Link from 'next/link';
+import { assignSlugs } from '../../lib/case-studies';
 
 async function getStudies() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || (process.env.NODE_ENV === 'development' ? `http://localhost:${process.env.PORT || 3000}` : 'https://new.ripehouseadvisory.com.au');
   const fetchOpts = process.env.NODE_ENV === 'development' ? { cache: 'no-store' } : { next: { revalidate: 900, tags: ['case-studies'] } };
   try {
     const response = await fetch(`${baseUrl}/api/case-studies`, fetchOpts);
-    return (await response.json()).caseStudies || [];
+    return assignSlugs((await response.json()).caseStudies);
   } catch {
     return [];
   }

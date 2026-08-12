@@ -18,7 +18,7 @@ export default function ArticleEbookPanel({ variant }) {
 
   return (
     <a className="article-cta-ebook" href="/five-markets?utm_source=rha-website&utm_medium=blog&utm_campaign=five_markets_report" onClick={onClick}>
-      <img className="article-ebook-cover" src={ebookCoverUrl} alt="Cover of the Five Market Environments 2026 report" loading="lazy" />
+      <img className="article-ebook-cover" src={ebookCoverUrl} alt="Cover of the report: The 5 Australian Markets We&rsquo;re Buying In For Clients in 2026" loading="lazy" />
       <div>
         <p className="ebook-flag">{props.flag}</p>
         <h3>{props.heading}</h3>

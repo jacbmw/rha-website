@@ -1,20 +1,24 @@
 import Link from 'next/link';
 import Footer from '../../components/Footer';
+import MobileNav from '../../components/MobileNav';
+import { pageMetadata } from '../../../lib/seo';
 
 const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
 const jacobImage = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67907563bbfb3b1b418dc748_ripehouse-advisory-story-jacob-field.webp';
 const annaImage = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/679075638cde3eadaf17850f_ripehouse-advisory-story-anna-cooper.webp';
 const suburbImage = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67884a3c70c47a84b0078be8_320921e68139df0b67c312548e43580b_australia-suburb.webp';
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: 'Our Story | Ripehouse Advisory',
   description: 'Meet Jacob Field and Anna Cooper, the founders behind Ripehouse Advisory and a more considered way to invest in property.',
-};
+  path: '/about/story',
+  image: { url: jacobImage, alt: 'Jacob Field, founder and CEO of Ripehouse Advisory' },
+});
 
 export default function StoryPage() {
   return (
     <main className="story-page">
-      <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link className="active" href="/about/story">Our story</Link><Link href="/#approach">Our approach</Link><Link href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/discovery-call">Book a call <span>↗</span></Link></header>
+      <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link className="active" href="/about/story">Our story</Link><Link href="/#approach">Our approach</Link><Link href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/discovery-call">Book a call <span>↗</span></Link><MobileNav links={[{ label: 'Our story', href: '/about/story' }, { label: 'Our approach', href: '/#approach' }, { label: 'Market intel', href: '/resources/blog' }, { label: 'Contact', href: '/#contact' }]} /></header>
 
       <section className="story-hero section-shell"><div className="story-hero-copy"><p className="eyebrow"><span /> The people behind the plan</p><h1>Property advice<br />with <i>a point of view.</i></h1><p>Ripehouse Advisory exists because the property industry had a problem: too much noise, too little accountability, and no real system for helping everyday Australians build a future.</p></div><div className="story-hero-art"><video autoPlay muted loop playsInline poster="/authority-website-video-poster.jpg" aria-label="Aerial view of an Australian suburban street"><source src="/authority-website-video.mp4" type="video/mp4" /></video><span className="story-hero-stamp">Built for<br /><i>the long game.</i></span></div></section>
 

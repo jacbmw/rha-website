@@ -1,12 +1,14 @@
 import Link from 'next/link';
 import Footer from '../../components/Footer';
+import { pageMetadata } from '../../../lib/seo';
 
 const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
 
-export const metadata = {
+export const metadata = pageMetadata({
   title: 'Terms and Conditions | Ripehouse Advisory',
   description: 'Terms and conditions of use for ripehouseadvisory.com.au, including copyright, disclaimers and data notices.',
-};
+  path: '/legal/terms-and-conditions',
+});
 
 const body = `
 <h2>ripehouseadvisory.com.au Copyright</h2>
