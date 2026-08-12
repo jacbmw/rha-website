@@ -5,9 +5,9 @@ import NumbersCagrChart from './NumbersCagrChart';
 
 const windowStat = ['5yr Rolling', 'measurement window'];
 const stats = [
-  ['$634M+', 'invested on behalf of clients'],
-  ['1,352', 'properties acquired across Australia'],
-  ['19.0%', 'median portfolio growth p.a.*'],
+  ['$699M+', 'invested on behalf of clients'],
+  ['1,388', 'properties acquired across Australia'],
+  ['17.1%', 'median portfolio growth p.a.*'],
 ];
 
 export default function NumbersSection() {

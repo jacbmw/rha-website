@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { clientMetrics, formatCurrency, formatPercent } from '../../../lib/clientMetrics';
 
 function fmtYear(value) { return new Date(value).getFullYear(); }
 function fmtPct(value) { return `${value >= 0 ? '+' : ''}${Number(value).toFixed(1)}%`; }
@@ -33,6 +34,14 @@ export default function ApproachChart() {
 
   return <div className="approach-chart-wrap">
     <div className="approach-chart-meta"><span><i className="chart-dot" /> Each dot is one anonymised client portfolio</span><span>{data.updatedAt ? `Updated ${new Date(data.updatedAt).toLocaleDateString('en-AU', { month: 'short', year: 'numeric' })}` : 'Live data'}</span></div>
+    <div className="approach-chart-summary" aria-label="Gold client portfolio summary">
+      <div><strong>{clientMetrics.clients.toLocaleString('en-AU')}</strong><span>clients</span></div>
+      <div><strong>{clientMetrics.properties.toLocaleString('en-AU')}</strong><span>properties</span></div>
+      <div><strong>{formatCurrency(clientMetrics.totalSpend)}</strong><span>total spend</span></div>
+      <div><strong>{formatCurrency(clientMetrics.currentValue)}</strong><span>current value</span></div>
+      <div><strong>{formatCurrency(clientMetrics.totalGrowth)}</strong><span>total growth</span></div>
+      <div><strong>{formatPercent(clientMetrics.medianCagr)}</strong><span>median CAGR · Q1 {formatPercent(clientMetrics.firstQuartileCagr)} · Q3 {formatPercent(clientMetrics.thirdQuartileCagr)}</span></div>
+    </div>
     <svg className="approach-chart" viewBox="0 0 900 430" role="img" aria-label="Client portfolio compound annual growth rate by first property purchase date">
       {yTicks.map((tick) => <g key={tick}><line x1="70" x2="860" y1={chart.y(tick)} y2={chart.y(tick)} stroke={tick === 0 ? '#141a32' : '#dfe2e8'} strokeDasharray={tick === 0 ? '0' : '3 5'} /><text x="58" y={chart.y(tick) + 4} textAnchor="end">{tick}%</text></g>)}
       <line x1="70" x2="860" y1="365" y2="365" stroke="#141a32" /><text x="465" y="415" textAnchor="middle">First property purchase</text><text transform="translate(15 230) rotate(-90)" textAnchor="middle">Portfolio CAGR since purchase</text>
@@ -40,6 +49,6 @@ export default function ApproachChart() {
       <polyline fill="none" stroke="#c79810" strokeWidth="3" points={line} opacity=".9" />
       {chart.points.map((point, index) => <circle key={`${point.x}-${index}`} cx={chart.x(point.x)} cy={chart.y(point.y)} r="5" fill="#141a32" stroke="#fff" strokeWidth="2"><title>{fmtPct(point.y)} CAGR · {fmtYear(point.x)} purchase</title></circle>)}
     </svg>
-    <div className="approach-chart-foot"><strong>{data.clientCount || chart.points.length} portfolios measured</strong><span>Measured, anonymised and updated from the Ripehouse client portfolio data set.</span></div>
+    <div className="approach-chart-foot"><strong>{clientMetrics.clients.toLocaleString('en-AU')} portfolios measured</strong><span>Measured, anonymised and updated from the Ripehouse client portfolio data set.</span></div>
   </div>;
 }
