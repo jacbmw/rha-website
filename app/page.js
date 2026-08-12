@@ -89,9 +89,9 @@ export default async function Home({ searchParams }) {
         <Principles />
       </section>
 
-      <ReviewsCarousel />
-
       <CaseStudyPreview />
+
+      <ReviewsCarousel />
 
       <section className="contact section-shell" id="contact"><div className="contact-panel"><p className="eyebrow light"><span /> No pressure, just a conversation</p><h2>Ready to make<br /><i>your next move?</i></h2><p>Book a free 15-minute discovery call with one of our specialists. We will listen to where you are now and talk through where you want to go.</p><a className="button button-light" href="/discovery-call">Book your discovery call <Arrow /></a><div className="contact-details"><span>127–131 Macquarie St, Hobart TAS</span><a href="tel:+61485050945">0485 050 945</a><a href="mailto:info@ripehouseadvisory.com.au">info@ripehouseadvisory.com.au</a></div></div></section>
 

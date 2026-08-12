@@ -58,6 +58,10 @@
         "buttonLabel": "Get the report",
         "buttonHref": "#report"
       }
+    },
+    {
+      "type": "caseStudy",
+      "props": {}
     }
   ]
 }

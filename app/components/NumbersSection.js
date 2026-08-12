@@ -3,11 +3,11 @@
 import { useEffect, useRef, useState } from 'react';
 import NumbersCagrChart from './NumbersCagrChart';
 
+const windowStat = ['5yr Rolling', 'measurement window'];
 const stats = [
   ['$634M+', 'invested on behalf of clients'],
   ['1,352', 'properties acquired across Australia'],
   ['19.0%', 'median portfolio growth p.a.*'],
-  ['5 yr', 'rolling measurement window'],
 ];
 
 export default function NumbersSection() {
@@ -40,12 +40,20 @@ export default function NumbersSection() {
         <div className="numbers-lifetime"><span>All-time Ripehouse footprint</span><strong>$2B+</strong><span>in property purchases across Australia</span></div>
         <NumbersCagrChart />
         <div className="stats-frame">
-          <div className="stats-grid">
-            {stats.map(([value, label], i) => (
-              <div className="stat" key={label} style={{ '--stat-delay': `${0.15 * i}s` }}>
-                <strong>{value}</strong><span>{label}</span>
+          <div className="stats-grid stats-grid-windowed">
+            <div className="stat stat-window" style={{ '--stat-delay': '0s' }}>
+              <strong>{windowStat[0]}</strong><span>{windowStat[1]}</span>
+            </div>
+            <div className="stats-window-children">
+              <p className="stats-children-caption">Measured within this window</p>
+              <div className="stats-children-grid">
+                {stats.map(([value, label], i) => (
+                  <div className="stat" key={label} style={{ '--stat-delay': `${0.15 * (i + 1)}s` }}>
+                    <strong>{value}</strong><span>{label}</span>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         </div>
         <div className="numbers-footer">

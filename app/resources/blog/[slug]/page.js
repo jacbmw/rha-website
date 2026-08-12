@@ -3,7 +3,6 @@ import Footer from '../../../components/Footer';
 import MobileNav from '../../../components/MobileNav';
 import { notFound } from 'next/navigation';
 import { getBlogItemBySlug, listBlogItems } from '../../../../lib/webflow';
-import ArticleInlinePanel from '../../../components/panels/ArticleInlinePanel';
 import ArticleFooterPanel from '../../../components/panels/ArticleFooterPanel';
 import ArticleEbookPanel from '../../../components/panels/ArticleEbookPanel';
 import SuburbScoreWidget from '../../../components/SuburbScoreWidget';
@@ -53,8 +52,7 @@ export default async function BlogArticle({ params }) {
     }
   } catch { /* related content is optional */ }
 
-  const [inlinePanel, footerPanel, ebookPanel] = await Promise.all([
-    resolvePanel('panel-article-inline'),
+  const [footerPanel, ebookPanel] = await Promise.all([
     resolvePanel('panel-article-footer'),
     resolvePanel('panel-article-ebook'),
   ]);
@@ -69,13 +67,12 @@ export default async function BlogArticle({ params }) {
         {post.summary && <p className="article-summary">{post.summary}</p>}
         {post.image && <img className="article-image" src={post.image} alt={post.imageAlt} />}
 
-        {/* Suburb widget owns the mid-article slot; the newsletter inline
-            panel moves to end-of-article (before the footer panel). */}
+        {/* Suburb widget owns the mid-article slot; the dark footer panel is
+            the sole end-of-article newsletter CTA (inline panel retired —
+            it doubled up with the footer panel). */}
         <SuburbScoreWidget variant="article" />
 
         <div className="article-body" dangerouslySetInnerHTML={{ __html: post.body }} />
-
-        <ArticleInlinePanel variant={inlinePanel} />
 
         <ArticleFooterPanel variant={footerPanel} />
 

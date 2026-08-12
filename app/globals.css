@@ -505,6 +505,25 @@
 .stats-frame .stat:first-child{padding-left:24px}
 @media(max-width:800px){.stats-frame .stat:nth-child(3){padding-left:24px}}
 
+/* 5yr C.A.G.R. window stat leads; the other three read as measured within it */
+.stats-grid-windowed{grid-template-columns:minmax(0,1fr) minmax(0,3fr)}
+.stat-window{border-right:1px solid rgba(199,152,16,.6)}
+.stat-window strong{font-size:clamp(26px,2.8vw,40px)}
+.stat-window span{color:rgba(199,152,16,.85)}
+.stats-window-children{display:flex;flex-direction:column}
+.stats-children-caption{color:rgba(199,152,16,.85);font-size:10px;font-weight:700;letter-spacing:.16em;margin:16px 0 0 24px;text-transform:uppercase}
+.stats-children-grid{display:grid;flex:1;grid-template-columns:repeat(3,1fr)}
+.stats-children-grid .stat{padding-top:12px}
+.stats-children-grid .stat:first-child{padding-left:24px}
+@media(max-width:800px){
+.stats-grid-windowed{grid-template-columns:1fr}
+.stat-window{border-bottom:1px solid rgba(199,152,16,.6);border-right:0;padding-left:24px}
+.stats-children-grid{grid-template-columns:repeat(2,1fr)}
+.stats-children-grid .stat{border-top:0;padding-top:20px}
+.stats-children-grid .stat:nth-child(2){border-right:0}
+.stats-children-grid .stat:nth-child(3){border-top:1px solid rgba(255,255,255,.2)}
+}
+
 /* ── Your Suburb, Scored — widget ─────────────────────────────────────────── */
 .suburb-widget{background:var(--cream);border-left:3px solid var(--lime);margin:45px 0;padding:30px 32px;position:relative}
 .suburb-widget-label{color:#8a6a0c;font-size:10px;font-weight:700;letter-spacing:.15em;margin:0 0 12px;text-transform:uppercase}
@@ -524,7 +543,14 @@
 .suburb-widget-fine{color:var(--muted);font-size:11px;margin:14px 0 0}
 .suburb-widget-fine a{border-bottom:1px solid var(--ink)}
 .suburb-widget-home{padding-bottom:0;padding-top:90px}
-.suburb-widget-home .suburb-widget{margin:0}
+.suburb-widget-home .suburb-widget{align-items:center;display:grid;gap:60px;grid-template-columns:minmax(0,1fr) 340px;margin:0;padding:54px 56px 50px}
+.suburb-widget-article{align-items:center;display:grid;gap:44px;grid-template-columns:minmax(0,1fr) 260px;padding:34px 36px 32px}
+.suburb-widget-art svg{display:block;height:auto;width:100%}
+@media(max-width:860px){
+.suburb-widget-home .suburb-widget{display:block;padding:36px 32px 34px}
+.suburb-widget-article{display:block;padding:30px 32px}
+.suburb-widget-art{display:none}
+}
 .suburb-widget-index{background:transparent;border-left:0;margin:34px 0 0;padding:0}
 .suburb-widget-index .suburb-widget-label,.suburb-widget-index .suburb-widget-heading,.suburb-widget-index .suburb-widget-copy{display:none}
 .suburb-honeypot{left:-9999px;position:absolute}

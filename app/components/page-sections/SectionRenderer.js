@@ -7,6 +7,7 @@
 
 import CalendlyEmbed from '../CalendlyEmbed';
 import ReviewsCarousel from '../ReviewsCarousel';
+import CaseStudyPreview from '../CaseStudyPreview';
 import EbookLeadForm from '../../five-markets/EbookLeadForm';
 import { rich } from './rich';
 
@@ -115,12 +116,12 @@ function FeaturedLogos({ label }) {
   );
 }
 
-function Founder({ eyebrow, heading, role, paragraphs = [] }) {
+function Founder({ eyebrow, heading, role, paragraphs = [], image, imageAlt }) {
   return (
     <section className="book-founder">
       <div className="section-shell book-founder-grid">
         <div className="book-founder-photo">
-          <img src={jacobImage} alt="Jacob Field, founder and CEO of Ripehouse Advisory" loading="lazy" />
+          <img src={image || jacobImage} alt={imageAlt || 'Jacob Field, founder and CEO of Ripehouse Advisory'} loading="lazy" />
         </div>
         <div className="book-founder-copy">
           <p className="eyebrow light"><span /> {eyebrow}</p>
@@ -190,6 +191,7 @@ const REGISTRY = {
   suitedGrid: SuitedGrid,
   featuredLogos: FeaturedLogos,
   reviews: ReviewsCarousel,
+  caseStudy: CaseStudyPreview,
   founder: Founder,
   faq: Faq,
   methodStats: MethodStats,

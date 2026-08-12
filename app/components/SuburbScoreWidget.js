@@ -92,6 +92,7 @@ export default function SuburbScoreWidget({ variant = 'panel' }) {
 
   return (
     <aside className={`suburb-widget suburb-widget-${variant}`} ref={boxRef}>
+      <div className="suburb-widget-main">
       <p className="suburb-widget-label">Your suburb, scored</p>
       <h3 className="suburb-widget-heading">What does the data say about <i>your</i> suburb?</h3>
       <p className="suburb-widget-copy">We score every suburb in Australia across 27 indicators — updated monthly. See yours.</p>
@@ -136,6 +137,30 @@ export default function SuburbScoreWidget({ variant = 'panel' }) {
       </div>
       <p className="suburb-widget-fine">Free · no signup to see the snapshot</p>
       <noscript><p className="suburb-widget-fine"><Link href="/suburbs">Browse every suburb we score →</Link></p></noscript>
+      </div>
+      {(variant === 'home' || variant === 'article') && (
+        <div className="suburb-widget-art" aria-hidden="true">
+          <svg viewBox="0 0 340 240" role="presentation">
+            <rect x="0" y="0" width="340" height="240" rx="2" fill="#141a32" />
+            <rect x="0" y="0" width="3" height="240" fill="#c79810" />
+            <text x="26" y="38" fontSize="9" fontWeight="700" letterSpacing="2.2" fill="#c79810">SAMPLE SCORECARD</text>
+            <circle cx="84" cy="128" r="52" fill="none" stroke="rgba(244,241,234,.16)" strokeWidth="7" />
+            <circle cx="84" cy="128" r="52" fill="none" stroke="#c79810" strokeWidth="7" strokeLinecap="round" strokeDasharray="267.9 326.7" transform="rotate(-90 84 128)" />
+            <text x="84" y="128" textAnchor="middle" fontFamily="Georgia, serif" fontSize="32" fill="#f4f1ea">82</text>
+            <text x="84" y="148" textAnchor="middle" fontSize="10" fill="rgba(244,241,234,.55)">/ 100</text>
+            <text x="172" y="82" fontSize="8.5" fontWeight="700" letterSpacing="1.6" fill="rgba(244,241,234,.6)">YIELD PRESSURE</text>
+            <rect x="172" y="90" width="142" height="4" fill="rgba(244,241,234,.16)" />
+            <rect x="172" y="90" width="118" height="4" fill="#c79810" />
+            <text x="172" y="120" fontSize="8.5" fontWeight="700" letterSpacing="1.6" fill="rgba(244,241,234,.6)">VACANCY</text>
+            <rect x="172" y="128" width="142" height="4" fill="rgba(244,241,234,.16)" />
+            <rect x="172" y="128" width="46" height="4" fill="#f4f1ea" />
+            <text x="172" y="158" fontSize="8.5" fontWeight="700" letterSpacing="1.6" fill="rgba(244,241,234,.6)">SUPPLY</text>
+            <rect x="172" y="166" width="142" height="4" fill="rgba(244,241,234,.16)" />
+            <rect x="172" y="166" width="88" height="4" fill="#f4f1ea" />
+            <text x="26" y="216" fontSize="9" fill="rgba(244,241,234,.45)">27 indicators · 15,000 suburbs · updated monthly</text>
+          </svg>
+        </div>
+      )}
     </aside>
   );
 }

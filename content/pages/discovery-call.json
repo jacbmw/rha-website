@@ -54,11 +54,13 @@
       "type": "founder",
       "props": {
         "eyebrow": "Who you'll be speaking with",
-        "heading": "Jacob *Field*",
-        "role": "Founder & CEO, Ripehouse Advisory",
+        "heading": "Myles *White*",
+        "role": "Strategic Wealth Consultant, Ripehouse Advisory",
+        "image": "https://cdn.prod.website-files.com/6785caaabc0f3871a91c9df0/6786e65a0c1f20a821b785c4_myles_white.png",
+        "imageAlt": "Myles White, Strategic Wealth Consultant at Ripehouse Advisory",
         "paragraphs": [
-          "Jacob exited the 9–5 at 32 through property investment, then founded Ripehouse Advisory in 2011 — combining a software engineering background with property research to build Australia's most recognised data-driven acquisition company.",
-          "After years watching investors repeat the same expensive mistakes, he built a holistic system for everyday Australians to create generational wealth through property. It's the exact approach behind his own multi-million dollar portfolio — and his life's work."
+          "Myles is a Strategic Wealth Consultant on the Ripehouse strategy team. He spends most of the call listening — your income, equity, goals and time horizon — then gives you straight answers on whether structured advisory is the right next step for you.",
+          "Every call runs on the data-driven method our founder Jacob Field has built since 2011 — the same research and strategy process behind more than $2B purchased for clients across Australia."
         ]
       }
     },
@@ -72,7 +74,7 @@
           { "question": "What does the call cost?", "answer": "Nothing. The 15 minutes are free, and there's no obligation to go further afterwards." },
           { "question": "Do I need to prepare anything?", "answer": "No documents needed. A rough sense of your income, equity and goals is enough — we'll guide the conversation from there." },
           { "question": "What happens after the call?", "answer": "If it makes sense, the next step is a deeper wealth consultation. If it doesn't, you leave with honest clarity on your position — either way, you decide." },
-          { "question": "Who will I actually speak with?", "answer": "A Ripehouse specialist — not a call centre. The same team that runs our research and advisory process." }
+          { "question": "Who will I actually speak with?", "answer": "Myles White, a Strategic Wealth Consultant on our strategy team — not a call centre. The same team that runs our research and advisory process." }
         ]
       }
     },
@@ -85,6 +87,10 @@
         "buttonLabel": "Book your discovery call",
         "buttonHref": "#book"
       }
+    },
+    {
+      "type": "caseStudy",
+      "props": {}
     }
   ]
 }
