@@ -1,0 +1,90 @@
+{
+  "pageKey": "discovery-call",
+  "meta": {
+    "headerNote": "Free 15-minute call · No obligation"
+  },
+  "sections": [
+    {
+      "type": "bookHero",
+      "props": {
+        "eyebrow": "Property Investment Discovery Call",
+        "headline": "Get clarity on *your next move.*",
+        "lede": "A free 15-minute call with a Ripehouse specialist. We review your position, answer your key questions, and help you decide whether structured advisory makes sense for you.",
+        "promise": "No pressure. If it's not the right step, we'll tell you.",
+        "trustChips": [
+          { "value": "300+", "label": "five-star Google reviews" },
+          { "value": "$2B+", "label": "purchased for clients" },
+          { "value": "2011", "label": "advising ever since" }
+        ]
+      }
+    },
+    {
+      "type": "steps",
+      "props": {
+        "label": "What happens on the call",
+        "steps": [
+          { "number": "01", "title": "We review your position", "text": "Where you are now: income, equity, goals and time horizon. Ten minutes of listening before any talking." },
+          { "number": "02", "title": "You get straight answers", "text": "Ask us anything — the market, our approach, the numbers behind our client outcomes. No jargon, no scripts." },
+          { "number": "03", "title": "You decide the next step", "text": "If structured advisory makes sense, we map what happens next. If it doesn't, we'll tell you honestly." }
+        ]
+      }
+    },
+    {
+      "type": "suitedGrid",
+      "props": {
+        "eyebrow": "Is this call for you?",
+        "heading": "This conversation is\ntypically *suitable for:*",
+        "items": [
+          { "title": "Homeowners with equity", "text": "You own a home or investment property with usable equity, and want it working harder toward your future." },
+          { "title": "Households earning $175k+", "text": "Strong income, less certainty it is converting into long-term wealth. We help you sequence the next move." },
+          { "title": "Time-poor professionals", "text": "You want research, strategy and execution handled by a team — not another spreadsheet to maintain." },
+          { "title": "Long-term wealth builders", "text": "You think in decades, not headlines. Legacy, choices and financial independence are the goal." }
+        ]
+      }
+    },
+    {
+      "type": "featuredLogos",
+      "props": { "label": "As featured in" }
+    },
+    {
+      "type": "reviews",
+      "props": {}
+    },
+    {
+      "type": "founder",
+      "props": {
+        "eyebrow": "Who you'll be speaking with",
+        "heading": "Jacob *Field*",
+        "role": "Founder & CEO, Ripehouse Advisory",
+        "paragraphs": [
+          "Jacob exited the 9–5 at 32 through property investment, then founded Ripehouse Advisory in 2011 — combining a software engineering background with property research to build Australia's most recognised data-driven acquisition company.",
+          "After years watching investors repeat the same expensive mistakes, he built a holistic system for everyday Australians to create generational wealth through property. It's the exact approach behind his own multi-million dollar portfolio — and his life's work."
+        ]
+      }
+    },
+    {
+      "type": "faq",
+      "props": {
+        "label": "Before you book",
+        "heading": "Questions we're\nasked *most often.*",
+        "items": [
+          { "question": "Is this a sales call?", "answer": "No. It's a diagnostic conversation. We spend most of it listening, and we'll tell you plainly if structured advisory isn't the right step for you." },
+          { "question": "What does the call cost?", "answer": "Nothing. The 15 minutes are free, and there's no obligation to go further afterwards." },
+          { "question": "Do I need to prepare anything?", "answer": "No documents needed. A rough sense of your income, equity and goals is enough — we'll guide the conversation from there." },
+          { "question": "What happens after the call?", "answer": "If it makes sense, the next step is a deeper wealth consultation. If it doesn't, you leave with honest clarity on your position — either way, you decide." },
+          { "question": "Who will I actually speak with?", "answer": "A Ripehouse specialist — not a call centre. The same team that runs our research and advisory process." }
+        ]
+      }
+    },
+    {
+      "type": "finalCta",
+      "props": {
+        "eyebrow": "No pressure, just a conversation",
+        "heading": "Ready when\n*you are.*",
+        "text": "Fifteen minutes to review your position, answer your questions and decide whether structured advisory makes sense for you.",
+        "buttonLabel": "Book your discovery call",
+        "buttonHref": "#book"
+      }
+    }
+  ]
+}

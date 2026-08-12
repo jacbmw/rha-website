@@ -1,0 +1,8 @@
+{
+  "pageKey": "panel-blog-hero",
+  "props": {
+    "heading": "The weekly briefing, free.",
+    "cta": "Subscribe",
+    "placeholder": "Your email address"
+  }
+}

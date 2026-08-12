@@ -1,0 +1,10 @@
+{
+  "pageKey": "panel-article-footer",
+  "props": {
+    "eyebrow": "Don't stop at one story",
+    "heading": "Get every edition of *Market Intel.*",
+    "text": "Join thousands of Australian investors reading our research-first weekly briefing — the data, the suburbs and the strategy behind them.",
+    "cta": "Join the briefing",
+    "placeholder": "Your email address"
+  }
+}

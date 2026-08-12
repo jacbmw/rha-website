@@ -1,0 +1,63 @@
+{
+  "pageKey": "five-markets",
+  "meta": {
+    "headerNote": "Free report · Emailed instantly"
+  },
+  "sections": [
+    {
+      "type": "ebookHero",
+      "props": {
+        "eyebrow": "Free investor report",
+        "headline": "Five Market Environments We're Watching in *2026*",
+        "lede": "As markets get noisier, the cost of a poor decision rises. This is how we think about timing, risk and decision quality.",
+        "bullets": [
+          "The five market environments we're actively monitoring in 2026",
+          "How we separate a real growth signal from a headline",
+          "The suburb-level metrics that drive our buy decisions",
+          "Where timing risk is highest right now — and why"
+        ],
+        "trustLine": "Trusted by investors — 300+ five-star reviews",
+        "cardHeading": "Get your free copy",
+        "cardSub": "Takes 15 seconds — straight to your inbox."
+      }
+    },
+    {
+      "type": "steps",
+      "props": {
+        "label": "What's inside the report",
+        "steps": [
+          { "number": "01", "title": "Five environments", "text": "A calm, signal-led view of the five market environments we're tracking in 2026 — no hype, no \"hotspot\" claims." },
+          { "number": "02", "title": "A focused shortlist", "text": "Five locations and the specific conditions we're observing in each, drawn from nation-wide scanning and suburb-level modelling." },
+          { "number": "03", "title": "The process behind it", "text": "A window into the research method we use with advisory clients: measurable fundamentals, disciplined human review." }
+        ]
+      }
+    },
+    {
+      "type": "methodStats",
+      "props": {
+        "eyebrow": "The numbers behind the method",
+        "heading": "The same process that\nproduced *these outcomes.*",
+        "stats": [
+          { "value": "19.0%", "label": "median client portfolio growth p.a., 5-year rolling basis*" },
+          { "value": "$2B+", "label": "in property purchased across Australia since 2011" },
+          { "value": "15,000+", "label": "suburbs evaluated across 27 core research metrics" }
+        ],
+        "finePrint": "* Aggregate, anonymised client portfolio data, 5-year rolling CAGR basis. Benchmark: combined capital-city dwelling values. Data as at June 2026."
+      }
+    },
+    {
+      "type": "reviews",
+      "props": {}
+    },
+    {
+      "type": "finalCta",
+      "props": {
+        "eyebrow": "Sense-check your positioning",
+        "heading": "Read the signals\n*we're reading.*",
+        "text": "Review the five environments we're watching, see how we think about cycle positioning, and decide whether this kind of decision-making feels right for you.",
+        "buttonLabel": "Get the report",
+        "buttonHref": "#report"
+      }
+    }
+  ]
+}

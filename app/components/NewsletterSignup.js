@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import { irIdentify } from '../../lib/ir';
 
-export default function NewsletterSignup({ source = 'newsletter', cta = 'Get Market Intel', placeholder = 'Your email address', onSuccess }) {
+export default function NewsletterSignup({ source = 'newsletter', cta = 'Get Market Intel', placeholder = 'Your email address', onSuccess, onInteract }) {
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState('idle');
 
@@ -17,6 +18,7 @@ export default function NewsletterSignup({ source = 'newsletter', cta = 'Get Mar
         body: JSON.stringify({ email, source }),
       });
       if (!response.ok) throw new Error('failed');
+      irIdentify({ email, formSource: `website_${source}` });
       setStatus('done');
       onSuccess?.();
     } catch {
@@ -35,6 +37,7 @@ export default function NewsletterSignup({ source = 'newsletter', cta = 'Get Mar
         required
         value={email}
         onChange={(event) => setEmail(event.target.value)}
+        onFocus={() => onInteract?.()}
         placeholder={placeholder}
         aria-label="Email address"
       />

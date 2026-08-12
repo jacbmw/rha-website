@@ -3,7 +3,7 @@ import { forwardToRha } from '../../../lib/rha-api';
 
 export async function POST(request) {
   const body = await request.json();
-  const { email, name, source } = body || {};
+  const { email, name, phone, source, formSource, visitorId, attribution } = body || {};
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json({ message: 'A valid email is required.' }, { status: 400 });
@@ -16,8 +16,20 @@ export async function POST(request) {
       body: JSON.stringify({
         email,
         fullname: name || '',
+        phone: phone || undefined,
         tag: source === 'ebook' ? 'Ebook — Top Five Markets' : 'Newsletter',
         leadSource: source === 'ebook' ? 'rha-website-ebook' : 'rha-website-newsletter',
+        form_source: formSource || undefined,
+        vid: visitorId || undefined,
+        page_url: attribution?.pageUrl || undefined,
+        ref: attribution?.referrer || undefined,
+        gclid: attribution?.gclid || undefined,
+        utm_source: attribution?.utmSource || undefined,
+        utm_medium: attribution?.utmMedium || undefined,
+        utm_campaign: attribution?.utmCampaign || undefined,
+        utm_content: attribution?.utmContent || undefined,
+        utm_term: attribution?.utmTerm || undefined,
+        utm_id: attribution?.utmId || undefined,
       }),
     });
     // A duplicate email (409) still means the reader is subscribed — treat as success.

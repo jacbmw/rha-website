@@ -1,7 +1,11 @@
 import Link from 'next/link';
+import Footer from '../../../components/Footer';
 import { notFound } from 'next/navigation';
 import { getBlogItemBySlug, listBlogItems } from '../../../../lib/webflow';
-import NewsletterSignup from '../../../components/NewsletterSignup';
+import ArticleInlinePanel from '../../../components/panels/ArticleInlinePanel';
+import ArticleFooterPanel from '../../../components/panels/ArticleFooterPanel';
+import ArticleEbookPanel from '../../../components/panels/ArticleEbookPanel';
+import { resolvePanel } from '../../../../lib/panelVariants';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,6 +43,12 @@ export default async function BlogArticle({ params }) {
     }
   } catch { /* related content is optional */ }
 
+  const [inlinePanel, footerPanel, ebookPanel] = await Promise.all([
+    resolvePanel('panel-article-inline'),
+    resolvePanel('panel-article-footer'),
+    resolvePanel('panel-article-ebook'),
+  ]);
+
   return (
     <main className="article-page">
       <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/#story">Our story</Link><Link href="/#approach">Our approach</Link><Link className="active" href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/resources/blog">← All stories</Link></header>
@@ -49,31 +59,13 @@ export default async function BlogArticle({ params }) {
         {post.summary && <p className="article-summary">{post.summary}</p>}
         {post.image && <img className="article-image" src={post.image} alt={post.imageAlt} />}
 
-        <aside className="inline-signup">
-          <div>
-            <p className="inline-signup-label">Market Intel, weekly</p>
-            <p>The analysis behind stories like this one, in your inbox every week. Free, unsubscribe anytime.</p>
-          </div>
-          <NewsletterSignup source="article-inline" cta="Subscribe free" />
-        </aside>
+        <ArticleInlinePanel variant={inlinePanel} />
 
         <div className="article-body" dangerouslySetInnerHTML={{ __html: post.body }} />
 
-        <section className="article-cta-primary">
-          <p className="eyebrow light"><span /> Don&apos;t stop at one story</p>
-          <h2>Get every edition of <i>Market Intel.</i></h2>
-          <p>Join thousands of Australian investors reading our research-first weekly briefing — the data, the suburbs and the strategy behind them.</p>
-          <NewsletterSignup source="article-footer" cta="Join the briefing" />
-        </section>
+        <ArticleFooterPanel variant={footerPanel} />
 
-        <a className="article-cta-ebook" href="https://ripe.house/five-shorts?utm_source=rha-website&utm_medium=blog&utm_campaign=five_markets_report" target="_blank" rel="noreferrer">
-          <div>
-            <p className="ebook-flag">Free report</p>
-            <h3>Top Five Markets Report 2026</h3>
-            <p>The five Australian markets our research database says are quietly outperforming — and why.</p>
-          </div>
-          <span className="ebook-arrow">Download ↗</span>
-        </a>
+        <ArticleEbookPanel variant={ebookPanel} />
       </article>
 
       {related.length > 0 && (
@@ -94,7 +86,7 @@ export default async function BlogArticle({ params }) {
         </section>
       )}
 
-      <footer className="site-footer"><Link className="brand footer-brand" href="/"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><p>© 2026 Ripehouse Advisory. All rights reserved.</p><div><a href="#">Privacy</a><a href="#">Terms</a><Link href="/resources/blog">All stories ↑</Link></div></footer>
+      <Footer backHref="/resources/blog" backLabel="All stories ↑" />
     </main>
   );
 }

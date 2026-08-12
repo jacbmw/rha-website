@@ -1,0 +1,9 @@
+{
+  "pageKey": "panel-article-inline",
+  "props": {
+    "label": "Market Intel, weekly",
+    "text": "The analysis behind stories like this one, in your inbox every week. Free, unsubscribe anytime.",
+    "cta": "Subscribe free",
+    "placeholder": "Your email address"
+  }
+}

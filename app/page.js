@@ -1,37 +1,17 @@
 import ReviewsCarousel from './components/ReviewsCarousel';
+import NumbersSection from './components/NumbersSection';
+import CaseStudyPreview from './components/CaseStudyPreview';
+import Principles from './components/Principles';
+import Footer from './components/Footer';
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
 
 const navLinks = [
   { label: 'Our story', href: '/about/story' },
   { label: 'Our approach', href: '/about/approach' },
+  { label: 'Case studies', href: '/case-studies' },
   { label: 'Market intel', href: '/resources/blog' },
   { label: 'Contact', href: '#contact' },
-];
-
-const principles = [
-  {
-    number: '01',
-    title: 'Strategy before property',
-    text: 'The right property is only useful when it serves a bigger plan. We start with your goals, borrowing capacity and time horizon.',
-  },
-  {
-    number: '02',
-    title: 'Research without the noise',
-    text: 'Our team follows the fundamentals that matter: supply, demand, infrastructure, liveability and long-term growth drivers.',
-  },
-  {
-    number: '03',
-    title: 'Advice that stays with you',
-    text: 'From your first acquisition to the next stage of your portfolio, we bring the people, perspective and accountability to keep you moving.',
-  },
-];
-
-const stats = [
-  ['$634M+', 'invested on behalf of clients'],
-  ['1,352', 'properties acquired across Australia'],
-  ['19.0%', 'median portfolio growth p.a.*'],
-  ['5 yr', 'rolling measurement window'],
 ];
 
 export default function Home() {
@@ -44,7 +24,7 @@ export default function Home() {
         <nav className="desktop-nav" aria-label="Main navigation">
           {navLinks.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}
         </nav>
-        <a className="header-cta" href="#contact">Book a call <Arrow /></a>
+        <a className="header-cta" href="/discovery-call">Book a call <Arrow /></a>
       </header>
 
       <section className="hero" id="top">
@@ -53,15 +33,19 @@ export default function Home() {
           <h1>Build wealth with <i>intention.</i></h1>
           <p className="hero-lede">A clear property strategy. Independent advice. A team that stays invested in your long-term outcome.</p>
           <div className="hero-actions">
-            <a className="button button-primary" href="#contact">Start a conversation <Arrow /></a>
-            <a className="text-link" href="#approach">Discover our approach <span>↓</span></a>
+            <a className="button button-primary" href="/discovery-call">Book Discovery Call <Arrow /></a>
+            <a className="text-link" href="/about/approach">Discover our approach</a>
           </div>
         </div>
         <div className="hero-art" aria-hidden="true">
           <div className="sun" />
           <div className="arch arch-back" />
-          <div className="arch arch-front"><span className="arch-line line-one" /><span className="arch-line line-two" /></div>
-          <div className="hero-caption"><span>01</span><span>Strategy-led property advice<br />for your next chapter.</span></div>
+          <div className="arch arch-front">
+            <span className="door-inset" />
+            <span className="door-panel door-panel-top" />
+            <span className="door-panel door-panel-bottom" />
+            <span className="door-handle" />
+          </div>
         </div>
       </section>
 
@@ -73,27 +57,21 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="numbers" id="intel">
-        <div className="section-shell">
-          <div className="numbers-heading"><p className="eyebrow light"><span /> The numbers behind the work</p><p className="numbers-note">Live, anonymised client portfolio data<br />measured across a 5-year rolling window.</p></div>
-          <div className="numbers-lifetime"><span>All-time Ripehouse footprint</span><strong>$2B+</strong><span>in property purchases across Australia</span></div>
-          <div className="numbers-timeline" aria-label="Measurement timeline from 2011 to 2026"><div className="timeline-track"><span className="timeline-focus" /></div><div className="timeline-labels"><span><b>2011</b><small>Ripehouse founded</small></span><span><b>2015</b><small>Research system established</small></span><span className="timeline-window"><b>2022</b><small>5-year rolling window begins</small></span><span className="timeline-now"><b>2026</b><small>Current measurement</small></span></div></div>
-          <p className="numbers-window-note"><b>The four panels below focus only on the highlighted 2022–2026 window.</b> This is the period used to measure recent client portfolio outcomes — not the full lifetime history of Ripehouse.</p>
-          <div className="stats-grid">{stats.map(([value, label]) => <div className="stat" key={label}><strong>{value}</strong><span>{label}</span></div>)}</div><p className="fine-print">* Figures reflect aggregate, anonymised client portfolio data measured over the five years ending June 2026. Market benchmark: combined capital-city dwelling values. Data updated periodically.</p>
-        </div>
-      </section>
+      <NumbersSection />
 
       <section className="approach section-shell" id="approach">
         <div className="section-label">How we work</div>
         <div className="approach-heading"><h2>A considered path<br />to <i>somewhere bigger.</i></h2><p>There is no one-size-fits-all answer. Our job is to make the complex feel clear, then help you act with confidence.</p></div>
-        <div className="principles">{principles.map((item) => <article className="principle" key={item.number}><span className="principle-number">{item.number}</span><h3>{item.title}</h3><p>{item.text}</p><a href="#contact" aria-label={`Learn more about ${item.title}`}><Arrow /></a></article>)}</div>
+        <Principles />
       </section>
 
       <ReviewsCarousel />
 
-      <section className="contact section-shell" id="contact"><div className="contact-panel"><p className="eyebrow light"><span /> No pressure, just a conversation</p><h2>Ready to make<br /><i>your next move?</i></h2><p>Book a free 15-minute discovery call with one of our specialists. We will listen to where you are now and talk through where you want to go.</p><a className="button button-light" href="mailto:info@ripehouseadvisory.com.au">Book your discovery call <Arrow /></a><div className="contact-details"><span>127–131 Macquarie St, Hobart TAS</span><a href="tel:+61361460121">(03) 6146 0121</a><a href="mailto:info@ripehouseadvisory.com.au">info@ripehouseadvisory.com.au</a></div></div></section>
+      <CaseStudyPreview />
 
-      <footer className="site-footer"><a className="brand footer-brand" href="#top"><img className="brand-logo" src="https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png" alt="Ripehouse Advisory" /></a><p>© 2026 Ripehouse Advisory. All rights reserved.</p><div><a href="#">Privacy</a><a href="#">Terms</a><a href="#top">Back to top ↑</a></div></footer>
+      <section className="contact section-shell" id="contact"><div className="contact-panel"><p className="eyebrow light"><span /> No pressure, just a conversation</p><h2>Ready to make<br /><i>your next move?</i></h2><p>Book a free 15-minute discovery call with one of our specialists. We will listen to where you are now and talk through where you want to go.</p><a className="button button-light" href="/discovery-call">Book your discovery call <Arrow /></a><div className="contact-details"><span>127–131 Macquarie St, Hobart TAS</span><a href="tel:+61361460121">(03) 6146 0121</a><a href="mailto:info@ripehouseadvisory.com.au">info@ripehouseadvisory.com.au</a></div></div></section>
+
+      <Footer backHref="#top" backLabel="Back to top ↑" />
     </main>
   );
 }
