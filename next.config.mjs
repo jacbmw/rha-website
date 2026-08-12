@@ -13,7 +13,11 @@ const csp = [
   "style-src 'self' 'unsafe-inline' https://assets.calendly.com",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://assets.calendly.com",
-  "connect-src 'self' https://dashboard.picki.com.au https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://www.facebook.com https://connect.facebook.net https://*.calendly.com",
+  // NOTE: GA4 beacons go to the BARE hosts analytics.google.com and
+  // stats.g.doubleclick.net — CSP wildcards (*.analytics.google.com) do NOT
+  // match the apex domain, which silently blocked every GA4 pageview after
+  // the cutover (fixed 2026-08-13). Keep the bare hosts listed explicitly.
+  "connect-src 'self' https://dashboard.picki.com.au https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://stats.g.doubleclick.net https://*.g.doubleclick.net https://www.google.com https://www.google.com.au https://www.googletagmanager.com https://www.facebook.com https://connect.facebook.net https://*.calendly.com",
   "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com https://calendly.com https://*.calendly.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
