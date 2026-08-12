@@ -35,10 +35,56 @@ const securityHeaders = [
   { key: 'Content-Security-Policy', value: csp },
 ];
 
+// Legacy Webflow-site redirects (audit 2026-08-13). The old site's URL space
+// (520 URLs: 60 static pages + 460 CMS items) 404'd after the cutover.
+// Query strings are preserved automatically by Next.js redirects.
+// NOTE: /lp/* legacy funnels are handled by Amplify custom rules (the /lp/<*>
+// Webflow proxy rule intercepts those before they reach Next).
+const legacyRedirects = [
+  // CMS collections (1:1 where content exists on the new site)
+  { source: '/blog', destination: '/resources/blog', permanent: true },
+  { source: '/blog/:slug', destination: '/resources/blog/:slug', permanent: true },
+  { source: '/podcast', destination: '/resources/blog', permanent: true },
+  { source: '/podcast/:path*', destination: '/resources/blog', permanent: true },
+  { source: '/videos', destination: '/resources/blog', permanent: true },
+  { source: '/videos/:path*', destination: '/resources/blog', permanent: true },
+  { source: '/resources/videos', destination: '/resources/blog', permanent: true },
+  { source: '/events', destination: '/resources/blog', permanent: true },
+  { source: '/events/:path*', destination: '/resources/blog', permanent: true },
+  { source: '/resources/events', destination: '/resources/blog', permanent: true },
+  { source: '/reviews', destination: '/', permanent: true },
+  { source: '/reviews/:path*', destination: '/', permanent: true },
+  { source: '/staff/:path*', destination: '/about/story', permanent: true },
+  { source: '/featured-in/:path*', destination: '/', permanent: true },
+  { source: '/purchases/:path*', destination: '/', permanent: true },
+  // Legal + about
+  { source: '/privacy-policy', destination: '/legal/privacy-policy', permanent: true },
+  { source: '/terms-and-conditions', destination: '/legal/terms-and-conditions', permanent: true },
+  { source: '/team', destination: '/about/story', permanent: true },
+  { source: '/story', destination: '/about/story', permanent: true },
+  { source: '/approach', destination: '/about/approach', permanent: true },
+  { source: '/due-diligence', destination: '/about/approach', permanent: true },
+  { source: '/about/due-diligence', destination: '/about/approach', permanent: true },
+  { source: '/referrals/:path*', destination: '/discovery-call', permanent: true },
+  { source: '/referrals', destination: '/discovery-call', permanent: true },
+  // Old root-level ad landing pages → discovery call
+  { source: '/2025-the-year-you-build-real-wealth', destination: '/discovery-call', permanent: true },
+  { source: '/see-what-10-compound-growth-can-do-for-you', destination: '/discovery-call', permanent: true },
+  { source: '/break-free-from-the-property-investment-plateau', destination: '/discovery-call', permanent: true },
+  { source: '/build-a-portfolio-that-grows-while-you-sleep', destination: '/discovery-call', permanent: true },
+  { source: '/property-investing-simplified', destination: '/discovery-call', permanent: true },
+  { source: '/property-investing-simplified-for-you', destination: '/discovery-call', permanent: true },
+  { source: '/stop-guessing-start-growing', destination: '/discovery-call', permanent: true },
+  { source: '/unlock-generational-wealth', destination: '/discovery-call', permanent: true },
+];
+
 const nextConfig = {
   allowedDevOrigins: ['127.0.0.1', 'localhost'],
   async headers() {
     return [{ source: '/(.*)', headers: securityHeaders }];
+  },
+  async redirects() {
+    return legacyRedirects;
   },
 };
 
