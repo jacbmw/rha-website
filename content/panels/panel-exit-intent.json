@@ -1,0 +1,11 @@
+{
+  "pageKey": "panel-exit-intent",
+  "props": {
+    "eyebrow": "Before you go",
+    "heading": "The market moves weekly.\n*Most investors find out monthly.*",
+    "text": "Join thousands of Australian investors getting our research-first Market Intel briefing — data, suburbs and strategy, no fluff.",
+    "cta": "Join free",
+    "placeholder": "Your email address",
+    "dismiss": "No thanks, I'll keep guessing"
+  }
+}
