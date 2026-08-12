@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import HeroArtB from './components/HeroArtB';
 import MobileNav from './components/MobileNav';
 import SuburbScoreWidget from './components/SuburbScoreWidget';
+import { resolvePanel } from '../lib/panelVariants';
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
 
@@ -21,6 +22,7 @@ export default async function Home({ searchParams }) {
   // Hero illustration B is preview-only for now: /?hero=b. A stays the default.
   const params = await searchParams;
   const heroB = params?.hero === 'b';
+  const suburbPanel = await resolvePanel('panel-suburb-score');
 
   return (
     <main>
@@ -80,7 +82,7 @@ export default async function Home({ searchParams }) {
       <NumbersSection />
 
       <section className="suburb-widget-home section-shell">
-        <SuburbScoreWidget variant="home" />
+        <SuburbScoreWidget variant={suburbPanel} placement="home" />
       </section>
 
       <section className="approach section-shell" id="approach">

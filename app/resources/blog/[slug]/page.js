@@ -52,9 +52,10 @@ export default async function BlogArticle({ params }) {
     }
   } catch { /* related content is optional */ }
 
-  const [footerPanel, ebookPanel] = await Promise.all([
+  const [footerPanel, ebookPanel, suburbPanel] = await Promise.all([
     resolvePanel('panel-article-footer'),
     resolvePanel('panel-article-ebook'),
+    resolvePanel('panel-suburb-score'),
   ]);
 
   return (
@@ -70,7 +71,7 @@ export default async function BlogArticle({ params }) {
         {/* Suburb widget owns the mid-article slot; the dark footer panel is
             the sole end-of-article newsletter CTA (inline panel retired —
             it doubled up with the footer panel). */}
-        <SuburbScoreWidget variant="article" />
+        <SuburbScoreWidget variant={suburbPanel} placement="article" />
 
         <div className="article-body" dangerouslySetInnerHTML={{ __html: post.body }} />
 

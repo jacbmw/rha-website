@@ -6,12 +6,25 @@ import { useRouter } from 'next/navigation';
 import { getVisitorId, getAttribution } from '../../lib/visitor';
 import { irIdentify } from '../../lib/ir';
 import { storePanelReferral } from '../../lib/abTracking';
+import usePanelTracking from './panels/usePanelTracking';
+import { rich } from './page-sections/rich';
+import defaultVariant from '../../content/panels/panel-suburb-score.json';
+
+const PANEL_KEY = 'panel-suburb-score';
 
 // "Your Suburb, Scored" entry widget — injected mid-article on blog posts and
 // on the homepage after the proof section. Autosuggest accepts suburb names
 // AND postcodes; a no-results state captures the lead anyway.
-export default function SuburbScoreWidget({ variant = 'panel' }) {
+//
+// Copy is now managed by the panel variant system (rha_page_variants,
+// panel-suburb-score) and served from the dashboard; the bundled JSON below
+// is the permanent fallback.
+export default function SuburbScoreWidget({ variant, placement = 'panel' }) {
   const router = useRouter();
+  const { id, props: variantProps, preview } = variant || {};
+  const props = { ...defaultVariant.props, ...variantProps };
+  const { trackClick, trackConversion } = usePanelTracking(PANEL_KEY, id, preview);
+
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
   const [open, setOpen] = useState(false);
@@ -51,7 +64,8 @@ export default function SuburbScoreWidget({ variant = 'panel' }) {
 
   const select = (item) => {
     setOpen(false);
-    storePanelReferral('panel-suburb-widget', variant);
+    trackClick();
+    storePanelReferral(PANEL_KEY, id);
     router.push(`/suburbs/${item.slug}`);
   };
 
@@ -68,6 +82,7 @@ export default function SuburbScoreWidget({ variant = 'panel' }) {
     if (missStatus === 'sending') return;
     const data = Object.fromEntries(new FormData(event.currentTarget));
     if (data.company) return; // honeypot
+    trackClick();
     setMissStatus('sending');
     try {
       const response = await fetch('/api/newsletter', {
@@ -84,23 +99,26 @@ export default function SuburbScoreWidget({ variant = 'panel' }) {
       });
       if (!response.ok) throw new Error('failed');
       irIdentify({ email: data.email, formSource: 'website_suburb-score-miss_2026' });
+      trackConversion('suburb_miss');
       setMissStatus('done');
     } catch {
       setMissStatus('idle');
     }
   };
 
+  const showArt = props.showSampleScorecard && (placement === 'home' || placement === 'article');
+
   return (
-    <aside className={`suburb-widget suburb-widget-${variant}`} ref={boxRef}>
+    <aside className={`suburb-widget suburb-widget-${placement}`} ref={boxRef}>
       <div className="suburb-widget-main">
-      <p className="suburb-widget-label">Your suburb, scored</p>
-      <h3 className="suburb-widget-heading">What does the data say about <i>your</i> suburb?</h3>
-      <p className="suburb-widget-copy">We score every suburb in Australia across 27 indicators — updated monthly. See yours.</p>
+      <p className="suburb-widget-label">{props.eyebrow}</p>
+      <h3 className="suburb-widget-heading">{rich(props.heading)}</h3>
+      <p className="suburb-widget-copy">{props.copy}</p>
       <div className="suburb-widget-search" role="combobox" aria-expanded={open} aria-haspopup="listbox" aria-controls="suburb-widget-results">
         <input
           type="text"
           value={query}
-          placeholder="Start typing a suburb or postcode…"
+          placeholder={props.placeholder}
           aria-label="Search for a suburb"
           autoComplete="off"
           onChange={(event) => { setQuery(event.target.value); runSearch(event.target.value); }}
@@ -119,14 +137,14 @@ export default function SuburbScoreWidget({ variant = 'panel' }) {
             {noResults && (
               <li className="suburb-widget-miss">
                 {missStatus === 'done' ? (
-                  <p>Done — we&apos;ll send that scorecard as soon as it&apos;s ready.</p>
+                  <p>{props.notifyDone}</p>
                 ) : (
                   <>
-                    <p>We may not have enough data for that suburb yet — leave your email and we&apos;ll send its scorecard when it&apos;s ready.</p>
+                    <p>{props.noResultsHeading}</p>
                     <form className="signup-form" onSubmit={onMissSubmit}>
                       <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="suburb-honeypot" />
-                      <input type="email" name="email" required placeholder="Your email address" />
-                      <button type="submit" disabled={missStatus === 'sending'}>{missStatus === 'sending' ? '…' : 'Notify me'}</button>
+                      <input type="email" name="email" required placeholder={props.emailPlaceholder} />
+                      <button type="submit" disabled={missStatus === 'sending'}>{missStatus === 'sending' ? props.notifySending : props.notifyButton}</button>
                     </form>
                   </>
                 )}
@@ -135,10 +153,10 @@ export default function SuburbScoreWidget({ variant = 'panel' }) {
           </ul>
         )}
       </div>
-      <p className="suburb-widget-fine">Free · no signup to see the snapshot</p>
-      <noscript><p className="suburb-widget-fine"><Link href="/suburbs">Browse every suburb we score →</Link></p></noscript>
+      <p className="suburb-widget-fine">{props.finePrint}</p>
+      <noscript><p className="suburb-widget-fine"><Link href="/suburbs">{props.browseFallback}</Link></p></noscript>
       </div>
-      {(variant === 'home' || variant === 'article') && (
+      {showArt && (
         <div className="suburb-widget-art" aria-hidden="true">
           <svg viewBox="0 0 340 240" role="presentation">
             <rect x="0" y="0" width="340" height="240" rx="2" fill="#141a32" />

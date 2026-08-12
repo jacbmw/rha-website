@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Footer from '../components/Footer';
 import MobileNav from '../components/MobileNav';
 import SuburbScoreWidget from '../components/SuburbScoreWidget';
+import { resolvePanel } from '../../lib/panelVariants';
 import { pageMetadata } from '../../lib/seo';
 
 export const revalidate = 86400;
@@ -32,7 +33,9 @@ const navLinks = [
   { label: 'Contact', href: '/#contact' },
 ];
 
-export default function SuburbsIndexPage() {
+export default async function SuburbsIndexPage() {
+  const suburbPanel = await resolvePanel('panel-suburb-score');
+
   return (
     <main className="suburb-index-page">
       <header className="site-header">
@@ -46,7 +49,7 @@ export default function SuburbsIndexPage() {
         <p className="eyebrow"><span /> Your suburb, scored</p>
         <h1>Every suburb in Australia, <i>measured.</i></h1>
         <p className="suburb-meta">15,000 suburbs scored across 27 indicators — the same engine behind $2B+ of client purchases. Updated monthly. Free to check.</p>
-        <SuburbScoreWidget variant="index" />
+        <SuburbScoreWidget variant={suburbPanel} placement="index" />
       </section>
 
       <section className="suburb-index-states section-shell">

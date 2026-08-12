@@ -1,0 +1,17 @@
+{
+  "pageKey": "panel-suburb-score",
+  "props": {
+    "eyebrow": "Your suburb, scored",
+    "heading": "What does the data say about *your* suburb?",
+    "copy": "We score every suburb in Australia across 27 indicators — updated monthly. See yours.",
+    "placeholder": "Start typing a suburb or postcode…",
+    "finePrint": "Free · no signup to see the snapshot",
+    "browseFallback": "Browse every suburb we score →",
+    "noResultsHeading": "We may not have enough data for that suburb yet — leave your email and we'll send its scorecard when it's ready.",
+    "emailPlaceholder": "Your email address",
+    "notifyButton": "Notify me",
+    "notifySending": "…",
+    "notifyDone": "Done — we'll send that scorecard as soon as it's ready.",
+    "showSampleScorecard": true
+  }
+}
