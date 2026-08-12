@@ -24,12 +24,19 @@ export async function POST(request) {
         page_url: attribution?.pageUrl || undefined,
         ref: attribution?.referrer || undefined,
         gclid: attribution?.gclid || undefined,
-        utm_source: attribution?.utmSource || undefined,
-        utm_medium: attribution?.utmMedium || undefined,
-        utm_campaign: attribution?.utmCampaign || undefined,
-        utm_content: attribution?.utmContent || undefined,
-        utm_term: attribution?.utmTerm || undefined,
-        utm_id: attribution?.utmId || undefined,
+        fbclid: attribution?.fbclid || undefined,
+        // The dashboard's createPublicLead maps the camelCase utm* fields onto
+        // the rha_leads utm_* columns — these are what reporting reads.
+        utmSource: attribution?.utmSource || undefined,
+        utmMedium: attribution?.utmMedium || undefined,
+        utmCampaign: attribution?.utmCampaign || undefined,
+        utmContent: attribution?.utmContent || undefined,
+        utmTerm: attribution?.utmTerm || undefined,
+        utmId: attribution?.utmId || undefined,
+        // First/last-touch detail for the contact_first_touch_utm_* and
+        // last_touch_utm_* lead columns.
+        firstTouch: attribution?.firstTouch || undefined,
+        lastTouch: attribution?.lastTouch || undefined,
       }),
     });
     // A duplicate email (409) still means the reader is subscribed — treat as success.
