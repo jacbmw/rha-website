@@ -4,7 +4,6 @@ import Footer from '../../../components/Footer';
 import MobileNav from '../../../components/MobileNav';
 import SuburbExperience from './SuburbExperience';
 import { findSuburbBySlug, getSuburbSnapshot } from '../../../../lib/suburbs';
-import { resolvePanel } from '../../../../lib/panelVariants';
 import { pageMetadata, SITE_URL } from '../../../../lib/seo';
 
 // One template, ~15,000 pages. ISR with 24h revalidate — the underlying data
@@ -59,7 +58,6 @@ export default async function SuburbPage({ params }) {
   if (!data) notFound();
   const { snapshot } = data;
   const { stats } = snapshot;
-  const scorecardPanel = await resolvePanel('panel-suburb-scorecard').catch(() => ({ id: null, props: {}, preview: false }));
 
   return (
     <main className="suburb-page">
@@ -141,7 +139,7 @@ export default async function SuburbPage({ params }) {
       </section>
 
       {/* ── Layers 1 + 2 (client) ───────────────────────────────────────── */}
-      <SuburbExperience snapshot={snapshot} scorecardPanel={scorecardPanel} />
+      <SuburbExperience snapshot={snapshot} />
 
       <section className="suburb-footnote section-shell">
         <p>

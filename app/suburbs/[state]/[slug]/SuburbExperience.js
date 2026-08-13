@@ -8,6 +8,8 @@ import usePanelTracking from '../../../components/panels/usePanelTracking';
 import { getVisitorId, getAttribution } from '../../../../lib/visitor';
 import { irIdentify } from '../../../../lib/ir';
 import { creditPanelReferral } from '../../../../lib/abTracking';
+import { resolvePanelClient } from '../../../../lib/panelClient';
+import scorecardPanelDefault from '../../../../content/panels/panel-suburb-scorecard.json';
 
 const QUALIFIERS = [
   { value: 'researching', label: 'Just researching' },
@@ -35,7 +37,7 @@ function layer2Pitch(qualifier, name) {
   }
 }
 
-export default function SuburbExperience({ snapshot, scorecardPanel }) {
+export default function SuburbExperience({ snapshot }) {
   const [stage, setStage] = useState('locked'); // locked | unlocked
   const [scorecard, setScorecard] = useState(null);
   const [firstName, setFirstName] = useState('');
@@ -46,7 +48,19 @@ export default function SuburbExperience({ snapshot, scorecardPanel }) {
   const [phoneStage, setPhoneStage] = useState('idle'); // idle | sending | booked-form
   const [phoneError, setPhoneError] = useState('');
   const [exitOpen, setExitOpen] = useState(false);
+  // Panel variant resolves client-side (the suburb page is ISR — cached and
+  // shared across visitors — so server-side cookies() would break the static
+  // render). Bundled JSON renders immediately; the DB variant upgrades it.
+  const [scorecardPanel, setScorecardPanel] = useState({ id: null, props: scorecardPanelDefault.props, preview: false });
   const unlockedRef = useRef(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    resolvePanelClient('panel-suburb-scorecard', scorecardPanelDefault.props)
+      .then((resolved) => { if (!cancelled) setScorecardPanel(resolved); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   // Tracking for the gated scorecard panel itself (panel-suburb-scorecard):
   // display fires once per suburb-page view (this component mounts on every
