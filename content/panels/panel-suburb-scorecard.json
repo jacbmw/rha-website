@@ -1,0 +1,14 @@
+{
+  "pageKey": "panel-suburb-scorecard",
+  "props": {
+    "heading": "See the full scorecard for {name}",
+    "copy": "The 18-month score history, what's driving it, and the price, rent and market-speed trends behind it — free, sent to your inbox too.",
+    "firstNamePlaceholder": "First name",
+    "emailPlaceholder": "Your email address",
+    "qualifierPlaceholder": "Where are you in your search? (optional)",
+    "scoreWatchLabel": "Email me when {name}'s score changes — one short email a month, unsubscribe anytime.",
+    "buttonLabel": "Unlock the scorecard",
+    "buttonSendingLabel": "Unlocking…",
+    "finePrint": "Free. No spam. The snapshot above stays free either way."
+  }
+}

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import LineChart from './SuburbCharts';
 import SuburbCalendly from './SuburbCalendly';
+import SuburbScorecardPanel from '../../../components/panels/SuburbScorecardPanel';
 import { getVisitorId, getAttribution } from '../../../../lib/visitor';
 import { irIdentify } from '../../../../lib/ir';
 import { creditPanelReferral } from '../../../../lib/abTracking';
@@ -33,7 +34,7 @@ function layer2Pitch(qualifier, name) {
   }
 }
 
-export default function SuburbExperience({ snapshot }) {
+export default function SuburbExperience({ snapshot, scorecardPanel }) {
   const [stage, setStage] = useState('locked'); // locked | unlocked
   const [scorecard, setScorecard] = useState(null);
   const [firstName, setFirstName] = useState('');
@@ -201,28 +202,14 @@ export default function SuburbExperience({ snapshot }) {
               </div>
             </div>
 
-            <div className="suburb-gate">
-              <p className="suburb-gate-heading">See the full scorecard for {snapshot.name}</p>
-              <p className="suburb-gate-copy">The 18-month score history, what&apos;s driving it, and the price, rent and market-speed trends behind it — free, sent to your inbox too.</p>
-              <form className="suburb-gate-form" onSubmit={onGateSubmit}>
-                <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="suburb-honeypot" />
-                <div className="suburb-gate-fields">
-                  <input type="text" name="firstName" placeholder="First name" autoComplete="given-name" />
-                  <input type="email" name="email" required placeholder="Your email address" autoComplete="email" />
-                </div>
-                <select name="qualifier" defaultValue="" aria-label="Where are you in your search?">
-                  <option value="" disabled>Where are you in your search? (optional)</option>
-                  {QUALIFIERS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
-                </select>
-                <label className="suburb-gate-consent">
-                  <input type="checkbox" name="scoreWatch" defaultChecked />
-                  <span>Email me when {snapshot.name}&apos;s score changes — one short email a month, unsubscribe anytime.</span>
-                </label>
-                <button type="submit" disabled={formStatus === 'sending'}>{formStatus === 'sending' ? 'Unlocking…' : 'Unlock the scorecard'}</button>
-                {formError && <p className="suburb-form-error" role="alert">{formError}</p>}
-                <p className="suburb-gate-fine">Free. No spam. The snapshot above stays free either way.</p>
-              </form>
-            </div>
+            <SuburbScorecardPanel
+              variant={scorecardPanel}
+              snapshot={snapshot}
+              qualifiers={QUALIFIERS}
+              onSubmit={onGateSubmit}
+              formStatus={formStatus}
+              formError={formError}
+            />
           </div>
         ) : (
           <div className="suburb-unlocked">
