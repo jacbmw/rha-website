@@ -690,3 +690,77 @@
 .approach-chart-summary span{color:var(--muted);display:block;font-size:9px;line-height:1.35;margin-top:7px;text-transform:uppercase}
 @media(max-width:1000px){.approach-chart-summary{grid-template-columns:repeat(3,minmax(0,1fr))}.approach-chart-summary>div:nth-child(3){border-right:0}.approach-chart-summary>div:nth-child(n+4){border-top:1px solid var(--line);padding-top:16px}}
 @media(max-width:600px){.approach-chart-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.approach-chart-summary>div,.approach-chart-summary>div:nth-child(3){border-right:1px solid var(--line);padding:12px 10px 0 0}.approach-chart-summary>div:nth-child(2n){border-right:0;padding-left:10px;padding-right:0}.approach-chart-summary>div:nth-child(n+3){border-top:1px solid var(--line)}}
+
+/* ── Facebook Group community page ───────────────────────── */
+.facebook-group-page{background:var(--paper)}
+.facebook-hero{padding-bottom:70px;padding-top:50px;text-align:center}
+.facebook-hero .eyebrow{justify-content:center}
+.facebook-hero h1{font-family:Georgia,serif;font-size:clamp(42px,5.5vw,76px);font-weight:400;letter-spacing:-.06em;line-height:.95;margin:0 auto 30px;max-width:900px}
+.facebook-hero h1 i{font-style:italic}
+.facebook-lede{color:var(--muted);font-size:18px;line-height:1.6;margin:0 auto 38px;max-width:620px}
+.facebook-audience{background:var(--cream);padding-bottom:110px;padding-top:100px}
+.facebook-audience .section-label{margin-bottom:55px}
+.facebook-content{max-width:720px}
+.facebook-content h2{font-family:Georgia,serif;font-size:clamp(36px,4.5vw,56px);font-weight:400;letter-spacing:-.05em;line-height:1;margin:0 0 24px}
+.facebook-content h2 i{font-style:italic}
+.facebook-intro{color:var(--muted);font-size:17px;line-height:1.65;margin:0 0 34px}
+.facebook-list{list-style:none;margin:0;padding:0}
+.facebook-list li{align-items:baseline;display:flex;gap:16px;padding:14px 0}
+.facebook-list li+li{border-top:1px solid var(--line)}
+.facebook-tick{background:rgba(199,152,16,.16);border-radius:50%;color:#8a6a0c;flex-shrink:0;font-size:12px;font-weight:700;height:24px;line-height:24px;text-align:center;width:24px}
+.facebook-list li>span:last-child{font-size:16px;line-height:1.5}
+.facebook-disclaimer{color:var(--muted);font-size:14px;font-style:italic;margin:34px 0 0}
+.facebook-features{padding-bottom:120px;padding-top:100px}
+.facebook-features-grid{display:grid;gap:26px;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:55px}
+.facebook-feature-card{background:#fff;border:1px solid var(--line);padding:34px 30px}
+.facebook-feature-card h3{font-family:Georgia,serif;font-size:22px;font-weight:400;letter-spacing:-.03em;line-height:1.1;margin:0 0 12px}
+.facebook-feature-card p{color:var(--muted);font-size:14px;line-height:1.55;margin:0}
+.facebook-cta{background:var(--green);color:#fff;padding-bottom:100px;padding-top:100px;text-align:center}
+.facebook-cta h2{font-family:Georgia,serif;font-size:clamp(38px,4.8vw,62px);font-weight:400;letter-spacing:-.055em;line-height:.98;margin:0 auto 20px;max-width:700px}
+.facebook-cta h2 i{font-style:italic}
+.facebook-cta>p{color:rgba(255,255,255,.7);font-size:17px;line-height:1.6;margin:0 auto 34px;max-width:520px}
+.facebook-cta .button-primary{background:var(--lime);color:var(--ink)}
+@media(max-width:800px){.facebook-hero{padding-bottom:55px;padding-top:40px}.facebook-audience,.facebook-features{padding-bottom:80px;padding-top:75px}.facebook-features-grid{grid-template-columns:1fr}.facebook-cta{padding-bottom:75px;padding-top:75px}}
+
+/* ── Bell Family landing page ────────────────────────────── */
+.bell-family-page{background:var(--paper)}
+.bell-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);min-height:650px;padding-bottom:90px;padding-top:60px}
+.bell-hero-copy{align-self:center;padding-right:60px}
+.bell-hero-copy .eyebrow{margin-bottom:24px}
+.bell-hero h1{font-family:Georgia,serif;font-size:clamp(44px,5.5vw,72px);font-weight:400;letter-spacing:-.06em;line-height:.95;margin:0 0 26px}
+.bell-hero h1 i{font-style:italic}
+.bell-lede{color:var(--muted);font-size:18px;line-height:1.6;margin:0 0 18px;max-width:520px}
+.bell-intro{color:var(--muted);font-size:15px;line-height:1.6;margin:0 0 32px;max-width:520px}
+.bell-hero-actions{display:flex;gap:18px}
+.bell-hero-media{align-self:stretch;background:var(--cream);position:relative}
+.bell-hero-media img{height:100%;object-fit:cover;object-position:center top;width:100%}
+.bell-story{background:var(--cream);padding-bottom:110px;padding-top:100px}
+.bell-story .section-label{margin-bottom:55px}
+.bell-story-grid{display:grid;gap:70px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.bell-story h2{font-family:Georgia,serif;font-size:clamp(32px,4vw,48px);font-weight:400;letter-spacing:-.05em;line-height:1;margin:0}
+.bell-story h2 i{font-style:italic}
+.bell-story-body{color:var(--muted);font-size:16px;line-height:1.65}
+.bell-story-body p{margin:0 0 18px}
+.bell-story-body ul{list-style:none;margin:24px 0;padding:0}
+.bell-story-body li{align-items:baseline;display:flex;gap:12px;padding:10px 0}
+.bell-story-body li::before{background:var(--lime);border-radius:50%;content:"";flex-shrink:0;height:8px;width:8px}
+.bell-values{padding-bottom:120px;padding-top:110px}
+.bell-values .section-label{margin-bottom:55px}
+.bell-values-grid{display:grid;gap:24px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.bell-value-card{border:1px solid var(--line);padding:38px 34px}
+.bell-value-card h3{font-family:Georgia,serif;font-size:22px;font-weight:400;letter-spacing:-.03em;line-height:1.1;margin:0 0 12px}
+.bell-value-card p{color:var(--muted);font-size:14px;line-height:1.55;margin:0}
+.bell-reviews{padding-bottom:120px;padding-top:20px}
+.bell-reviews .section-label{margin-bottom:45px}
+.bell-reviews-grid{display:grid;gap:22px;grid-template-columns:repeat(3,minmax(0,1fr))}
+.bell-review-card{background:var(--cream);border:0;display:flex;flex-direction:column;margin:0;padding:28px 26px 24px}
+.bell-review-card p{color:var(--ink);font-family:Georgia,serif;font-size:17px;font-style:italic;line-height:1.35;margin:0 0 20px}
+.bell-review-card footer{margin-top:auto}
+.bell-review-card strong{font-size:13px}
+.bell-reviews-note{color:var(--muted);font-size:14px;margin:36px 0 0;text-align:center}
+.bell-cta{background:var(--green);color:#fff;padding-bottom:100px;padding-top:100px;text-align:center}
+.bell-cta h2{font-family:Georgia,serif;font-size:clamp(36px,4.6vw,60px);font-weight:400;letter-spacing:-.055em;line-height:1;margin:0 auto 20px;max-width:720px}
+.bell-cta h2 i{font-style:italic}
+.bell-cta>p{color:rgba(255,255,255,.7);font-size:17px;line-height:1.6;margin:0 auto 34px;max-width:560px}
+.bell-cta .button-primary{background:var(--lime);color:var(--ink)}
+@media(max-width:900px){.bell-hero{grid-template-columns:1fr;min-height:auto;padding-bottom:70px;padding-top:45px}.bell-hero-copy{padding:0 0 45px}.bell-hero-media{min-height:380px}.bell-story-grid{grid-template-columns:1fr}.bell-story h2{margin-bottom:25px}.bell-values-grid,.bell-reviews-grid{grid-template-columns:1fr}.bell-reviews-grid{gap:18px}.bell-cta{padding-bottom:75px;padding-top:75px}}

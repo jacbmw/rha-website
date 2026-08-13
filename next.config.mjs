@@ -76,6 +76,10 @@ const legacyRedirects = [
   { source: '/property-investing-simplified-for-you', destination: '/discovery-call', permanent: true },
   { source: '/stop-guessing-start-growing', destination: '/discovery-call', permanent: true },
   { source: '/unlock-generational-wealth', destination: '/discovery-call', permanent: true },
+
+  // Bell family campaign pages
+  { source: '/lp/25/11/bell-family/freedom', destination: '/bell-family', permanent: true },
+  { source: '/lp/25/11/bell-family/book-in', destination: '/bell-family', permanent: true },
 ];
 
 const nextConfig = {

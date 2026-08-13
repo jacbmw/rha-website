@@ -11,7 +11,6 @@ import CaseStudyPreview from '../CaseStudyPreview';
 import EbookLeadForm from '../../five-markets/EbookLeadForm';
 import { rich } from './rich';
 
-const jacobImage = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67907563bbfb3b1b418dc748_ripehouse-advisory-story-jacob-field.webp';
 const ebookCoverUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/6a716917e77a27b1080ee7ac_rha-five-markets-ebook-cover.png';
 
 const featuredLogos = [
@@ -116,12 +115,14 @@ function FeaturedLogos({ label }) {
   );
 }
 
+const mylesImage = 'https://cdn.prod.website-files.com/6785caaabc0f3871a91c9df0/6786e65a0c1f20a821b785c4_myles_white.png';
+
 function Founder({ eyebrow, heading, role, paragraphs = [], image, imageAlt }) {
   return (
     <section className="book-founder">
       <div className="section-shell book-founder-grid">
         <div className="book-founder-photo">
-          <img src={image || jacobImage} alt={imageAlt || 'Jacob Field, founder and CEO of Ripehouse Advisory'} loading="lazy" />
+          <img src={image || mylesImage} alt={imageAlt || 'Myles White, Strategic Wealth Consultant at Ripehouse Advisory'} loading="lazy" />
         </div>
         <div className="book-founder-copy">
           <p className="eyebrow light"><span /> {eyebrow}</p>
