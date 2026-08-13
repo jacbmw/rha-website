@@ -66,6 +66,8 @@ const legacyRedirects = [
   { source: '/due-diligence', destination: '/about/approach', permanent: true },
   { source: '/about/due-diligence', destination: '/about/approach', permanent: true },
   { source: '/referrals/:path*', destination: '/discovery-call', permanent: true },
+  { source: '/book/session', destination: '/discovery-call', permanent: true },
+  { source: '/resources/mastermind-questions', destination: '/discovery-call', permanent: true },
   { source: '/referrals', destination: '/discovery-call', permanent: true },
   // Old root-level ad landing pages → discovery call
   { source: '/2025-the-year-you-build-real-wealth', destination: '/discovery-call', permanent: true },
