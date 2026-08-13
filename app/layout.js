@@ -5,6 +5,9 @@ import { pageMetadata, SITE_URL } from '../lib/seo';
 
 export const metadata = {
   metadataBase: new URL(SITE_URL),
+  icons: {
+    icon: '/favicon.ico',
+  },
   ...pageMetadata({
     title: 'Ripehouse Advisory | Property investment, done differently',
     description: 'Build a property portfolio with a clear strategy, independent advice and a team invested in your long-term outcome.',

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import LineChart from './SuburbCharts';
 import SuburbCalendly from './SuburbCalendly';
 import SuburbScorecardPanel from '../../../components/panels/SuburbScorecardPanel';
+import usePanelTracking from '../../../components/panels/usePanelTracking';
 import { getVisitorId, getAttribution } from '../../../../lib/visitor';
 import { irIdentify } from '../../../../lib/ir';
 import { creditPanelReferral } from '../../../../lib/abTracking';
@@ -46,6 +47,17 @@ export default function SuburbExperience({ snapshot, scorecardPanel }) {
   const [phoneError, setPhoneError] = useState('');
   const [exitOpen, setExitOpen] = useState(false);
   const unlockedRef = useRef(false);
+
+  // Tracking for the gated scorecard panel itself (panel-suburb-scorecard):
+  // display fires once per suburb-page view (this component mounts on every
+  // load, same as the other panels); click = a gate field is focused;
+  // completion = the gate form (not the exit-intent recapture) unlocks the
+  // scorecard.
+  const { trackClick: trackGateClick, trackConversion: trackGateConversion } = usePanelTracking(
+    'panel-suburb-scorecard',
+    scorecardPanel?.id,
+    scorecardPanel?.preview
+  );
 
   const applyUnlock = useCallback((payload, isReturning) => {
     unlockedRef.current = true;
@@ -99,7 +111,7 @@ export default function SuburbExperience({ snapshot, scorecardPanel }) {
     };
   }, []);
 
-  const unlock = async ({ email, name, qualifierValue, scoreWatch }) => {
+  const unlock = async ({ email, name, qualifierValue, scoreWatch, origin = 'gate' }) => {
     setFormStatus('sending');
     setFormError('');
     try {
@@ -122,6 +134,9 @@ export default function SuburbExperience({ snapshot, scorecardPanel }) {
       window.gtag?.('event', 'generate_lead', { event_category: 'conversion', event_label: 'suburb-scorecard' });
       window.gtag?.('event', 'scorecard_unlock', { event_category: 'suburb_widget', event_label: snapshot.slug });
       creditPanelReferral('scorecard_unlock');
+      // Only the gate panel itself (not the exit-intent recapture, which is
+      // fixed copy outside the A/B system) credits panel-suburb-scorecard.
+      if (origin === 'gate') trackGateConversion('scorecard_unlock');
       if (qualifierValue) setQualifier(qualifierValue);
       setExitOpen(false);
       setFormStatus('idle');
@@ -138,7 +153,7 @@ export default function SuburbExperience({ snapshot, scorecardPanel }) {
     if (formStatus === 'sending') return;
     const data = Object.fromEntries(new FormData(event.currentTarget));
     if (data.company) return; // honeypot
-    await unlock({ email: data.email, name: data.firstName, qualifierValue: data.qualifier, scoreWatch: data.scoreWatch === 'on' }).catch(() => {});
+    await unlock({ email: data.email, name: data.firstName, qualifierValue: data.qualifier, scoreWatch: data.scoreWatch === 'on', origin: 'gate' }).catch(() => {});
   };
 
   const onExitSubmit = async (event) => {
@@ -146,7 +161,7 @@ export default function SuburbExperience({ snapshot, scorecardPanel }) {
     if (formStatus === 'sending') return;
     const data = Object.fromEntries(new FormData(event.currentTarget));
     if (data.company) return;
-    await unlock({ email: data.email, scoreWatch: true }).catch(() => {});
+    await unlock({ email: data.email, scoreWatch: true, origin: 'exit' }).catch(() => {});
   };
 
   const onPhoneSubmit = async (event) => {
@@ -207,6 +222,7 @@ export default function SuburbExperience({ snapshot, scorecardPanel }) {
               snapshot={snapshot}
               qualifiers={QUALIFIERS}
               onSubmit={onGateSubmit}
+              onFieldFocus={trackGateClick}
               formStatus={formStatus}
               formError={formError}
             />

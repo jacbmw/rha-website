@@ -64,7 +64,7 @@ export default function SuburbScoreWidget({ variant, placement = 'panel' }) {
 
   const select = (item) => {
     setOpen(false);
-    trackClick();
+    trackConversion('suburb_selected');
     storePanelReferral(PANEL_KEY, id);
     router.push(`/suburbs/${item.slug}`);
   };
@@ -82,7 +82,6 @@ export default function SuburbScoreWidget({ variant, placement = 'panel' }) {
     if (missStatus === 'sending') return;
     const data = Object.fromEntries(new FormData(event.currentTarget));
     if (data.company) return; // honeypot
-    trackClick();
     setMissStatus('sending');
     try {
       const response = await fetch('/api/newsletter', {
@@ -123,7 +122,7 @@ export default function SuburbScoreWidget({ variant, placement = 'panel' }) {
           autoComplete="off"
           onChange={(event) => { setQuery(event.target.value); runSearch(event.target.value); }}
           onKeyDown={onKeyDown}
-          onFocus={() => { if (results.length || noResults) setOpen(true); }}
+          onFocus={() => { trackClick(); if (results.length || noResults) setOpen(true); }}
         />
         {open && (
           <ul className="suburb-widget-results" id="suburb-widget-results" role="listbox">

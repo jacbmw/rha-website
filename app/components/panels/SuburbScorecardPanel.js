@@ -1,6 +1,6 @@
 'use client';
 
-export default function SuburbScorecardPanel({ variant, snapshot, qualifiers, onSubmit, formStatus, formError }) {
+export default function SuburbScorecardPanel({ variant, snapshot, qualifiers, onSubmit, onFieldFocus, formStatus, formError }) {
   const { props } = variant;
   const interpolate = (value) => String(value || '').replace(/\{name\}/g, snapshot.name);
 
@@ -11,8 +11,8 @@ export default function SuburbScorecardPanel({ variant, snapshot, qualifiers, on
       <form className="suburb-gate-form" onSubmit={onSubmit}>
         <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="suburb-honeypot" />
         <div className="suburb-gate-fields">
-          <input type="text" name="firstName" placeholder={props.firstNamePlaceholder} autoComplete="given-name" />
-          <input type="email" name="email" required placeholder={props.emailPlaceholder} autoComplete="email" />
+          <input type="text" name="firstName" placeholder={props.firstNamePlaceholder} autoComplete="given-name" onFocus={onFieldFocus} />
+          <input type="email" name="email" required placeholder={props.emailPlaceholder} autoComplete="email" onFocus={onFieldFocus} />
         </div>
         <select name="qualifier" defaultValue="" aria-label={props.qualifierPlaceholder}>
           <option value="" disabled>{props.qualifierPlaceholder}</option>
