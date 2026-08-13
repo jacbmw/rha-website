@@ -17,7 +17,10 @@ export async function GET(request) {
       { headers: { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=86400' } }
     );
   } catch (error) {
-    console.error('Suburb search failed:', error.message);
-    return NextResponse.json({ results: [] }, { status: 200 });
+    console.error('Suburb search failed for query "%s":', q, error.message);
+    return NextResponse.json(
+      { message: 'Temporarily unavailable' },
+      { status: 503, headers: { 'Cache-Control': 'no-store' } }
+    );
   }
 }
