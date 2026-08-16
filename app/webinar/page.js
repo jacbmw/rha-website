@@ -14,12 +14,20 @@ export const metadata = pageMetadata({
 });
 
 const modules = [
-  { k: 'Market', copy: 'How we narrow thousands of Australian property markets down to the small group that actually deserves further investigation.' },
-  { k: 'Timing', copy: 'Why the market that performed strongly yesterday isn\u2019t necessarily the market you should buy in tomorrow.' },
-  { k: 'Property', copy: 'What separates an attractive house from an attractive investment \u2014 and why the two are so often confused.' },
-  { k: 'Rejection', copy: 'Why one of the most important parts of our process is saying no \u2014 and what a disciplined \u201cno\u201d looks like in practice.' },
-  { k: 'Due diligence', copy: 'The checks we perform before we\u2019re prepared to recommend proceeding on any property, anywhere.' },
-  { k: 'Portfolio fit', copy: 'Why the \u201cbest property\u201d is meaningless if it doesn\u2019t fit the investor buying it \u2014 goals, capacity, stage and risk.' },
+  { k: 'Market', copy: 'Almost every market you\u2019re watching doesn\u2019t deserve your money \u2014 and we can prove it in minutes, not months.' },
+  { k: 'Timing', copy: 'Yesterday\u2019s star performer is often tomorrow\u2019s regret. When does \u201cproven growth\u201d quietly become a warning sign?' },
+  { k: 'Property', copy: 'An attractive house and an attractive investment are rarely the same thing. Confusing them is a six-figure mistake.' },
+  { k: 'Rejection', copy: 'The most profitable word in property is \u201cno\u201d. What does a disciplined no look like when a deal is 90% right?' },
+  { k: 'Due diligence', copy: 'The checks that kill a \u201cperfect\u201d property \u2014 and why most buyers never run them until it\u2019s too late.' },
+  { k: 'Portfolio fit', copy: 'The best property in Australia can still be the wrong property for you. Fit beats features, every time.' },
+];
+
+const mastheads = [
+  ['https://cdn.prod.website-files.com/6785caaabc0f3871a91c9df0/678db1738e5c93eaf9da8c8f_realestate.png', 'realestate.com.au'],
+  ['https://cdn.prod.website-files.com/6785caaabc0f3871a91c9df0/678db13a4efb03fe9099e686_dailymailau.png', 'Daily Mail Australia'],
+  ['https://cdn.prod.website-files.com/6785caaabc0f3871a91c9df0/678db07954301dead6655d03_eliteagent.png', 'Elite Agent'],
+  ['https://cdn.prod.website-files.com/6785caaabc0f3871a91c9df0/678db0a0c5f0946dd8da0897_thebordermail.png', 'The Border Mail'],
+  ['https://cdn.prod.website-files.com/6785caaabc0f3871a91c9df0/678db0dde52f8ef00f31dfdd_smartpropertyinvestment.png', 'Smart Property Investment'],
 ];
 
 export default function WebinarPage() {
@@ -38,10 +46,14 @@ export default function WebinarPage() {
           <p className="eyebrow"><span /> Free live webinar &middot; Monday 17 August &middot; 12:30pm AEST</p>
           <h1>If I were buying an investment property in Australia <i>today,</i> this is how I&rsquo;d do it.</h1>
           <p className="wb-lede">
-            Finding a property is easy. Knowing whether you should buy it is much harder.
-            Join Ripehouse Advisory founder Jacob Field for a practical, 45-minute working
-            session on how we research markets, filter opportunities and decide which
-            investment properties are actually worth pursuing &mdash; and which to walk past.
+            Anyone can find a property. The harder question is what has to be true &mdash;
+            about the market, the timing, the property and you &mdash; before you say yes.
+            Join Ripehouse Advisory founder Jacob Field for a 45-minute working session
+            on the tests a property has to pass before he&rsquo;d buy it today.
+          </p>
+          <p className="wb-hero-goal">
+            The goal isn&rsquo;t to find more property. It&rsquo;s to confidently eliminate
+            almost all of it.
           </p>
           <ul className="wb-meta">
             <li><b>45 minutes</b><span>Live &middot; online &middot; free</span></li>
@@ -53,6 +65,15 @@ export default function WebinarPage() {
           <p className="wb-form-title">Reserve your seat</p>
           <p className="wb-form-sub">Monday 17 August &middot; 12:30pm AEST</p>
           <WebinarRegisterForm />
+          <div className="wb-cred">
+            <a className="wb-cred-reviews" href="https://maps.app.goo.gl/bYm2Bi8sfkcjjnCu6" target="_blank" rel="noreferrer">
+              <span className="wb-cred-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+              <b>300+</b> five-star Google reviews
+            </a>
+            <div className="wb-cred-logos">
+              {mastheads.map(([src, alt]) => <img key={src} src={src} alt={alt} loading="lazy" />)}
+            </div>
+          </div>
         </div>
       </section>
 
@@ -109,7 +130,7 @@ export default function WebinarPage() {
             <div className="wb-funnel-step wb-fs-4"><b>One decision</b><span>you can defend on evidence</span></div>
           </div>
           <div className="wb-funnel-copy">
-            <h2>The goal isn&rsquo;t to find more property. It&rsquo;s to confidently eliminate <i>almost all of it.</i></h2>
+            <h2>A process built to <i>say no.</i></h2>
             <p>
               Every stage of our process exists to remove options &mdash; markets that don&rsquo;t
               justify attention, timing that doesn&rsquo;t justify action, properties that
