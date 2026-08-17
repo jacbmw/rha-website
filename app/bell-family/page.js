@@ -3,8 +3,8 @@ import Footer from '../components/Footer';
 import MobileNav from '../components/MobileNav';
 import { pageMetadata } from '../../lib/seo';
 
-const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
-const coverImage = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67907563bbfb3b1b418dc748_ripehouse-advisory-story-jacob-field.webp';
+const logoUrl = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/00b2dce8-67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
+const coverImage = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/92b44b8f-67907563bbfb3b1b418dc748_ripehouse-advisory-story-jacob-field.webp';
 
 export const metadata = pageMetadata({
   title: 'How the Bell Family Found Freedom With Ripehouse | Ripehouse Advisory',

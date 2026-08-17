@@ -5,8 +5,8 @@ import SectionRenderer from '../components/page-sections/SectionRenderer';
 import { resolveVariant } from '../../lib/pageVariants';
 import { pageMetadata } from '../../lib/seo';
 
-const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
-const coverUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/6a716917e77a27b1080ee7ac_rha-five-markets-ebook-cover.png';
+const logoUrl = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/00b2dce8-67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
+const coverUrl = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/ad8e601a-6a716917e77a27b1080ee7ac_rha-five-markets-ebook-cover.png';
 
 export const metadata = pageMetadata({
   title: 'Free Report: The 5 Australian Markets We\u2019re Buying In For Clients in 2026 | Ripehouse Advisory',

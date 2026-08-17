@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { isBlogAdmin } from '../../../lib/blog-auth';
-import { createBlogItem, listBlogItems } from '../../../lib/webflow';
+import { createBlogItem, listBlogItems } from '../../../lib/blog-store';
 
 export async function GET(request) {
   try {
