@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { getVisitorId, getAttribution } from '../../lib/visitor';
 import { irIdentify } from '../../lib/ir';
 
 export default function NewsletterSignup({ source = 'newsletter', cta = 'Get Market Intel', placeholder = 'Your email address', onSuccess, onInteract }) {
@@ -15,7 +16,13 @@ export default function NewsletterSignup({ source = 'newsletter', cta = 'Get Mar
       const response = await fetch('/api/newsletter', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source }),
+        body: JSON.stringify({
+          email,
+          source,
+          formSource: `website_${source}`,
+          visitorId: getVisitorId(),
+          attribution: getAttribution(),
+        }),
       });
       if (!response.ok) throw new Error('failed');
       irIdentify({ email, formSource: `website_${source}` });

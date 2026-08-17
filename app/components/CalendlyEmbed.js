@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { getVisitorId } from '../../lib/visitor';
 import { collectIrSignals } from '../../lib/ir';
-import { trackVariantConversion } from '../../lib/abTracking';
+import { trackVariantClick, trackVariantConversion } from '../../lib/abTracking';
 
 const CALENDLY_URL = 'https://calendly.com/ripehouse_advisory/15min';
 const WIDGET_SRC = 'https://assets.calendly.com/assets/external/widget.js';
@@ -57,6 +57,9 @@ export default function CalendlyEmbed() {
 
     const onMessage = (event) => {
       if (!/https:\/\/([a-z0-9-]+\.)?calendly\.com$/.test(event.origin)) return;
+      // Engagement click for the page A/B stats: the visitor picked a slot in
+      // the widget (event_type_viewed fires on every load, so it's too weak).
+      if (event.data?.event === 'calendly.date_and_time_selected') trackVariantClick();
       if (event.data?.event === 'calendly.event_scheduled') {
         setBooked(true);
         trackVariantConversion('calendly_booked');

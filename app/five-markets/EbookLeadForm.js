@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getVisitorId, getAttribution } from '../../lib/visitor';
 import { irIdentify } from '../../lib/ir';
-import { trackVariantConversion, creditPanelReferral } from '../../lib/abTracking';
+import { trackVariantClick, trackVariantConversion, creditPanelReferral } from '../../lib/abTracking';
 
 export default function EbookLeadForm() {
   const router = useRouter();
@@ -50,7 +50,7 @@ export default function EbookLeadForm() {
   };
 
   return (
-    <form className="ebook-form" onSubmit={onSubmit}>
+    <form className="ebook-form" onSubmit={onSubmit} onFocus={trackVariantClick}>
       <input name="firstName" type="text" placeholder="First name" autoComplete="given-name" required aria-label="First name" />
       <input name="email" type="email" placeholder="Email address" autoComplete="email" required aria-label="Email address" />
       <input name="phone" type="tel" placeholder="Phone (optional)" autoComplete="tel" aria-label="Phone (optional)" />

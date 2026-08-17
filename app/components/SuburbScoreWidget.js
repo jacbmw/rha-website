@@ -106,10 +106,24 @@ export default function SuburbScoreWidget({ variant, placement = 'panel' }) {
   };
 
   const showArt = props.showSampleScorecard && (placement === 'home' || placement === 'article');
+  const isDark = props.theme === 'dark';
 
   return (
-    <aside className={`suburb-widget suburb-widget-${placement}`} ref={boxRef}>
+    <aside className={`suburb-widget suburb-widget-${placement}${isDark ? ' suburb-widget-dark' : ''}`} ref={boxRef}>
       <div className="suburb-widget-main">
+      {props.showMobileChart && (
+        <svg className="suburb-widget-minichart" viewBox="0 0 96 64" aria-hidden="true" role="presentation">
+          <circle cx="26" cy="32" r="20" fill="none" stroke={isDark ? 'rgba(244,241,234,.18)' : 'rgba(20,26,50,.14)'} strokeWidth="5" />
+          <circle cx="26" cy="32" r="20" fill="none" stroke="#c79810" strokeWidth="5" strokeLinecap="round" strokeDasharray="103 125.7" transform="rotate(-90 26 32)" />
+          <text x="26" y="36" textAnchor="middle" fontFamily="Georgia, serif" fontSize="14" fill={isDark ? '#f4f1ea' : '#141a32'}>82</text>
+          <rect x="58" y="14" width="34" height="3.5" fill={isDark ? 'rgba(244,241,234,.18)' : 'rgba(20,26,50,.14)'} />
+          <rect x="58" y="14" width="28" height="3.5" fill="#c79810" />
+          <rect x="58" y="30" width="34" height="3.5" fill={isDark ? 'rgba(244,241,234,.18)' : 'rgba(20,26,50,.14)'} />
+          <rect x="58" y="30" width="12" height="3.5" fill={isDark ? '#f4f1ea' : '#141a32'} />
+          <rect x="58" y="46" width="34" height="3.5" fill={isDark ? 'rgba(244,241,234,.18)' : 'rgba(20,26,50,.14)'} />
+          <rect x="58" y="46" width="22" height="3.5" fill={isDark ? '#f4f1ea' : '#141a32'} />
+        </svg>
+      )}
       <p className="suburb-widget-label">{props.eyebrow}</p>
       <h3 className="suburb-widget-heading">{rich(props.heading)}</h3>
       <p className="suburb-widget-copy">{props.copy}</p>

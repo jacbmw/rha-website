@@ -16,8 +16,11 @@ export default function ArticleEbookPanel({ variant }) {
     if (id && !preview) storePanelReferral('panel-article-ebook', id);
   };
 
+  // Internal navigation must not carry utm_* params: captureTouches() would
+  // store them as first/last touch and overwrite the visitor's real
+  // acquisition source (facebook, newsjack, ...). Use a non-UTM ref param.
   return (
-    <a className="article-cta-ebook" href="/five-markets?utm_source=rha-website&utm_medium=blog&utm_campaign=five_markets_report" onClick={onClick}>
+    <a className="article-cta-ebook" href="/five-markets?int_ref=blog-panel" onClick={onClick}>
       <img className="article-ebook-cover" src={ebookCoverUrl} alt="Cover of the report: The 5 Australian Markets We&rsquo;re Buying In For Clients in 2026" loading="lazy" />
       <div>
         <p className="ebook-flag">{props.flag}</p>

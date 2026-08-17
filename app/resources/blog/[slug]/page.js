@@ -21,6 +21,30 @@ function readMinutes(body) {
   return Math.max(2, Math.round(words / 220));
 }
 
+// Split the rich-text body at the first top-level block boundary past
+// `fraction` of the HTML, so the suburb widget can sit ~30% into the post
+// instead of above it. Tracks block nesting so we never cut inside a list,
+// blockquote or figure. Returns [body, ''] when no safe boundary exists.
+function splitBody(html, fraction = 0.3) {
+  const body = String(html || '');
+  const target = body.length * fraction;
+  const blocks = /^(p|h[1-6]|ul|ol|li|blockquote|figure|figcaption|table|thead|tbody|tr|td|th|div|section|pre)$/;
+  const tagRe = /<(\/?)([a-zA-Z][a-zA-Z0-9]*)[^>]*?(\/?)>/g;
+  let depth = 0;
+  let match;
+  while ((match = tagRe.exec(body))) {
+    const [, closing, name, selfClosing] = match;
+    if (selfClosing || !blocks.test(name.toLowerCase())) continue;
+    depth += closing ? -1 : 1;
+    if (closing && depth <= 0 && tagRe.lastIndex >= target) {
+      const rest = body.slice(tagRe.lastIndex);
+      if (!rest.trim()) break;
+      return [body.slice(0, tagRe.lastIndex), rest];
+    }
+  }
+  return [body, ''];
+}
+
 export async function generateMetadata({ params }) {
   const slug = (await params).slug;
   const post = await getBlogItemBySlug(slug).catch(() => null);
@@ -58,6 +82,8 @@ export default async function BlogArticle({ params }) {
     resolvePanel('panel-suburb-score'),
   ]);
 
+  const [bodyLead, bodyRest] = splitBody(post.body);
+
   return (
     <main className="article-page">
       <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/#story">Our story</Link><Link href="/#approach">Our approach</Link><Link className="active" href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/resources/blog">← All stories</Link><MobileNav links={[{ label: 'Our story', href: '/#story' }, { label: 'Our approach', href: '/#approach' }, { label: 'Market intel', href: '/resources/blog' }, { label: 'Contact', href: '/#contact' }]} /></header>
@@ -68,16 +94,27 @@ export default async function BlogArticle({ params }) {
         {post.summary && <p className="article-summary">{post.summary}</p>}
         {post.image && <img className="article-image" src={post.image} alt={post.imageAlt} />}
 
-        {/* Suburb widget owns the mid-article slot; the dark footer panel is
+        {/* Suburb widget owns the mid-article slot (~30% in — after the
+            reader is invested, before they drift); the dark footer panel is
             the sole end-of-article newsletter CTA (inline panel retired —
-            it doubled up with the footer panel). */}
-        <SuburbScoreWidget variant={suburbPanel} placement="article" />
+            it doubled up with the footer panel). Falls back to the top slot
+            when the body has no safe split point. */}
+        {!bodyRest && <SuburbScoreWidget variant={suburbPanel} placement="article" />}
 
-        <div className="article-body" dangerouslySetInnerHTML={{ __html: post.body }} />
+        <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyLead }} />
+
+        {bodyRest && (
+          <>
+            <SuburbScoreWidget variant={suburbPanel} placement="article" />
+            <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyRest }} />
+          </>
+        )}
 
         <ArticleFooterPanel variant={footerPanel} />
 
         <ArticleEbookPanel variant={ebookPanel} />
+
+        <p className="article-disclaimer">General information only. It does not take your objectives, financial situation or needs into account, and nothing here is legal, financial, taxation or investment advice specific to your circumstances.</p>
       </article>
 
       {related.length > 0 && (

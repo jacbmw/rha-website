@@ -36,20 +36,32 @@ export default function ExitIntentModal() {
 
     if (sessionStorage.getItem(STORAGE_KEY)) return undefined;
     const armedAt = Date.now();
-    const onLeave = (event) => {
-      // Fire only on a genuine upward exit toward the browser chrome,
-      // after the reader has actually spent time on the page. Suburb pages
-      // run their own scorecard recapture — never stack popups there.
+    let maxY = 0;
+    const trigger = () => {
+      // Suburb pages run their own scorecard recapture — never stack popups there.
       if (window.location.pathname.startsWith('/suburbs')) return;
-      if (event.clientY > 8 || Date.now() - armedAt < 6000) return;
       if (sessionStorage.getItem(STORAGE_KEY)) return;
       sessionStorage.setItem(STORAGE_KEY, '1');
       show();
     };
+    const onLeave = (event) => {
+      // Fire only on a genuine upward exit toward the browser chrome,
+      // after the reader has actually spent time on the page.
+      if (event.clientY > 8 || Date.now() - armedAt < 6000) return;
+      trigger();
+    };
+    const onScroll = () => {
+      // Mobile has no mouseleave: treat a sharp scroll back up after reading
+      // deep into the page as the exit gesture instead.
+      maxY = Math.max(maxY, window.scrollY);
+      if (maxY > 900 && maxY - window.scrollY > 700) trigger();
+    };
     document.documentElement.addEventListener('mouseleave', onLeave);
+    window.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       cancelled = true;
       document.documentElement.removeEventListener('mouseleave', onLeave);
+      window.removeEventListener('scroll', onScroll);
     };
   }, []);
 
