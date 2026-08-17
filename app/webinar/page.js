@@ -7,9 +7,9 @@ const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/678
 
 export const metadata = pageMetadata({
   title: 'Free Live Webinar: If I Were Buying an Investment Property in Australia Today | Ripehouse Advisory',
-  description: 'Monday 17 August, 12:30pm AEST. Join Ripehouse Advisory founder Jacob Field for a 45-minute working session on how we research markets, reject unsuitable properties and decide what\u2019s actually worth buying.',
+  description: 'Wednesday 19 August, 12:30pm AEST. Join Ripehouse Advisory founder Jacob Field for a 45-minute working session on how we research markets, reject unsuitable properties and decide what\u2019s actually worth buying.',
   ogTitle: 'If I Were Buying an Investment Property in Australia Today, This Is How I\u2019d Do It',
-  ogDescription: 'Free live webinar with Jacob Field, Founder of Ripehouse Advisory. Monday 17 August, 12:30pm AEST \u00b7 45 minutes. The process behind the decision \u2014 market, timing, property, rejection, due diligence, portfolio fit.',
+  ogDescription: 'Free live webinar with Jacob Field, Founder of Ripehouse Advisory. Wednesday 19 August, 12:30pm AEST \u00b7 45 minutes. The process behind the decision \u2014 market, timing, property, rejection, due diligence, portfolio fit.',
   path: '/webinar',
 });
 
@@ -37,13 +37,13 @@ export default function WebinarPage() {
         <Link className="brand" href="/" aria-label="Ripehouse Advisory home">
           <img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" />
         </Link>
-        <span className="book-header-note">Free live webinar &middot; Monday 17 August</span>
+        <span className="book-header-note">Free live webinar &middot; Wednesday 19 August</span>
       </header>
 
       {/* ── Hero: positioning + form ─────────────────────────── */}
       <section className="wb-hero section-shell" id="register">
         <div className="wb-hero-copy">
-          <p className="eyebrow"><span /> Free live webinar &middot; Monday 17 August &middot; 12:30pm AEST</p>
+          <p className="eyebrow"><span /> Free live webinar &middot; Wednesday 19 August &middot; 12:30pm AEST</p>
           <h1>If I were buying an investment property in Australia <i>today,</i> this is how I&rsquo;d do it.</h1>
           <p className="wb-lede">
             Anyone can find a property. The harder question is what has to be true &mdash;
@@ -63,7 +63,7 @@ export default function WebinarPage() {
         </div>
         <div className="wb-hero-form">
           <p className="wb-form-title">Reserve your seat</p>
-          <p className="wb-form-sub">Monday 17 August &middot; 12:30pm AEST</p>
+          <p className="wb-form-sub">Wednesday 19 August &middot; 12:30pm AEST</p>
           <WebinarRegisterForm />
           <div className="wb-cred">
             <a className="wb-cred-reviews" href="https://maps.app.goo.gl/bYm2Bi8sfkcjjnCu6" target="_blank" rel="noreferrer">
@@ -192,7 +192,7 @@ export default function WebinarPage() {
       {/* ── Final CTA (dark) ────────────────────────────────── */}
       <section className="wb-cta section-shell">
         <div>
-          <p className="eyebrow light"><span /> Monday 17 August &middot; 12:30pm AEST &middot; 45 minutes</p>
+          <p className="eyebrow light"><span /> Wednesday 19 August &middot; 12:30pm AEST &middot; 45 minutes</p>
           <h2>45 minutes that could change how you look at <i>every property after it.</i></h2>
           <p>Live and free. No recording promised &mdash; this one is built to attend.</p>
           <a className="button button-light" href="#register">Reserve my seat <span>&#8599;</span></a>
