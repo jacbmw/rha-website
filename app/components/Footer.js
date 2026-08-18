@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
+const logoUrl = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/00b2dce8-67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
 const ripeholdLogoUrl = 'https://ripehold.com.au/img/ripehold_logo_full_white.png';
 
 export default function Footer({ backHref = '/', backLabel = 'Back home ↑' }) {

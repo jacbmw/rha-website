@@ -3,7 +3,7 @@
 import usePanelTracking from './usePanelTracking';
 import { storePanelReferral } from '../../../lib/abTracking';
 
-const ebookCoverUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/6a716917e77a27b1080ee7ac_rha-five-markets-ebook-cover.png';
+const ebookCoverUrl = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/ad8e601a-6a716917e77a27b1080ee7ac_rha-five-markets-ebook-cover.png';
 
 export default function ArticleEbookPanel({ variant }) {
   const { id, props, preview } = variant;

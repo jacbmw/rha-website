@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PANEL_KEYS } from '../../../lib/panelVariants';
-import { listBlogItems } from '../../../lib/webflow';
+import { listBlogItems } from '../../../lib/blog-store';
 import { listSuburbSlugs } from '../../../lib/suburbs';
 
 // GET /api/panel-preview?panel=<panelKey>&variant=<id>

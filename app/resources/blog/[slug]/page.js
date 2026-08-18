@@ -2,14 +2,14 @@ import Link from 'next/link';
 import Footer from '../../../components/Footer';
 import MobileNav from '../../../components/MobileNav';
 import { notFound } from 'next/navigation';
-import { getBlogItemBySlug, listBlogItems } from '../../../../lib/webflow';
+import { getBlogItemBySlug, listBlogItems } from '../../../../lib/blog-store';
 import ArticleFooterPanel from '../../../components/panels/ArticleFooterPanel';
 import ArticleEbookPanel from '../../../components/panels/ArticleEbookPanel';
 import SuburbScoreWidget from '../../../components/SuburbScoreWidget';
 import { resolvePanel } from '../../../../lib/panelVariants';
 import { pageMetadata } from '../../../../lib/seo';
 
-const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
+const logoUrl = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/00b2dce8-67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
 
 function fmtDate(value) {
   if (!value) return '';

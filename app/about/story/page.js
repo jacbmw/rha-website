@@ -3,10 +3,10 @@ import Footer from '../../components/Footer';
 import MobileNav from '../../components/MobileNav';
 import { pageMetadata } from '../../../lib/seo';
 
-const logoUrl = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
-const jacobImage = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67907563bbfb3b1b418dc748_ripehouse-advisory-story-jacob-field.webp';
-const annaImage = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/679075638cde3eadaf17850f_ripehouse-advisory-story-anna-cooper.webp';
-const suburbImage = 'https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67884a3c70c47a84b0078be8_320921e68139df0b67c312548e43580b_australia-suburb.webp';
+const logoUrl = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/00b2dce8-67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
+const jacobImage = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/92b44b8f-67907563bbfb3b1b418dc748_ripehouse-advisory-story-jacob-field.webp';
+const annaImage = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/f010372f-679075638cde3eadaf17850f_ripehouse-advisory-story-anna-cooper.webp';
+const suburbImage = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/57344d7e-67884a3c70c47a84b0078be8_320921e68139df0b67c312548e43580b_australia-suburb.webp';
 
 export const metadata = pageMetadata({
   title: 'Our Story | Ripehouse Advisory',

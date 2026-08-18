@@ -28,7 +28,7 @@ export default async function Home({ searchParams }) {
     <main>
       <header className="site-header">
         <a className="brand" href="#top" aria-label="Ripehouse Advisory home">
-          <img className="brand-logo" src="https://cdn.prod.website-files.com/6784a240509d2ca9e7e38e06/67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png" alt="Ripehouse Advisory" />
+          <img className="brand-logo" src="https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/00b2dce8-67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png" alt="Ripehouse Advisory" />
         </a>
         <nav className="desktop-nav" aria-label="Main navigation">
           {navLinks.map((link) => <a key={link.href} href={link.href}>{link.label}</a>)}

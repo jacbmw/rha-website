@@ -1,4 +1,4 @@
-import { listBlogItems } from '../lib/webflow';
+import { listBlogItems } from '../lib/blog-store';
 import { listPublicCaseStudies } from '../lib/case-studies';
 
 export const revalidate = 3600;
