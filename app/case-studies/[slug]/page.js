@@ -4,7 +4,7 @@ import MobileNav from '../../components/MobileNav';
 import { notFound } from 'next/navigation';
 import CaseStudyVisuals from '../CaseStudyVisuals';
 import CaseStudyStory from '../CaseStudyStory';
-import { assignSlugs } from '../../../lib/case-studies';
+import { assignSlugs, displayName, validProperties } from '../../../lib/case-studies';
 import { pageMetadata } from '../../../lib/seo';
 
 export const dynamic = 'force-dynamic';
@@ -27,15 +27,16 @@ export async function generateMetadata({ params }) {
   const study = await getStudy(slug);
   const headshot = study && (study.headshotUrl || study.photoUrl || study.image || (study.videoId ? `https://i.ytimg.com/vi/${encodeURIComponent(study.videoId)}/hqdefault.jpg` : null));
   return pageMetadata({
-    title: study ? `${study.title} | Ripehouse Advisory` : 'Client Results | Ripehouse Advisory',
+    title: study ? `${displayName(study.title)} | Ripehouse Advisory` : 'Client Results | Ripehouse Advisory',
     description: study?.subtitle || study?.description || 'Measured client outcomes from Ripehouse Advisory.',
     path: `/case-studies/${slug}`,
-    image: headshot ? { url: headshot, alt: study.title } : undefined,
+    image: headshot ? { url: headshot, alt: displayName(study.title) } : undefined,
   });
 }
 
 export default async function CaseStudyPage({ params }) {
-  const study = await getStudy((await params).slug);
-  if (!study) notFound();
-  return <main className="case-study-page"><header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/about/story">Our story</Link><Link href="/about/approach">Our approach</Link><Link href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/case-studies">← Case studies</Link><MobileNav links={[{ label: 'Our story', href: '/about/story' }, { label: 'Our approach', href: '/about/approach' }, { label: 'Case studies', href: '/case-studies' }, { label: 'Market intel', href: '/resources/blog' }, { label: 'Contact', href: '/#contact' }]} /></header><section className="case-study-hero section-shell"><p className="eyebrow"><span /> A measured client journey</p><h1>{study.title}</h1>{study.subtitle && <p className="case-study-subtitle">{study.subtitle}</p>}<div className="case-study-summary"><div><strong>{study.properties.length}</strong><span>properties acquired</span></div><div><strong>{study.portfolioCagr != null ? `+${study.portfolioCagr.toFixed(1)}%` : '—'}</strong><span>portfolio CAGR since purchase</span></div><div><strong>{study.totalGrowth > 0 ? `$${Math.round(study.totalGrowth).toLocaleString('en-AU')}` : '—'}</strong><span>measured growth</span></div></div></section><CaseStudyStory study={study} /><CaseStudyVisuals study={study} /><section className="case-study-cta section-shell"><div><p className="eyebrow light"><span /> Your portfolio is a sequence</p><h2>Make the next<br /><i>move measurable.</i></h2><Link className="button button-light" href="/discovery-call">Book a free discovery call <span>↗</span></Link></div></section><Footer backHref="/case-studies" backLabel="All case studies ↑" /></main>;
+  const raw = await getStudy((await params).slug);
+  if (!raw) notFound();
+  const study = { ...raw, title: displayName(raw.title), properties: validProperties(raw.properties), review: raw.review ? { ...raw.review, name: displayName(raw.review.name) } : raw.review };
+  return <main className="case-study-page"><header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/about/story">Our story</Link><Link href="/about/approach">Our approach</Link><Link href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/case-studies">← Case studies</Link><MobileNav links={[{ label: 'Our story', href: '/about/story' }, { label: 'Our approach', href: '/about/approach' }, { label: 'Case studies', href: '/case-studies' }, { label: 'Market intel', href: '/resources/blog' }, { label: 'Contact', href: '/#contact' }]} /></header><section className="case-study-hero section-shell"><p className="eyebrow"><span /> A measured client journey</p><h1>{study.title}</h1>{study.subtitle && <p className="case-study-subtitle">{study.subtitle}</p>}{study.properties.length > 0 && <div className="case-study-summary"><div><strong>{study.properties.length}</strong><span>properties acquired</span></div><div><strong>{study.portfolioCagr != null ? `+${study.portfolioCagr.toFixed(1)}%` : '—'}</strong><span>portfolio CAGR since purchase</span></div><div><strong>{study.totalGrowth > 0 ? `$${Math.round(study.totalGrowth).toLocaleString('en-AU')}` : '—'}</strong><span>measured growth</span></div></div>}</section><CaseStudyStory study={study} /><CaseStudyVisuals study={study} /><section className="case-study-cta section-shell"><div><p className="eyebrow light"><span /> Your portfolio is a sequence</p><h2>Make the next<br /><i>move measurable.</i></h2><Link className="button button-light" href="/discovery-call">Book a free discovery call <span>↗</span></Link></div></section><Footer backHref="/case-studies" backLabel="All case studies ↑" /></main>;
 }

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getRandomCaseStudy } from '../../lib/case-studies';
+import { getRandomCaseStudy, displayName } from '../../lib/case-studies';
 
 function formatLabel(value) {
   return String(value || '').replace(/\b\w/g, (letter) => letter.toUpperCase());
@@ -18,7 +18,7 @@ export default async function CaseStudySection() {
       <div className="case-study-heading">
         <div>
           <p className="eyebrow"><span /> Case study</p>
-          <h2 id="case-study-title">{study.title}</h2>
+          <h2 id="case-study-title">{displayName(study.title)}</h2>
         </div>
         {study.location && <p className="case-study-location">{study.location}</p>}
       </div>
@@ -28,7 +28,7 @@ export default async function CaseStudySection() {
           <iframe
             className="case-study-video"
             src={`https://www.youtube-nocookie.com/embed/${encodeURIComponent(study.videoId)}?rel=0&modestbranding=1`}
-            title={`${study.title} case study video`}
+            title={`${displayName(study.title)} case study video`}
             loading="lazy"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
             allowFullScreen

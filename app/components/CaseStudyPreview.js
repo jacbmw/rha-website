@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { assignSlugs } from '../../lib/case-studies';
+import { assignSlugs, displayName, validProperties } from '../../lib/case-studies';
 
 async function getStudies() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || (process.env.NODE_ENV === 'development' ? `http://localhost:${process.env.PORT || 3000}` : 'https://new.ripehouseadvisory.com.au');
@@ -20,6 +20,7 @@ export default async function CaseStudyPreview() {
   const studies = await getStudies();
   if (!studies.length) return null;
   const study = studies[Math.floor(Math.random() * studies.length)];
+  const properties = validProperties(study.properties);
   const headshot = study.headshotUrl || study.photoUrl || study.image || (study.videoId ? `https://i.ytimg.com/vi/${encodeURIComponent(study.videoId)}/hqdefault.jpg` : null);
 
   return (
@@ -35,15 +36,15 @@ export default async function CaseStudyPreview() {
             )}
             <p className="case-eyebrow">Client case study</p>
           </div>
-          <h2 id="case-preview-title">{study.title}</h2>
+          <h2 id="case-preview-title">{displayName(study.title)}</h2>
           {(study.subtitle || study.description) && <p className="case-preview-sub">{study.subtitle || study.description}</p>}
           <span className="text-link dark-link">Read the full story <span aria-hidden="true">↗</span></span>
         </div>
-        <div className="case-preview-meta">
-          <div><strong>{study.properties?.length || 0}</strong><span>properties acquired</span></div>
+        {properties.length > 0 && <div className="case-preview-meta">
+          <div><strong>{properties.length}</strong><span>properties acquired</span></div>
           <div><strong>{study.portfolioCagr != null ? `+${study.portfolioCagr.toFixed(1)}%` : '—'}</strong><span>portfolio CAGR</span></div>
           {study.totalGrowth > 0 && <div><strong>${Math.round(study.totalGrowth).toLocaleString('en-AU')}</strong><span>measured growth</span></div>}
-        </div>
+        </div>}
       </Link>
       <div className="case-preview-foot"><Link className="text-link" href="/case-studies">Browse all case studies <span aria-hidden="true">↗</span></Link></div>
     </section>
