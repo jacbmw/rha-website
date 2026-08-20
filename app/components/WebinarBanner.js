@@ -15,7 +15,18 @@ const WEBINAR = {
 export default function WebinarBanner({ variant = 'inline' }) {
   return (
     <aside className={`webinar-banner webinar-banner--${variant}`} aria-label="Free live webinar">
-      <p className="webinar-banner-kicker">Free live webinar</p>
+      <div className="webinar-banner-head">
+        <img className="webinar-banner-photo" src="/jacob-field-founder.jpg" alt="Jacob Field, founder of Ripehouse Advisory" />
+        <span className="webinar-banner-badge">
+          <span className="webinar-banner-live-dot" aria-hidden="true" />
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="2" y="5" width="14" height="14" rx="2" />
+            <path d="M22 8l-6 4 6 4V8z" />
+          </svg>
+          Live webinar
+        </span>
+      </div>
+      <p className="webinar-banner-kicker">Free online event</p>
       <h3>If I were buying an investment property in Australia <i>today,</i> this is how I&rsquo;d do it.</h3>
       <p className="webinar-banner-when">{WEBINAR.when}</p>
       <p className="webinar-banner-copy">
