@@ -891,3 +891,22 @@
 .wb-cred-logos{align-items:center;display:flex;flex-wrap:wrap;gap:12px 18px}
 .wb-cred-logos img{filter:brightness(0) invert(1);height:15px;object-fit:contain;opacity:.5;width:auto}
 @media(max-width:900px){.wb-hero-goal{font-size:19px;margin-bottom:34px}}
+
+/* ── Webinar banner (article inline + desktop rail) ─────────────── */
+.webinar-banner{background:var(--green);color:#fff;margin:52px 0;overflow:hidden;padding:36px 32px;position:relative}
+.webinar-banner:before{border:1px solid rgba(199,152,16,.5);border-radius:50%;content:"";height:230px;position:absolute;right:-75px;top:-75px;width:230px}
+.webinar-banner>*{position:relative;z-index:1}
+.webinar-banner-kicker{color:var(--lime);font-size:10px;font-weight:700;letter-spacing:.16em;margin:0 0 16px;text-transform:uppercase}
+.webinar-banner h3{color:#fff;font-family:Georgia,serif;font-size:27px;font-weight:400;letter-spacing:-.045em;line-height:1.06;margin:0 0 14px}
+.webinar-banner h3 i{font-style:italic}
+.webinar-banner-when{color:var(--lime);font-size:13px;font-weight:700;letter-spacing:.02em;margin:0 0 10px}
+.webinar-banner-copy{color:rgba(255,255,255,.72);font-size:13px;line-height:1.6;margin:0 0 24px;max-width:420px}
+.webinar-banner .webinar-banner-cta{margin-top:0}
+.article-rail{display:none}
+@media(min-width:1101px){
+.article-layout{display:grid;grid-template-columns:minmax(0,900px) 320px;justify-content:center;margin:auto;max-width:1290px}
+.article-rail{display:block;padding:90px 42px 150px 0}
+.article-rail .webinar-banner{margin:0;padding:30px 26px;position:sticky;top:36px}
+.article-rail .webinar-banner h3{font-size:23px}
+.webinar-banner--inline{display:none}
+}
