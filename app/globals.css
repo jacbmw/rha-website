@@ -914,7 +914,7 @@
 @media(min-width:1101px){
 .article-layout{display:grid;grid-template-columns:minmax(0,900px) 320px;justify-content:center;margin:auto;max-width:1290px}
 .article-rail{display:block;padding:90px 42px 150px 0}
-.article-rail .webinar-banner{margin:0;padding:30px 26px;position:sticky;top:36px}
+main.article-page{overflow:visible}.article-rail .webinar-banner{margin:0;padding:30px 26px;position:sticky;top:36px}
 .article-rail .webinar-banner h3{font-size:23px}
 .article-rail .webinar-banner-photo{height:56px;width:56px}
 .webinar-banner--inline{display:none}
