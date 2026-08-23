@@ -3,8 +3,6 @@ import Footer from '../../../components/Footer';
 import MobileNav from '../../../components/MobileNav';
 import { notFound } from 'next/navigation';
 import { getBlogItemBySlug, listBlogItems } from '../../../../lib/blog-store';
-import ArticleFooterPanel from '../../../components/panels/ArticleFooterPanel';
-import ArticleEbookPanel from '../../../components/panels/ArticleEbookPanel';
 import SuburbScoreWidget from '../../../components/SuburbScoreWidget';
 import WebinarBanner from '../../../components/WebinarBanner';
 import { resolvePanel } from '../../../../lib/panelVariants';
@@ -77,9 +75,7 @@ export default async function BlogArticle({ params }) {
     }
   } catch { /* related content is optional */ }
 
-  const [footerPanel, ebookPanel, suburbPanel, webinarPanel] = await Promise.all([
-    resolvePanel('panel-article-footer'),
-    resolvePanel('panel-article-ebook'),
+  const [suburbPanel, webinarPanel] = await Promise.all([
     resolvePanel('panel-suburb-score'),
     resolvePanel('panel-webinar-banner'),
   ]);
@@ -116,16 +112,11 @@ export default async function BlogArticle({ params }) {
           </>
         )}
 
-        {/* Webinar banner ~50% of the way through the post (inline on
-            mobile/tablet; on wide desktop the sticky rail version to the
-            right of the post takes over and this one is hidden via CSS). */}
-        <WebinarBanner variant={webinarPanel} placement="inline" />
-
         {bodyTail && <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyTail }} />}
 
-        <ArticleFooterPanel variant={footerPanel} />
-
-        <ArticleEbookPanel variant={ebookPanel} />
+        {/* The inline banner is the mobile/tablet placement and sits after
+            the article body; wide desktop uses the sticky rail instead. */}
+        <WebinarBanner variant={webinarPanel} placement="inline" />
 
         <p className="article-disclaimer">General information only. It does not take your objectives, financial situation or needs into account, and nothing here is legal, financial, taxation or investment advice specific to your circumstances.</p>
       </article>
