@@ -85,6 +85,8 @@ export default async function BlogArticle({ params }) {
   ]);
 
   const [bodyLead, bodyRest] = splitBody(post.body);
+  // Second split ~50% of the way through the whole post for the webinar
+  // banner: bodyRest starts at ~30%, so 2/7 of the remaining 70% ≈ 50% overall.
   const [bodyMid, bodyTail] = splitBody(bodyRest, 2 / 7);
 
   return (
@@ -114,6 +116,9 @@ export default async function BlogArticle({ params }) {
           </>
         )}
 
+        {/* Webinar banner ~50% of the way through the post (inline on
+            mobile/tablet; on wide desktop the sticky rail version to the
+            right of the post takes over and this one is hidden via CSS). */}
         <WebinarBanner variant={webinarPanel} placement="inline" />
 
         {bodyTail && <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyTail }} />}

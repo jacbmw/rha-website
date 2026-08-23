@@ -30,10 +30,36 @@ function toCardData(post) {
   };
 }
 
+// Cap each category to its latest N so high-volume categories (News publishes
+// many times daily) can never starve evergreen sections off the index.
+// Needs: lead block 3 (any category) + section grids 3 (Q&A 4) + archive strip 6
+// + tab depth. 12 per category covers all of that with headroom.
+const PER_CATEGORY_CAP = 12;
+
+function capAndDedupe(items) {
+  const sorted = [...items].sort(
+    (a, b) => new Date(b.publishedDate || 0) - new Date(a.publishedDate || 0),
+  );
+  const seenSlugs = new Set();
+  const perCategory = new Map();
+  const result = [];
+  for (const post of sorted) {
+    if (!post.slug || seenSlugs.has(post.slug)) continue; // never show a piece twice
+    const cat = post.category || 'Uncategorised';
+    const used = perCategory.get(cat) || 0;
+    if (used >= PER_CATEGORY_CAP) continue;
+    seenSlugs.add(post.slug);
+    perCategory.set(cat, used + 1);
+    result.push(post);
+  }
+  return result;
+}
+
 export default async function BlogPage() {
   let posts = [];
   try {
-    posts = (await listBlogItems({ limit: 100 })).map(toCardData);
+    // Fetch deep so every category's latest posts are present, then cap.
+    posts = capAndDedupe((await listBlogItems({ limit: 500 })).map(toCardData));
   } catch (error) {
     console.error('Unable to load Market Intel:', error.message);
   }
