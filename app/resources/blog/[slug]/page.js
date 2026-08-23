@@ -6,6 +6,7 @@ import { getBlogItemBySlug, listBlogItems } from '../../../../lib/blog-store';
 import ArticleFooterPanel from '../../../components/panels/ArticleFooterPanel';
 import ArticleEbookPanel from '../../../components/panels/ArticleEbookPanel';
 import SuburbScoreWidget from '../../../components/SuburbScoreWidget';
+import WebinarBanner from '../../../components/WebinarBanner';
 import { resolvePanel } from '../../../../lib/panelVariants';
 import { pageMetadata } from '../../../../lib/seo';
 
@@ -76,18 +77,21 @@ export default async function BlogArticle({ params }) {
     }
   } catch { /* related content is optional */ }
 
-  const [footerPanel, ebookPanel, suburbPanel] = await Promise.all([
+  const [footerPanel, ebookPanel, suburbPanel, webinarPanel] = await Promise.all([
     resolvePanel('panel-article-footer'),
     resolvePanel('panel-article-ebook'),
     resolvePanel('panel-suburb-score'),
+    resolvePanel('panel-webinar-banner'),
   ]);
 
   const [bodyLead, bodyRest] = splitBody(post.body);
+  const [bodyMid, bodyTail] = splitBody(bodyRest, 2 / 7);
 
   return (
     <main className="article-page">
       <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/#story">Our story</Link><Link href="/#approach">Our approach</Link><Link className="active" href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/resources/blog">← All stories</Link><MobileNav links={[{ label: 'Our story', href: '/#story' }, { label: 'Our approach', href: '/#approach' }, { label: 'Market intel', href: '/resources/blog' }, { label: 'Contact', href: '/#contact' }]} /></header>
 
+      <div className="article-layout">
       <article className="article-content">
         <p className="eyebrow"><span /> {post.category || 'Market Intel'} · {fmtDate(post.publishedDate)} · {readMinutes(post.body)} min read</p>
         <h1>{post.name}</h1>
@@ -106,9 +110,13 @@ export default async function BlogArticle({ params }) {
         {bodyRest && (
           <>
             <SuburbScoreWidget variant={suburbPanel} placement="article" />
-            <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyRest }} />
+            <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyMid }} />
           </>
         )}
+
+        <WebinarBanner variant={webinarPanel} placement="inline" />
+
+        {bodyTail && <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyTail }} />}
 
         <ArticleFooterPanel variant={footerPanel} />
 
@@ -116,6 +124,11 @@ export default async function BlogArticle({ params }) {
 
         <p className="article-disclaimer">General information only. It does not take your objectives, financial situation or needs into account, and nothing here is legal, financial, taxation or investment advice specific to your circumstances.</p>
       </article>
+
+      <aside className="article-rail" aria-label="Webinar">
+        <WebinarBanner variant={webinarPanel} placement="rail" />
+      </aside>
+      </div>
 
       {related.length > 0 && (
         <section className="article-related section-shell">

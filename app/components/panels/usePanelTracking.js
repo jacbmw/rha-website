@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { trackPanelEvent } from '../../../lib/abTracking';
 
+const displayedPanels = new Set();
+
 // Shared tracking hook for A/B panels: fires the display event once on mount,
 // persists the sticky assignment cookie, and returns click/conversion
 // trackers (click fires at most once per mount). Preview renders never track.
@@ -12,6 +14,9 @@ export default function usePanelTracking(panelKey, variantId, preview = false) {
   useEffect(() => {
     if (!variantId || preview) return;
     document.cookie = `rha_ab_${panelKey}=${variantId};max-age=${60 * 60 * 24 * 90};path=/;SameSite=Lax`;
+    const displayKey = `${panelKey}:${variantId}`;
+    if (displayedPanels.has(displayKey)) return;
+    displayedPanels.add(displayKey);
     trackPanelEvent(panelKey, variantId, 'pageview');
   }, [panelKey, variantId, preview]);
 

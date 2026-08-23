@@ -1,0 +1,15 @@
+{
+  "pageKey": "panel-webinar-banner",
+  "props": {
+    "photoUrl": "/jacob-field-founder.jpg",
+    "photoAlt": "Jacob Field, founder of Ripehouse Advisory",
+    "badge": "Live webinar",
+    "eyebrow": "Free online event",
+    "heading": "If I were buying an investment property in Australia *today,* this is how I’d do it.",
+    "when": "Tuesday 25 August · 7:00pm AEST",
+    "copy": "Join Ripehouse Advisory founder Jacob Field for a live working session on the tests a property has to pass before he’d buy it.",
+    "length": "45 minutes · Live · Free",
+    "cta": "Reserve my seat",
+    "href": "/webinar"
+  }
+}

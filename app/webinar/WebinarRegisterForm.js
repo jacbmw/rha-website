@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getVisitorId, getAttribution } from '../../lib/visitor';
 import { irIdentify } from '../../lib/ir';
+import { creditPanelReferral } from '../../lib/abTracking';
 
 export default function WebinarRegisterForm({ compact = false }) {
   const router = useRouter();
@@ -37,6 +38,7 @@ export default function WebinarRegisterForm({ compact = false }) {
       irIdentify({ email: data.email, phone: data.phone || '', firstName: data.firstName || '', formSource: 'website_webinar_how-id-buy_2026-08' });
       window.fbq?.('track', 'CompleteRegistration');
       window.gtag?.('event', 'generate_lead', { event_category: 'conversion', event_label: 'webinar-how-id-buy' });
+      creditPanelReferral('webinar_registration');
       router.push('/webinar/registered');
     } catch (err) {
       setStatus('idle');
