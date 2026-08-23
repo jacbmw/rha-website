@@ -4,9 +4,9 @@ import NewsletterSignup from '../NewsletterSignup';
 import usePanelTracking from './usePanelTracking';
 import { rich } from '../page-sections/rich';
 
-export default function ArticleFooterPanel({ variant }) {
+export default function ArticleFooterPanel({ variant, trackKey = '' }) {
   const { id, props, preview } = variant;
-  const { trackClick, trackConversion } = usePanelTracking('panel-article-footer', id, preview);
+  const { trackClick, trackConversion } = usePanelTracking('panel-article-footer', id, preview, trackKey);
 
   return (
     <section className="article-cta-primary">

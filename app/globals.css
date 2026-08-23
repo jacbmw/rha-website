@@ -919,3 +919,12 @@ main.article-page{overflow:visible}.article-layout{display:grid;grid-template-co
 .article-rail .webinar-banner-photo{height:56px;width:56px}
 .webinar-banner--inline{display:none}
 }
+
+.endless-feed{max-width:900px;margin:0 auto;padding:0 42px}
+.article-content--feed{border-top:1px solid var(--line);padding:60px 0}
+.article-content--feed h2{font-family:Georgia,serif;font-size:clamp(38px,6vw,56px);font-weight:400;letter-spacing:-.055em;line-height:1.05;margin:0 0 26px}
+.article-content--feed .eyebrow{margin-bottom:20px}
+.article-content--feed .article-image{margin-bottom:34px}
+.endless-terminus{border-top:1px solid var(--line);padding:60px 0}
+.endless-terminus p{color:var(--muted);margin:0 0 18px}
+.endless-terminus a{border-bottom:1px solid var(--ink);font-size:12px;font-weight:700;padding-bottom:5px}

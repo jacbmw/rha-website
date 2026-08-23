@@ -7,9 +7,9 @@ import { rich } from './page-sections/rich';
 
 const PANEL_KEY = 'panel-webinar-banner';
 
-export default function WebinarBanner({ variant = {}, placement = 'inline' }) {
+export default function WebinarBanner({ variant = {}, placement = 'inline', trackKey = '' }) {
   const { id, props = {}, preview } = variant;
-  const { trackClick } = usePanelTracking(PANEL_KEY, id, preview);
+  const { trackClick } = usePanelTracking(PANEL_KEY, id, preview, trackKey);
 
   const onClick = () => {
     trackClick();

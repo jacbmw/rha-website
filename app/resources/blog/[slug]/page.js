@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { getBlogItemBySlug, listBlogItems } from '../../../../lib/blog-store';
 import SuburbScoreWidget from '../../../components/SuburbScoreWidget';
 import WebinarBanner from '../../../components/WebinarBanner';
+import EndlessScroll from '../../../components/EndlessScroll';
 import { resolvePanel } from '../../../../lib/panelVariants';
 import { pageMetadata } from '../../../../lib/seo';
 
@@ -18,6 +19,13 @@ function fmtDate(value) {
 function readMinutes(body) {
   const words = String(body || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
   return Math.max(2, Math.round(words / 220));
+}
+
+// Posts with an embedded video (rich-text video figure / YouTube iframe) skip
+// the hero thumbnail — the thumbnail is the video's cover frame, so showing
+// both stacks the same image twice.
+function hasVideoEmbed(body) {
+  return /data-rt-type="video"|<iframe[^>]*(youtube\.com|youtu\.be|vimeo\.com)|<video\b/i.test(String(body || ''));
 }
 
 // Split the rich-text body at the first top-level block boundary past
@@ -90,11 +98,16 @@ export default async function BlogArticle({ params }) {
       <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/#story">Our story</Link><Link href="/#approach">Our approach</Link><Link className="active" href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/resources/blog">← All stories</Link><MobileNav links={[{ label: 'Our story', href: '/#story' }, { label: 'Our approach', href: '/#approach' }, { label: 'Market intel', href: '/resources/blog' }, { label: 'Contact', href: '/#contact' }]} /></header>
 
       <div className="article-layout">
-      <article className="article-content">
+      <article
+        className="article-content"
+        data-feed-article
+        data-slug={post.slug}
+        data-title={`${post.seoTitle || post.name} | Ripehouse Advisory`}
+      >
         <p className="eyebrow"><span /> {post.category || 'Market Intel'} · {fmtDate(post.publishedDate)} · {readMinutes(post.body)} min read</p>
         <h1>{post.name}</h1>
         {post.summary && <p className="article-summary">{post.summary}</p>}
-        {post.image && <img className="article-image" src={post.image} alt={post.imageAlt} />}
+        {post.image && !hasVideoEmbed(post.body) && <img className="article-image" src={post.image} alt={post.imageAlt} />}
 
         {/* Suburb widget owns the mid-article slot (~30% in — after the
             reader is invested, before they drift); the dark footer panel is
@@ -143,6 +156,8 @@ export default async function BlogArticle({ params }) {
           </div>
         </section>
       )}
+
+      <EndlessScroll startSlug={post.slug} />
 
       <Footer backHref="/resources/blog" backLabel="All stories ↑" />
     </main>
