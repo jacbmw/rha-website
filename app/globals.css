@@ -96,6 +96,7 @@
 .inline-signup .signup-form{margin-top:18px;min-width:0}
 .signup-form{flex-wrap:wrap}
 .article-cta-primary{padding:40px 26px}
+.article-related{display:none}
 .article-cta-ebook{display:block;padding:26px 22px}
 .ebook-arrow{display:inline-block;margin-top:18px}
 .exit-modal{padding:38px 26px 30px}
