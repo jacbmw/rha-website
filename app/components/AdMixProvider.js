@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useSyncExternalStore,
+  createContext, useCallback, useContext, useEffect, useMemo, useRef, useState,
 } from 'react';
 import WebinarBanner from './WebinarBanner';
 import ArticleEbookPanel from './panels/ArticleEbookPanel';
@@ -24,8 +24,7 @@ const AdMixContext = createContext(null);
 function readStats() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return {};
-    return JSON.parse(raw) || {};
+    return raw ? JSON.parse(raw) || {} : {};
   } catch { return {}; }
 }
 
@@ -38,38 +37,26 @@ function getPanelStats(stats, key) {
   return { displays: s?.displays || 0, clicks: s?.clicks || 0, conversions: s?.conversions || 0 };
 }
 
-function scorePanel(stats, key) {
-  const { displays, clicks, conversions } = getPanelStats(stats, key);
-  return (clicks + conversions * 2 + 1) / (displays + 2);
-}
-
 function rankPanels(stats) {
-  const scored = PANELS.map((p) => ({ panel: p, score: scorePanel(stats, p.key) }));
-  scored.sort((a, b) => b.score - a.score);
-  return scored.map((s) => s.panel);
-}
-
-function subscribeStats(cb) {
-  if (typeof window === 'undefined') return () => {};
-  const handler = (event) => { if (event.key === STORAGE_KEY) cb(); };
-  window.addEventListener('storage', handler);
-  return () => window.removeEventListener('storage', handler);
-}
-
-function getSnapshot() {
-  return typeof window === 'undefined' ? '' : JSON.stringify(readStats());
-}
-
-function getServerSnapshot() {
-  return '';
+  return PANELS.map((panel) => {
+    const { displays, clicks, conversions } = getPanelStats(stats, panel.key);
+    return { panel, score: (clicks + conversions * 2 + 1) / (displays + 2) };
+  }).sort((a, b) => b.score - a.score).map(({ panel }) => panel);
 }
 
 export function AdMixProvider({ variants, children }) {
-  const statsHash = useSyncExternalStore(subscribeStats, getSnapshot, getServerSnapshot);
-  const ready = statsHash !== '';
-  const order = ready ? rankPanels(readStats()) : PANELS;
+  const [order, setOrder] = useState(PANELS);
+  const [ready, setReady] = useState(false);
   const nextIndexRef = useRef(0);
   const slotsRef = useRef(new Map());
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      setOrder(rankPanels(readStats()));
+      setReady(true);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
 
   const claim = useCallback((id) => {
     const existing = slotsRef.current.get(id);
@@ -80,27 +67,11 @@ export function AdMixProvider({ variants, children }) {
     return panel;
   }, [order]);
 
-  const recordDisplay = useCallback((key) => {
+  const record = useCallback((key, field) => {
     const stats = readStats();
-    const s = getPanelStats(stats, key);
-    s.displays += 1;
-    stats[key] = s;
-    writeStats(stats);
-  }, []);
-
-  const recordClick = useCallback((key) => {
-    const stats = readStats();
-    const s = getPanelStats(stats, key);
-    s.clicks += 1;
-    stats[key] = s;
-    writeStats(stats);
-  }, []);
-
-  const recordConversion = useCallback((key) => {
-    const stats = readStats();
-    const s = getPanelStats(stats, key);
-    s.conversions += 1;
-    stats[key] = s;
+    const current = getPanelStats(stats, key);
+    current[field] += 1;
+    stats[key] = current;
     writeStats(stats);
   }, []);
 
@@ -108,10 +79,10 @@ export function AdMixProvider({ variants, children }) {
     ready,
     variants,
     claim,
-    recordDisplay,
-    recordClick,
-    recordConversion,
-  }), [ready, variants, claim, recordDisplay, recordClick, recordConversion]);
+    recordDisplay: (key) => record(key, 'displays'),
+    recordClick: (key) => record(key, 'clicks'),
+    recordConversion: (key) => record(key, 'conversions'),
+  }), [ready, variants, claim, record]);
 
   return <AdMixContext.Provider value={value}>{children}</AdMixContext.Provider>;
 }
@@ -119,9 +90,13 @@ export function AdMixProvider({ variants, children }) {
 export function useAdSlot() {
   const ctx = useContext(AdMixContext);
   const id = useId();
-  const panel = useMemo(() => {
-    if (!ctx?.ready) return null;
-    return ctx.claim(id);
+  const [panel, setPanel] = useState(null);
+
+  useEffect(() => {
+    if (!ctx?.ready) return undefined;
+    const claimed = ctx.claim(id);
+    const frame = requestAnimationFrame(() => setPanel(claimed));
+    return () => cancelAnimationFrame(frame);
   }, [ctx, id]);
 
   useEffect(() => {
