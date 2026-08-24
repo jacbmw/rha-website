@@ -4,7 +4,9 @@ import NewsletterSignup from '../NewsletterSignup';
 import usePanelTracking from './usePanelTracking';
 import { rich } from '../page-sections/rich';
 
-export default function ArticleFooterPanel({ variant, trackKey = '' }) {
+export default function ArticleFooterPanel({
+  variant, trackKey = '', onClick, onConversion,
+}) {
   const { id, props, preview } = variant;
   const { trackClick, trackConversion } = usePanelTracking('panel-article-footer', id, preview, trackKey);
 
@@ -17,8 +19,8 @@ export default function ArticleFooterPanel({ variant, trackKey = '' }) {
         source="article-footer"
         cta={props.cta}
         placeholder={props.placeholder}
-        onInteract={trackClick}
-        onSuccess={() => trackConversion('newsletter_signup')}
+        onInteract={() => { trackClick(); if (onClick) onClick(); }}
+        onSuccess={() => { trackConversion('newsletter_signup'); if (onConversion) onConversion(); }}
       />
     </section>
   );

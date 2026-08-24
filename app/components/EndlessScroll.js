@@ -2,9 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
-import WebinarBanner from './WebinarBanner';
-import ArticleEbookPanel from './panels/ArticleEbookPanel';
-import ArticleFooterPanel from './panels/ArticleFooterPanel';
+import ArticleAdSlot from './ArticleAdSlot';
+import { splitBody } from '../../lib/blog-body';
 import { trackIrPageview } from '../../lib/ir';
 
 const STORAGE_KEY = 'rha_seen_articles';
@@ -145,23 +144,26 @@ export default function EndlessScroll({ startSlug }) {
 
   return (
     <div className="endless-feed">
-      {items.map((item, i) => (
-        <article
-          key={item.post.id}
-          className="article-content article-content--feed"
-          data-feed-article
-          data-slug={item.post.slug}
-          data-title={`${item.post.seoTitle || item.post.name} | Ripehouse Advisory`}
-        >
-          <p className="eyebrow"><span /> {item.post.category || 'Market Intel'} · {fmtDate(item.post.publishedDate)}</p>
-          <h2>{item.post.name}</h2>
-          {item.post.image && !hasVideoEmbed(item.post.body) && <img className="article-image" src={item.post.image} alt={item.post.imageAlt} loading="lazy" />}
-          <div className="article-body" dangerouslySetInnerHTML={{ __html: item.post.body }} />
-          {i === 0 && <WebinarBanner variant={item.panels.webinar} placement="inline" trackKey={`feed-${item.post.slug}`} />}
-          {i === 1 && <ArticleEbookPanel variant={item.panels.ebook} trackKey={`feed-${item.post.slug}`} />}
-          {i === 2 && <ArticleFooterPanel variant={item.panels.footer} trackKey={`feed-${item.post.slug}`} />}
-        </article>
-      ))}
+      {items.map((item) => {
+        const [lead, rest] = splitBody(item.post.body, 0.5);
+        return (
+          <article
+            key={item.post.id}
+            className="article-content article-content--feed"
+            data-feed-article
+            data-slug={item.post.slug}
+            data-title={`${item.post.seoTitle || item.post.name} | Ripehouse Advisory`}
+          >
+            <p className="eyebrow"><span /> {item.post.category || 'Market Intel'} · {fmtDate(item.post.publishedDate)}</p>
+            <h2>{item.post.name}</h2>
+            {item.post.image && !hasVideoEmbed(item.post.body) && <img className="article-image" src={item.post.image} alt={item.post.imageAlt} loading="lazy" />}
+            <div className="article-body" dangerouslySetInnerHTML={{ __html: lead }} />
+            <ArticleAdSlot />
+            <div className="article-body" dangerouslySetInnerHTML={{ __html: rest }} />
+            <ArticleAdSlot />
+          </article>
+        );
+      })}
       {!done && <div ref={loaderRef} className="endless-loader" style={{ minHeight: 1 }} aria-hidden="true" />}
       {done && (
         <div className="endless-terminus">

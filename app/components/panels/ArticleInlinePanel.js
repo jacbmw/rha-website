@@ -3,9 +3,11 @@
 import NewsletterSignup from '../NewsletterSignup';
 import usePanelTracking from './usePanelTracking';
 
-export default function ArticleInlinePanel({ variant }) {
+export default function ArticleInlinePanel({
+  variant, trackKey = '', onClick, onConversion,
+}) {
   const { id, props, preview } = variant;
-  const { trackClick, trackConversion } = usePanelTracking('panel-article-inline', id, preview);
+  const { trackClick, trackConversion } = usePanelTracking('panel-article-inline', id, preview, trackKey);
 
   return (
     <aside className="inline-signup">
@@ -17,8 +19,8 @@ export default function ArticleInlinePanel({ variant }) {
         source="article-inline"
         cta={props.cta}
         placeholder={props.placeholder}
-        onInteract={trackClick}
-        onSuccess={() => trackConversion('newsletter_signup')}
+        onInteract={() => { trackClick(); if (onClick) onClick(); }}
+        onSuccess={() => { trackConversion('newsletter_signup'); if (onConversion) onConversion(); }}
       />
     </aside>
   );

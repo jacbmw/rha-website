@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { listBlogItems } from '../../../../lib/blog-store';
-import { resolvePanel } from '../../../../lib/panelVariants';
 
 export async function GET(request) {
   const { searchParams } = request.nextUrl;
@@ -26,18 +25,9 @@ export async function GET(request) {
     });
     scored.sort((a, b) => b.score - a.score);
 
-    const next = scored[0];
-
-    const [webinar, ebook, footer] = await Promise.all([
-      resolvePanel('panel-webinar-banner'),
-      resolvePanel('panel-article-ebook'),
-      resolvePanel('panel-article-footer'),
-    ]);
-
     return NextResponse.json({
       done: false,
-      post: next,
-      panels: { webinar, ebook, footer },
+      post: scored[0],
     });
   } catch (error) {
     return NextResponse.json({ error: error.message, done: true }, { status: 500 });

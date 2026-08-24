@@ -19,11 +19,13 @@ const PANEL_KEY = 'panel-suburb-score';
 // Copy is now managed by the panel variant system (rha_page_variants,
 // panel-suburb-score) and served from the dashboard; the bundled JSON below
 // is the permanent fallback.
-export default function SuburbScoreWidget({ variant, placement = 'panel' }) {
+export default function SuburbScoreWidget({
+  variant, placement = 'panel', trackKey = '', onClick, onConversion,
+}) {
   const router = useRouter();
   const { id, props: variantProps, preview } = variant || {};
   const props = { ...defaultVariant.props, ...variantProps };
-  const { trackClick, trackConversion } = usePanelTracking(PANEL_KEY, id, preview);
+  const { trackClick, trackConversion } = usePanelTracking(PANEL_KEY, id, preview, trackKey);
 
   const [query, setQuery] = useState('');
   const [results, setResults] = useState([]);
@@ -65,6 +67,7 @@ export default function SuburbScoreWidget({ variant, placement = 'panel' }) {
   const select = (item) => {
     setOpen(false);
     trackConversion('suburb_selected');
+    if (onConversion) onConversion();
     storePanelReferral(PANEL_KEY, id);
     router.push(`/suburbs/${item.slug}`);
   };
@@ -99,6 +102,7 @@ export default function SuburbScoreWidget({ variant, placement = 'panel' }) {
       if (!response.ok) throw new Error('failed');
       irIdentify({ email: data.email, formSource: 'website_suburb-score-miss_2026' });
       trackConversion('suburb_miss');
+      if (onConversion) onConversion();
       setMissStatus('done');
     } catch {
       setMissStatus('idle');
@@ -136,7 +140,7 @@ export default function SuburbScoreWidget({ variant, placement = 'panel' }) {
           autoComplete="off"
           onChange={(event) => { setQuery(event.target.value); runSearch(event.target.value); }}
           onKeyDown={onKeyDown}
-          onFocus={() => { trackClick(); if (results.length || noResults) setOpen(true); }}
+          onFocus={() => { trackClick(); if (onClick) onClick(); if (results.length || noResults) setOpen(true); }}
         />
         {open && (
           <ul className="suburb-widget-results" id="suburb-widget-results" role="listbox">

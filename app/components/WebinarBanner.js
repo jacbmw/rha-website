@@ -7,12 +7,15 @@ import { rich } from './page-sections/rich';
 
 const PANEL_KEY = 'panel-webinar-banner';
 
-export default function WebinarBanner({ variant = {}, placement = 'inline', trackKey = '' }) {
+export default function WebinarBanner({
+  variant = {}, placement = 'inline', trackKey = '', onClick,
+}) {
   const { id, props = {}, preview } = variant;
   const { trackClick } = usePanelTracking(PANEL_KEY, id, preview, trackKey);
 
-  const onClick = () => {
+  const handleClick = () => {
     trackClick();
+    if (onClick) onClick();
     if (id && !preview) storePanelReferral(PANEL_KEY, id);
   };
 
@@ -33,7 +36,7 @@ export default function WebinarBanner({ variant = {}, placement = 'inline', trac
       <h3>{rich(props.heading)}</h3>
       <p className="webinar-banner-when">{props.when}</p>
       <p className="webinar-banner-copy">{props.copy} {props.length}.</p>
-      <Link className="button button-light webinar-banner-cta" href={props.href || '/webinar'} onClick={onClick}>
+      <Link className="button button-light webinar-banner-cta" href={props.href || '/webinar'} onClick={handleClick}>
         {props.cta} <span>&#8599;</span>
       </Link>
     </aside>
