@@ -1,7 +1,7 @@
 'use client';
 
 import {
-  createContext, useCallback, useContext, useEffect, useMemo, useRef, useState,
+  createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState,
 } from 'react';
 import WebinarBanner from './WebinarBanner';
 import ArticleEbookPanel from './panels/ArticleEbookPanel';
