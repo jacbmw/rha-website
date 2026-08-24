@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation';
 import { getBlogItemBySlug, listBlogItems } from '../../../../lib/blog-store';
 import WebinarBanner from '../../../components/WebinarBanner';
 import ArticleAdSlot from '../../../components/ArticleAdSlot';
+import ArticleWebinarPitch from '../../../components/ArticleWebinarPitch';
 import { AdMixProvider } from '../../../components/AdMixProvider';
 import EndlessScroll from '../../../components/EndlessScroll';
 import { splitBody } from '../../../../lib/blog-body';
@@ -95,6 +96,18 @@ export default async function BlogArticle({ params }) {
             <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyLead }} />
             <ArticleAdSlot excludeWebinarOnDesktop />
             <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyRest }} />
+            <ArticleWebinarPitch pitch={post.webinarPitch} post={post} />
+            {post.faq?.items?.length > 0 && (
+              <section className="article-faq" aria-labelledby="article-faq-heading">
+                <h2 id="article-faq-heading">Frequently asked questions</h2>
+                {post.faq.items.map((item) => (
+                  <div className="article-faq-item" key={item.question}>
+                    <h3>{item.question}</h3>
+                    <p>{item.answer}</p>
+                  </div>
+                ))}
+              </section>
+            )}
             <ArticleAdSlot excludeWebinarOnDesktop />
 
             <p className="article-disclaimer">General information only. It does not take your objectives, financial situation or needs into account, and nothing here is legal, financial, taxation or investment advice specific to your circumstances.</p>

@@ -35,6 +35,7 @@ function toCardData(post) {
 // Needs: lead block 3 (any category) + section grids 3 (Q&A 4) + archive strip 6
 // + tab depth. 12 per category covers all of that with headroom.
 const PER_CATEGORY_CAP = 12;
+const BLOG_CATEGORIES = ['News', 'Market Analysis', 'Suburb Deep Dives', 'Strategy', 'Q&A'];
 
 function capAndDedupe(items) {
   const sorted = [...items].sort(
@@ -58,8 +59,10 @@ function capAndDedupe(items) {
 export default async function BlogPage() {
   let posts = [];
   try {
-    // Fetch deep so every category's latest posts are present, then cap.
-    posts = capAndDedupe((await listBlogItems({ limit: 500 })).map(toCardData));
+    const categoryPosts = await Promise.all(
+      BLOG_CATEGORIES.map((category) => listBlogItems({ category, limit: PER_CATEGORY_CAP })),
+    );
+    posts = capAndDedupe(categoryPosts.flat().map(toCardData));
   } catch (error) {
     console.error('Unable to load Market Intel:', error.message);
   }

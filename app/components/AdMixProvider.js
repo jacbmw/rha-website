@@ -48,6 +48,7 @@ export function AdMixProvider({ variants, children }) {
   const [order, setOrder] = useState(PANELS);
   const [ready, setReady] = useState(false);
   const nextIndexRef = useRef(0);
+  const cycleKeysRef = useRef(new Set());
   const slotsRef = useRef(new Map());
 
   useEffect(() => {
@@ -62,14 +63,30 @@ export function AdMixProvider({ variants, children }) {
     const existing = slotsRef.current.get(id);
     if (existing) return existing;
     const excluded = new Set(excludedKeys);
+    const eligible = order.filter((candidate) => !excluded.has(candidate.key));
+    if (!eligible.length) return null;
+
     let panel;
+    let panelIndex = -1;
     for (let offset = 0; offset < order.length; offset += 1) {
-      const candidate = order[(nextIndexRef.current + offset) % order.length];
-      if (!excluded.has(candidate.key)) { panel = candidate; break; }
+      const index = (nextIndexRef.current + offset) % order.length;
+      const candidate = order[index];
+      if (!excluded.has(candidate.key) && !cycleKeysRef.current.has(candidate.key)) {
+        panel = candidate;
+        panelIndex = index;
+        break;
+      }
     }
-    if (!panel) return null;
+
+    if (!panel) {
+      cycleKeysRef.current.clear();
+      panel = eligible[0];
+      panelIndex = order.indexOf(panel);
+    }
+
+    cycleKeysRef.current.add(panel.key);
+    nextIndexRef.current = (panelIndex + 1) % order.length;
     slotsRef.current.set(id, panel);
-    nextIndexRef.current += 1;
     return panel;
   }, [order]);
 

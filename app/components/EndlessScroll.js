@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import ArticleAdSlot from './ArticleAdSlot';
+import ArticleWebinarPitch from './ArticleWebinarPitch';
 import { splitBody } from '../../lib/blog-body';
 import { trackIrPageview } from '../../lib/ir';
 
@@ -160,6 +161,18 @@ export default function EndlessScroll({ startSlug }) {
             <div className="article-body" dangerouslySetInnerHTML={{ __html: lead }} />
             <ArticleAdSlot />
             <div className="article-body" dangerouslySetInnerHTML={{ __html: rest }} />
+            <ArticleWebinarPitch pitch={item.post.webinarPitch} post={item.post} />
+            {item.post.faq?.items?.length > 0 && (
+              <section className="article-faq" aria-labelledby={`article-faq-heading-${item.post.id}`}>
+                <h2 id={`article-faq-heading-${item.post.id}`}>Frequently asked questions</h2>
+                {item.post.faq.items.map((faqItem) => (
+                  <div className="article-faq-item" key={faqItem.question}>
+                    <h3>{faqItem.question}</h3>
+                    <p>{faqItem.answer}</p>
+                  </div>
+                ))}
+              </section>
+            )}
             <ArticleAdSlot />
           </article>
         );
