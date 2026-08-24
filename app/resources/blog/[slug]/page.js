@@ -93,9 +93,9 @@ export default async function BlogArticle({ params }) {
             {post.image && !hasVideoEmbed(post.body) && <img className="article-image" src={post.image} alt={post.imageAlt} />}
 
             <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyLead }} />
-            <ArticleAdSlot />
+            <ArticleAdSlot excludeWebinarOnDesktop />
             <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyRest }} />
-            <ArticleAdSlot />
+            <ArticleAdSlot excludeWebinarOnDesktop />
 
             <p className="article-disclaimer">General information only. It does not take your objectives, financial situation or needs into account, and nothing here is legal, financial, taxation or investment advice specific to your circumstances.</p>
           </article>

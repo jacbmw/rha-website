@@ -58,10 +58,16 @@ export function AdMixProvider({ variants, children }) {
     return () => cancelAnimationFrame(frame);
   }, []);
 
-  const claim = useCallback((id) => {
+  const claim = useCallback((id, excludedKeys = []) => {
     const existing = slotsRef.current.get(id);
     if (existing) return existing;
-    const panel = order[nextIndexRef.current % order.length];
+    const excluded = new Set(excludedKeys);
+    let panel;
+    for (let offset = 0; offset < order.length; offset += 1) {
+      const candidate = order[(nextIndexRef.current + offset) % order.length];
+      if (!excluded.has(candidate.key)) { panel = candidate; break; }
+    }
+    if (!panel) return null;
     slotsRef.current.set(id, panel);
     nextIndexRef.current += 1;
     return panel;
@@ -87,17 +93,18 @@ export function AdMixProvider({ variants, children }) {
   return <AdMixContext.Provider value={value}>{children}</AdMixContext.Provider>;
 }
 
-export function useAdSlot() {
+export function useAdSlot({ excludeOnDesktop = false } = {}) {
   const ctx = useContext(AdMixContext);
   const id = useId();
   const [panel, setPanel] = useState(null);
 
   useEffect(() => {
     if (!ctx?.ready) return undefined;
-    const claimed = ctx.claim(id);
+    const excludedKeys = excludeOnDesktop && window.innerWidth > 1100 ? ['panel-webinar-banner'] : [];
+    const claimed = ctx.claim(id, excludedKeys);
     const frame = requestAnimationFrame(() => setPanel(claimed));
     return () => cancelAnimationFrame(frame);
-  }, [ctx, id]);
+  }, [ctx, id, excludeOnDesktop]);
 
   useEffect(() => {
     if (panel) ctx?.recordDisplay(panel.key);

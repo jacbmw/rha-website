@@ -16,8 +16,8 @@ const COMPONENTS = {
   'panel-suburb-score': SuburbScoreWidget,
 };
 
-export default function ArticleAdSlot({ className = '' }) {
-  const slot = useAdSlot();
+export default function ArticleAdSlot({ className = '', excludeWebinarOnDesktop = false }) {
+  const slot = useAdSlot({ excludeOnDesktop: excludeWebinarOnDesktop });
   const trackKey = useId();
   const clickedRef = useRef(false);
   const convertedRef = useRef(false);
