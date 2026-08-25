@@ -166,10 +166,10 @@ export default function EndlessScroll({ startSlug }) {
               <section className="article-faq" aria-labelledby={`article-faq-heading-${item.post.id}`}>
                 <h2 id={`article-faq-heading-${item.post.id}`}>Frequently asked questions</h2>
                 {item.post.faq.items.map((faqItem) => (
-                  <div className="article-faq-item" key={faqItem.question}>
-                    <h3>{faqItem.question}</h3>
+                  <details className="article-faq-item" key={faqItem.question}>
+                    <summary><h3>{faqItem.question}</h3><span aria-hidden="true">+</span></summary>
                     <p>{faqItem.answer}</p>
-                  </div>
+                  </details>
                 ))}
               </section>
             )}

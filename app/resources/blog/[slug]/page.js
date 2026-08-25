@@ -100,12 +100,29 @@ export default async function BlogArticle({ params }) {
             {post.faq?.items?.length > 0 && (
               <section className="article-faq" aria-labelledby="article-faq-heading">
                 <h2 id="article-faq-heading">Frequently asked questions</h2>
+                {/* Collapsed <details> accordion: the full Q&A stays in the
+                    server-rendered HTML so search/LLM crawlers index it; the
+                    FAQPage JSON-LD below makes the pairs explicit either way. */}
                 {post.faq.items.map((item) => (
-                  <div className="article-faq-item" key={item.question}>
-                    <h3>{item.question}</h3>
+                  <details className="article-faq-item" key={item.question}>
+                    <summary><h3>{item.question}</h3><span aria-hidden="true">+</span></summary>
                     <p>{item.answer}</p>
-                  </div>
+                  </details>
                 ))}
+                <script
+                  type="application/ld+json"
+                  dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                      '@context': 'https://schema.org',
+                      '@type': 'FAQPage',
+                      mainEntity: post.faq.items.map((item) => ({
+                        '@type': 'Question',
+                        name: item.question,
+                        acceptedAnswer: { '@type': 'Answer', text: item.answer },
+                      })),
+                    }),
+                  }}
+                />
               </section>
             )}
             <ArticleAdSlot excludeWebinarOnDesktop />

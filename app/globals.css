@@ -382,11 +382,15 @@
 /* ── Generated article enhancements ───────────────────────── */
 .article-webinar-pitch{font-size:17px;line-height:1.7;margin:52px 0 0;max-width:780px}
 .article-webinar-pitch a{border-bottom:1px solid var(--ink);font-weight:700}
-.article-faq{border-top:1px solid var(--line);margin-top:58px;padding-top:34px}
-.article-faq h2{font-family:Georgia,serif;font-size:clamp(30px,4vw,46px);font-weight:400;letter-spacing:-.05em;line-height:1.05;margin:0 0 32px}
-.article-faq-item{border-top:1px solid var(--line);padding:24px 0 7px}
-.article-faq-item h3{font-size:17px;line-height:1.35;margin:0 0 10px}
-.article-faq-item p{color:var(--muted);font-size:15px;line-height:1.7;margin:0;max-width:720px}
+.article-faq{border-top:1px solid var(--line);margin-top:44px;padding-top:26px}
+.article-faq h2{font-family:Georgia,serif;font-size:clamp(26px,3.2vw,36px);font-weight:400;letter-spacing:-.05em;line-height:1.05;margin:0 0 14px}
+.article-faq-item{border-top:1px solid var(--line)}
+.article-faq-item summary{align-items:center;cursor:pointer;display:flex;gap:18px;justify-content:space-between;list-style:none;padding:14px 0}
+.article-faq-item summary::-webkit-details-marker{display:none}
+.article-faq-item summary span{color:var(--lime);flex-shrink:0;font-size:20px;font-weight:400;transition:transform .2s}
+.article-faq-item[open] summary span{transform:rotate(45deg)}
+.article-faq-item h3{font-size:16px;line-height:1.35;margin:0}
+.article-faq-item p{color:var(--muted);font-size:15px;line-height:1.7;margin:0;max-width:720px;padding:0 0 16px}
 /* ── Article body rich-text embeds ────────────────────────── */
 .article-body figure{margin:38px 0;max-width:100%}
 .article-body .w-richtext-figure-type-video{height:0;overflow:hidden;position:relative}

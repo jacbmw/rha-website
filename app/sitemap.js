@@ -3,6 +3,20 @@ import { listPublicCaseStudies } from '../lib/case-studies';
 
 export const revalidate = 3600;
 
+// Next's static export kills any route that takes >60s, and a hung dashboard
+// (nginx 504s at 60s) has failed whole deploys via this route. Race the
+// upstream calls against a hard deadline: on timeout we ship the static
+// routes and let the next ISR revalidation fill the rest in.
+function withDeadline(promise, label, ms = 20000) {
+  return Promise.race([
+    promise,
+    new Promise((resolve) => setTimeout(() => {
+      console.error(`Sitemap: ${label} timed out after ${ms}ms`);
+      resolve([]);
+    }, ms)),
+  ]);
+}
+
 export default async function sitemap() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ripehouseadvisory.com.au';
 
@@ -24,11 +38,11 @@ export default async function sitemap() {
   ];
 
   const [posts, caseStudies] = await Promise.all([
-    listBlogItems({ limit: 100 }).catch((error) => {
+    withDeadline(listBlogItems({ limit: 100 }).catch((error) => {
       console.error('Sitemap: unable to load blog posts:', error.message);
       return [];
-    }),
-    listPublicCaseStudies(),
+    }), 'blog posts'),
+    withDeadline(listPublicCaseStudies(), 'case studies'),
   ]);
 
   const blogRoutes = posts
