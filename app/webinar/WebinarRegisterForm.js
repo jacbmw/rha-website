@@ -35,7 +35,7 @@ export default function WebinarRegisterForm({ compact = false }) {
         const payload = await response.json().catch(() => null);
         throw new Error(payload?.message || 'Something went wrong. Please try again.');
       }
-      irIdentify({ email: data.email, phone: data.phone || '', firstName: data.firstName || '', formSource: 'website_webinar_how-id-buy_2026-08' });
+      irIdentify({ email: data.email, phone: data.phone || '', firstName: data.firstName || '', formSource: 'website_webinar_how-id-buy_2026-09' });
       window.fbq?.('track', 'CompleteRegistration');
       window.gtag?.('event', 'generate_lead', { event_category: 'conversion', event_label: 'webinar-how-id-buy' });
       creditPanelReferral('webinar_registration');

@@ -7,16 +7,16 @@ const logoUrl = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-sit
 export const metadata = {
   ...pageMetadata({
     title: 'You\u2019re registered | Ripehouse Advisory Webinar',
-    description: 'You\u2019re registered for the live webinar with Jacob Field \u2014 Tuesday 25 August, 7:00pm AEST.',
+    description: 'You\u2019re registered for the live webinar with Jacob Field \u2014 Tuesday 1 September, 12:30pm AEST.',
     path: '/webinar/registered',
   }),
   robots: { index: false, follow: false },
 };
 
-// Google Calendar: 7:00pm AEST (UTC+10) on 25 Aug 2026 = 09:00Z, 45 minutes.
+// Google Calendar: 12:30pm AEST (UTC+10) on 1 Sep 2026 = 02:30Z, 45 minutes.
 const gcalUrl = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
   + '&text=' + encodeURIComponent('Webinar: If I Were Buying an Investment Property in Australia Today \u2014 Jacob Field, Ripehouse Advisory')
-  + '&dates=20260825T090000Z/20260825T094500Z'
+  + '&dates=20260901T023000Z/20260901T031500Z'
   + '&details=' + encodeURIComponent('Your unique join link is in your confirmation email from Ripehouse Advisory (via Demio). Join a few minutes early.')
   + '&location=' + encodeURIComponent('Online \u2014 join link in your email');
 
@@ -27,13 +27,13 @@ export default function WebinarRegisteredPage() {
         <Link className="brand" href="/" aria-label="Ripehouse Advisory home">
           <img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" />
         </Link>
-        <span className="book-header-note">Free live webinar &middot; Tuesday 25 August</span>
+        <span className="book-header-note">Free live webinar &middot; Tuesday 1 September</span>
       </header>
 
       <section className="wb-registered section-shell">
         <p className="eyebrow"><span /> Registration confirmed</p>
         <h1>You&rsquo;re <i>registered.</i></h1>
-        <p className="wb-registered-when">Tuesday 25 August &middot; 7:00pm AEST &middot; 45 minutes &middot; Live online</p>
+        <p className="wb-registered-when">Tuesday 1 September &middot; 12:30pm AEST &middot; 45 minutes &middot; Live online</p>
         <p className="wb-registered-note">
           Your confirmation email is on its way with your unique join link.
           Reminders will follow the day before, one hour before and just before we go live.
