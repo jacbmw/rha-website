@@ -4,7 +4,7 @@ import MobileNav from '../components/MobileNav';
 import { assignSlugs, displayName, validProperties } from '../../lib/case-studies';
 import { pageMetadata } from '../../lib/seo';
 
-const logoUrl = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/00b2dce8-67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
+const logoUrl = '/images/rha-logo-dark.png';
 
 export const dynamic = 'force-dynamic';
 

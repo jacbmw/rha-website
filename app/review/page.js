@@ -4,10 +4,10 @@ import Footer from '../components/Footer';
 import VariantTracker from '../components/VariantTracker';
 import SectionRenderer from '../components/page-sections/SectionRenderer';
 import { resolveVariant } from '../../lib/pageVariants';
-import { pageMetadata } from '../../lib/seo';
+import { pageMetadata, SITE_URL } from '../../lib/seo';
 
-const logoUrl = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/00b2dce8-67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
-const jacobImage = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/92b44b8f-67907563bbfb3b1b418dc748_ripehouse-advisory-story-jacob-field.webp';
+const logoUrl = '/images/rha-logo-dark.png';
+const jacobImage = `${SITE_URL}/images/story-jacob-field.webp`;
 
 export const metadata = pageMetadata({
   title: 'Book a Discovery Call | Ripehouse Advisory',

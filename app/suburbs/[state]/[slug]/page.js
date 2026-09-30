@@ -15,7 +15,7 @@ export function generateStaticParams() {
   return []; // all pages on-demand
 }
 
-const logoUrl = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/00b2dce8-67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
+const logoUrl = '/images/rha-logo-dark.png';
 
 const fmtMoney = (value) => (value === null ? '—' : `$${Math.round(value).toLocaleString('en-AU')}`);
 

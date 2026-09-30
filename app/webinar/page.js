@@ -3,7 +3,7 @@ import Footer from '../components/Footer';
 import WebinarRegisterForm from './WebinarRegisterForm';
 import { pageMetadata } from '../../lib/seo';
 
-const logoUrl = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/00b2dce8-67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
+const logoUrl = '/images/rha-logo-dark.png';
 
 export const metadata = pageMetadata({
   title: 'Free Live Webinar: If I Were Buying an Investment Property in Australia Today | Ripehouse Advisory',
@@ -23,11 +23,11 @@ const modules = [
 ];
 
 const mastheads = [
-  ['https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/b9dd039d-678db1738e5c93eaf9da8c8f_realestate.png', 'realestate.com.au'],
-  ['https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/4b76d2b6-678db13a4efb03fe9099e686_dailymailau.png', 'Daily Mail Australia'],
-  ['https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/d615a4c1-678db07954301dead6655d03_eliteagent.png', 'Elite Agent'],
-  ['https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/976ed8c5-678db0a0c5f0946dd8da0897_thebordermail.png', 'The Border Mail'],
-  ['https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/4da9481e-678db0dde52f8ef00f31dfdd_smartpropertyinvestment.png', 'Smart Property Investment'],
+  ['/images/press-realestate.png', 'realestate.com.au'],
+  ['/images/press-dailymailau.png', 'Daily Mail Australia'],
+  ['/images/press-eliteagent.png', 'Elite Agent'],
+  ['/images/press-thebordermail.png', 'The Border Mail'],
+  ['/images/press-smartpropertyinvestment.png', 'Smart Property Investment'],
 ];
 
 export default function WebinarPage() {

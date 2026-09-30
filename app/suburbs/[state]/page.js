@@ -8,7 +8,7 @@ import { pageMetadata } from '../../../lib/seo';
 // Per-state suburb index — the crawlable / no-JS path into the 15k pages.
 export const revalidate = 86400;
 
-const logoUrl = 'https://rha-blog-assets.s3.ap-southeast-2.amazonaws.com/rha-site/00b2dce8-67883d925988c40eb2582e45_RHLogo_Dark-p-1600.png';
+const logoUrl = '/images/rha-logo-dark.png';
 
 const STATE_NAMES = {
   qld: 'Queensland', nsw: 'New South Wales', vic: 'Victoria', sa: 'South Australia',
