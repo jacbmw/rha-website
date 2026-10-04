@@ -69,6 +69,10 @@ const legacyRedirects = [
   { source: '/book/session', destination: '/discovery-call', permanent: true },
   { source: '/resources/mastermind-questions', destination: '/discovery-call', permanent: true },
   { source: '/referrals', destination: '/discovery-call', permanent: true },
+  // Legacy URLs still getting traffic (GA4, 2026-10-05)
+  { source: '/our-story', destination: '/about/story', permanent: true },
+  { source: '/our-story/:path*', destination: '/about/story', permanent: true },
+  { source: '/how-does-the-industry-calculate-days-on-market', destination: '/resources/blog', permanent: true },
   // Old root-level ad landing pages → discovery call
   { source: '/2025-the-year-you-build-real-wealth', destination: '/discovery-call', permanent: true },
   { source: '/see-what-10-compound-growth-can-do-for-you', destination: '/discovery-call', permanent: true },
