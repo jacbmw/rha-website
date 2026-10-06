@@ -9,10 +9,17 @@ export async function POST(request) {
     return NextResponse.json({ message: 'A valid email is required.' }, { status: 400 });
   }
 
+  // The worksheet lead magnet asks for a phone number — enforce it server-side too.
+  if (source === 'worksheet-budget' && String(phone || '').replace(/\D/g, '').length < 8) {
+    return NextResponse.json({ message: 'A valid phone number is required.' }, { status: 400 });
+  }
+
   const tag = source === 'ebook' ? 'Ebook — Top Five Markets'
+    : source === 'worksheet-budget' ? 'Worksheet — Budget'
     : source === 'suburb-miss' ? 'Suburb Widget — Missing Suburb'
     : 'Newsletter';
   const leadSource = source === 'ebook' ? 'rha-website-ebook'
+    : source === 'worksheet-budget' ? 'rha-website-worksheet-budget'
     : source === 'suburb-miss' ? 'rha-website-suburb-widget'
     : 'rha-website-newsletter';
   // Coverage prioritisation: log which suburb the reader wanted and couldn't get.
@@ -31,6 +38,10 @@ export async function POST(request) {
         tag,
         leadSource,
         form_source: formSource || undefined,
+        // Worksheet regos from an existing lead still tag the lead, backfill the
+        // phone and leave a note for sales (instead of a silent 409). Existing
+        // leads get the PDF from the thank-you page link.
+        touchExisting: source === 'worksheet-budget' ? true : undefined,
         suburbQuery: source === 'suburb-miss' ? String(suburbQuery || '').slice(0, 80) : undefined,
         vid: visitorId || undefined,
         page_url: attribution?.pageUrl || undefined,
