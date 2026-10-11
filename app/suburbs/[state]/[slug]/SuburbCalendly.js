@@ -10,7 +10,11 @@ const WIDGET_SRC = 'https://assets.calendly.com/assets/external/widget.js';
 // Discovery-call embed, prefilled so the call starts warm: the suburb rides in
 // on utm_content + the booking answer, and the visitor id on salesforce_uuid
 // (same server-side matching path as the /discovery-call page).
-export default function SuburbCalendly({ suburbName, suburbSlug, firstName }) {
+export default function SuburbCalendly({ suburbName, suburbSlug, firstName, sessionLabel, utmContent, onBooked }) {
+  const answer = sessionLabel || `Suburb Strategy Session — ${suburbName}`;
+  const content = utmContent || `suburb-${suburbSlug}`;
+  const onBookedRef = useRef(onBooked);
+  useEffect(() => { onBookedRef.current = onBooked; }, [onBooked]);
   const containerRef = useRef(null);
   const [booked, setBooked] = useState(false);
 
@@ -29,9 +33,9 @@ export default function SuburbCalendly({ suburbName, suburbSlug, firstName }) {
         parentElement: containerRef.current,
         prefill: {
           name: firstName || undefined,
-          customAnswers: { a1: `Suburb Strategy Session — ${suburbName}` },
+          customAnswers: { a1: answer },
         },
-        utm: { utmContent: `suburb-${suburbSlug}` },
+        utm: { utmContent: content },
       });
     };
 
@@ -53,7 +57,8 @@ export default function SuburbCalendly({ suburbName, suburbSlug, firstName }) {
       if (event.data?.event === 'calendly.event_scheduled') {
         setBooked(true);
         window.fbq?.('track', 'Schedule');
-        window.gtag?.('event', 'discovery_booked', { event_category: 'conversion', event_label: `suburb-${suburbSlug}` });
+        window.gtag?.('event', 'discovery_booked', { event_category: 'conversion', event_label: content });
+        onBookedRef.current?.();
         const signals = collectIrSignals();
         fetch(`${process.env.NEXT_PUBLIC_RHA_IR_URL || 'https://dashboard.picki.com.au'}/api/ir/pageview`, {
           method: 'POST',
@@ -68,7 +73,7 @@ export default function SuburbCalendly({ suburbName, suburbSlug, firstName }) {
       window.removeEventListener('message', onMessage);
       script?.removeEventListener('load', init);
     };
-  }, [suburbName, suburbSlug, firstName]);
+  }, [answer, content, firstName]);
 
   return (
     <div className="calendly-frame suburb-calendly">

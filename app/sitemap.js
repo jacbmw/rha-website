@@ -33,6 +33,8 @@ export default async function sitemap() {
     ...['qld', 'nsw', 'vic', 'sa', 'wa', 'tas', 'nt', 'act'].map((state) => ({
       url: `${baseUrl}/suburbs/${state}`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.6,
     })),
+    // Individual street pages ship in batched sitemaps at /streets/sitemap/[id].xml (from the nightly bake)
+    { url: `${baseUrl}/streets`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
     { url: `${baseUrl}/legal/privacy-policy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.2 },
     { url: `${baseUrl}/legal/terms-and-conditions`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.2 },
   ];

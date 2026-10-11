@@ -33,6 +33,7 @@ export async function POST(request) {
       headers: { 'X-API-Key': process.env.RHA_LEADS_API_KEY || '' },
       body: JSON.stringify({
         email,
+        marketingOptIn: true,
         fullname: name || '',
         phone: phone || undefined,
         tag,

@@ -1,0 +1,20 @@
+{
+  "pageKey": "panel-street-report",
+  "props": {
+    "segmentHeading": "What brings you to this street?",
+    "segmentCopy": "Tap one and we'll tailor the full report to you. Optional.",
+    "segmentSkip": "Skip — just show me the full report",
+    "heading": "Get the full {street} report",
+    "headingSegment": "Get the full {street} report — for {segment}",
+    "copy": "Unlocks here instantly and lands in your inbox. Free. No phone number.",
+    "firstNamePlaceholder": "First name (optional)",
+    "emailPlaceholder": "Your email",
+    "streetWatchLabel": "Tell me when {street}'s score changes (Street Watch). Unsubscribe any time.",
+    "buttonLabel": "Unlock the full report",
+    "buttonSendingLabel": "Unlocking…",
+    "stickyLabel": "Unlock the full {street} report",
+    "exitHeading": "Want the full {street} report?",
+    "exitCopy": "We'll email it to you and unlock it here — including how it compares with every other street in {suburb}.",
+    "exitButton": "Email it to me"
+  }
+}

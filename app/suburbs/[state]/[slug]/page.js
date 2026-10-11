@@ -136,6 +136,9 @@ export default async function SuburbPage({ params }) {
             <p>{stats.vacancy === null ? 'Not enough rental listings to measure vacancy reliably.' : stats.vacancy < 1.5 ? 'Anything under 1.5% means renters are competing for what little is available.' : 'Above the 1.5% line where the rental market starts to loosen.'}</p>
           </div>
         </div>
+        <p className="suburb-street-link">
+          Suburb averages hide a lot. <Link href={`/streets/${snapshot.slug}`}>Check how your street compares with the rest of {snapshot.name} →</Link>
+        </p>
       </section>
 
       {/* ── Layers 1 + 2 (client) ───────────────────────────────────────── */}

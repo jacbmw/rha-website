@@ -1,0 +1,49 @@
+name: Bake Street Scores
+
+# Nightly Street Score bake (scripts/bake-streets.mjs): recomputes the stalest
+# suburbs within a time budget and writes warehouse.street_score_bake. The
+# first full pass takes a few nights; after that each night only refreshes
+# suburbs older than 25 days (the underlying data moves monthly).
+#
+# Required repository secrets: RIPEHOUSE_DB_HOST, RIPEHOUSE_DB_USER,
+# RIPEHOUSE_DB_PASSWORD (and optionally RIPEHOUSE_DB_PORT). Use a dedicated
+# warehouse user with SELECT on gnaf_aug_2024 / abs / rhi / warehouse /
+# real_estate and INSERT/UPDATE/DELETE/CREATE on warehouse.street_score_* only.
+
+on:
+  schedule:
+    - cron: '15 15 * * *'   # 01:15 Melbourne (AEST) / 02:15 AEDT
+  workflow_dispatch:
+    inputs:
+      budget_minutes:
+        description: 'Time budget in minutes'
+        default: '180'
+      extra_args:
+        description: 'Extra CLI args (e.g. --all or --suburb vic/frankston)'
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bake-streets
+  cancel-in-progress: false
+
+jobs:
+  bake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci --omit=dev --ignore-scripts
+      - name: Bake
+        env:
+          RIPEHOUSE_DB_HOST: ${{ secrets.RIPEHOUSE_DB_HOST }}
+          RIPEHOUSE_DB_PORT: ${{ secrets.RIPEHOUSE_DB_PORT }}
+          RIPEHOUSE_DB_USER: ${{ secrets.RIPEHOUSE_DB_USER }}
+          RIPEHOUSE_DB_PASSWORD: ${{ secrets.RIPEHOUSE_DB_PASSWORD }}
+        run: node --experimental-detect-module scripts/bake-streets.mjs --budget-minutes "${{ github.event.inputs.budget_minutes || '180' }}" ${{ github.event.inputs.extra_args }}

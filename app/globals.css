@@ -703,6 +703,136 @@
 .suburb-plain-list a{color:var(--muted);transition:color .2s}
 .suburb-plain-list a:hover{color:var(--ink)}
 @media(max-width:900px){.suburb-plain-list{columns:2}}
+.suburb-street-link{border-bottom:1px solid var(--line);color:var(--muted);font-size:13.5px;margin:0;padding:22px 0}
+.suburb-street-link a{border-bottom:1px solid var(--lime);color:var(--ink)}
+
+/* ── Street Score ─────────────────────────────────────────────── */
+.street-page .suburb-meta a{border-bottom:1px solid var(--line)}
+.street-compare{border-bottom:1px solid var(--line);display:grid;gap:44px;grid-template-columns:1.1fr .9fr;padding:34px 0}
+.street-compare-bars{display:flex;flex-direction:column;gap:20px}
+.street-compare-head{align-items:baseline;display:flex;font-size:13.5px;justify-content:space-between;margin-bottom:8px}
+.street-compare-head strong{font-family:Georgia,serif;font-size:26px;font-weight:400}
+.street-compare-track{background:rgba(20,26,50,.1);height:6px}
+.street-compare-track span{background:var(--ink);display:block;height:6px;transition:width .6s ease}
+.street-compare-track span.accent{background:var(--lime)}
+.street-compare-row p{color:var(--muted);font-size:11.5px;margin:7px 0 0}
+.street-compare-callout{font-family:Georgia,serif;font-size:21px;letter-spacing:-.025em;line-height:1.3;margin:0 0 16px}
+.street-tests{list-style:none;margin:0;padding:0}
+.street-tests li{align-items:center;border-bottom:1px solid var(--line);display:flex;font-size:13px;gap:12px;padding:11px 0}
+.street-tests li span{align-items:center;border-radius:50%;display:inline-flex;flex-shrink:0;font-size:11px;font-weight:700;height:22px;justify-content:center;width:22px}
+.street-tests li.pass span{background:rgba(199,152,16,.18);color:#8a6a0c}
+.street-tests li.fail span{background:rgba(20,26,50,.08);color:var(--muted)}
+.street-tests li.na{color:var(--muted)}
+.street-tests li.na span{background:rgba(20,26,50,.05)}
+.street-segment{margin-top:40px;opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.street-segment.in{opacity:1;transform:none}
+.street-segment-heading{font-family:Georgia,serif;font-size:clamp(26px,3.2vw,36px);letter-spacing:-.04em;line-height:1.05;margin:0 0 8px}
+.street-segment-copy{color:var(--muted);font-size:13.5px;margin:0 0 22px}
+.street-segment-grid{display:grid;gap:12px;grid-template-columns:repeat(4,1fr)}
+.street-segment-grid button{background:#fff;border:1px solid var(--line);border-radius:2px;cursor:pointer;display:flex;flex-direction:column;font:inherit;gap:6px;min-height:96px;padding:20px 18px;text-align:left;transition:border-color .2s,transform .2s}
+.street-segment-grid button b{font-family:Georgia,serif;font-size:20px;font-weight:400;letter-spacing:-.02em}
+.street-segment-grid button span{color:var(--muted);font-size:12px;line-height:1.45}
+.street-segment-grid button:hover{border-color:var(--lime);transform:translateY(-2px)}
+.street-segment-grid button.active{background:var(--cream);border-color:var(--lime);box-shadow:inset 0 0 0 1px var(--lime)}
+.street-segment-skip{background:none;border:0;color:var(--muted);cursor:pointer;font:inherit;font-size:13px;margin-top:10px;min-height:44px;padding:12px 0;text-decoration:underline}
+.street-locked{margin-top:30px}
+.street-segment-switch{align-items:center;display:flex;flex-wrap:wrap;gap:8px;margin:0 0 34px}
+.street-segment-switch span{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.12em;margin-right:4px;text-transform:uppercase}
+.street-segment-switch button{background:none;border:1px solid var(--line);border-radius:22px;cursor:pointer;font:inherit;font-size:13px;min-height:44px;padding:10px 16px}
+.street-segment-switch button.active{background:var(--ink);border-color:var(--ink);color:#fff}
+.street-segment-switch button:disabled{cursor:wait;opacity:.6}
+.street-drivers strong.pass{color:#8a6a0c}
+.street-drivers strong.fail{color:var(--muted)}
+.street-driver-line{color:var(--ink);font-weight:700}
+.street-subhead{font-family:Georgia,serif;font-size:22px;letter-spacing:-.025em;margin:0 0 10px}
+.street-note{color:var(--muted);font-size:13.5px;line-height:1.65;margin:0 0 14px;max-width:720px}
+.street-blocks,.street-evidence,.street-segment-block,.street-curious{border-top:1px solid var(--line);margin-top:40px;padding-top:28px}
+.street-blocks table{border-collapse:collapse;font-size:13px;width:100%}
+.street-blocks th{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.12em;padding:8px 6px;text-align:left;text-transform:uppercase}
+.street-blocks td{border-top:1px solid var(--line);padding:10px 6px}
+.street-list{list-style:none;margin:0;padding:0}
+.street-list li{align-items:baseline;border-bottom:1px solid var(--line);display:flex;font-size:14px;gap:16px;justify-content:space-between;padding:12px 0}
+.street-list a{border-bottom:1px solid var(--lime);font-family:Georgia,serif;font-size:17px}
+.street-list span{color:var(--muted);font-size:12px;text-align:right}
+.street-bestworst{display:grid;gap:44px;grid-template-columns:1fr 1fr}
+.street-rentvsown{display:grid;gap:0;grid-template-columns:repeat(3,1fr);margin-top:18px}
+.street-rentvsown>div{border-bottom:1px solid var(--line);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:8px;padding:18px 18px 18px 0}
+.street-rentvsown>div:not(:first-child){padding-left:18px}
+.street-rentvsown>div:nth-child(3){border-right:0}
+.street-rentvsown span{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.street-rentvsown strong{font-family:Georgia,serif;font-size:30px;font-weight:400;letter-spacing:-.04em}
+.street-rentvsown .street-note{grid-column:1/-1;margin-top:14px}
+.street-phone-form{display:flex;flex-direction:column;gap:12px;max-width:560px}
+.street-consent{align-items:flex-start;color:rgba(255,255,255,.8);cursor:pointer;display:flex;font-size:12px;gap:10px;line-height:1.5}
+.street-consent input{flex-shrink:0;margin-top:2px}
+.street-consent-fine{color:rgba(255,255,255,.5);font-size:10.5px;line-height:1.55;margin:0}
+.street-profile{background:var(--paper);color:var(--ink);margin-top:26px;padding:28px 30px}
+.street-curious .street-profile{background:var(--cream)}
+.street-profile-heading{color:#8a6a0c;font-size:10px;font-weight:700;letter-spacing:.15em;margin:0 0 6px;text-transform:uppercase}
+.street-profile-step{color:var(--muted);font-size:11px;margin:0 0 12px}
+.street-profile-question{font-family:Georgia,serif;font-size:22px;letter-spacing:-.025em;line-height:1.25;margin:0 0 16px}
+.street-profile-options{display:flex;flex-wrap:wrap;gap:8px}
+.street-profile-options button{background:#fff;border:1px solid var(--line);border-radius:2px;cursor:pointer;font:inherit;font-size:14px;min-height:44px;padding:12px 16px;transition:border-color .2s}
+.street-profile-options button:hover{border-color:var(--lime)}
+.street-profile-other{display:flex;gap:8px;margin-top:12px;max-width:480px}
+.street-profile-other input{border:1px solid var(--line);border-radius:2px;flex:1;font:inherit;font-size:13px;min-width:0;padding:11px 13px}
+.street-profile-other button{background:var(--ink);border:0;border-radius:2px;color:#fff;cursor:pointer;font:inherit;font-size:12px;padding:11px 16px}
+.street-profile-other button:disabled{opacity:.5}
+.street-profile-skip{background:none;border:0;color:var(--muted);cursor:pointer;font:inherit;font-size:13px;margin-top:8px;min-height:44px;padding:12px 0;text-decoration:underline}
+.street-profile-other button{min-height:44px}
+.street-list a{display:inline-block;padding:6px 0}
+@media(prefers-reduced-motion:reduce){.street-segment{transition:none}.street-compare-track span{transition:none}}
+.street-profile.done p{font-family:Georgia,serif;font-size:18px;margin:0}
+.street-search-suburb{align-items:center;display:flex;font-family:Georgia,serif;font-size:20px;gap:14px;margin:0 0 12px}
+.street-search-suburb button{background:none;border:0;color:var(--muted);cursor:pointer;font:inherit;font-family:Arial,sans-serif;font-size:12px;text-decoration:underline}
+@media(max-width:900px){
+.street-compare,.street-bestworst{grid-template-columns:1fr;gap:30px}
+.street-segment-grid{grid-template-columns:1fr 1fr}
+.street-rentvsown{grid-template-columns:1fr}
+.street-rentvsown>div{border-right:0;padding-left:0!important}
+.street-blocks{overflow-x:auto}
+.street-profile{padding:24px 20px}
+.street-segment-grid button{min-height:88px;padding:16px 16px}
+}
+/* Street Score — hero credibility + mobile funnel chrome */
+.street-tests-inline{margin:0 0 16px}
+.street-tests-inline li{border-bottom:0;font-size:12.5px;padding:5px 0}
+.street-provenance{color:var(--muted);font-size:11.5px;line-height:1.6;margin:14px 0 0}
+.street-national{background:var(--cream);border-left:3px solid var(--lime);font-size:13.5px;line-height:1.6;margin:16px 0 0;padding:12px 16px}
+.street-confidence{border-radius:12px;display:inline-block;font-size:10px;font-weight:700;letter-spacing:.1em;padding:3px 9px;text-transform:uppercase;vertical-align:middle}
+.street-confidence-high{background:rgba(199,152,16,.16);color:#8a6a0c}
+.street-confidence-medium{background:rgba(20,26,50,.08);color:var(--ink)}
+.street-confidence-low{background:rgba(192,57,43,.12);color:#a33a2c}
+.street-compare-head strong,.suburb-teaser strong,.street-dial text{font-variant-numeric:tabular-nums}
+.street-compare-another{border-top:1px solid var(--line);font-size:14px;margin:34px 0 0;padding-top:20px}
+.street-compare-another a{border-bottom:1px solid var(--lime)}
+.street-consent-intro{color:rgba(255,255,255,.85);font-size:13px;font-weight:700;margin:6px 0 0}
+.street-consent span b{color:#fff}
+.street-sticky{display:none}
+.street-sheet-close{display:none}
+.street-gate{position:relative}
+@media(max-width:800px){
+.street-sticky{background:rgba(251,250,247,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);bottom:0;display:block;left:0;padding:10px 16px calc(10px + env(safe-area-inset-bottom));position:fixed;right:0;z-index:70}
+.street-sticky button{background:var(--ink);border:0;border-radius:12px;color:#fff;cursor:pointer;font:inherit;font-size:15px;font-weight:700;min-height:52px;padding:14px 18px;width:100%}
+.street-sticky button:active{transform:scale(.985)}
+.street-page{padding-bottom:84px}
+.street-sheet-overlay{align-items:flex-end;background:rgba(20,26,50,.5);backdrop-filter:blur(2px);display:flex;inset:0;position:fixed;z-index:85}
+.street-sheet{animation:street-sheet-up .32s cubic-bezier(.2,.8,.2,1);background:var(--paper);border-radius:18px 18px 0 0;max-height:92vh;overflow:auto;padding:8px 0 calc(12px + env(safe-area-inset-bottom));width:100%}
+.street-sheet-handle{background:rgba(20,26,50,.2);border-radius:3px;height:5px;margin:6px auto 10px;width:40px}
+.street-sheet .street-locked{display:block;margin:0}
+.street-sheet .suburb-preview{display:none}
+.street-sheet .suburb-gate{border-radius:14px 14px 0 0;padding:30px 22px calc(26px + env(safe-area-inset-bottom))}
+.street-sheet-close{background:rgba(255,255,255,.14);border:0;border-radius:50%;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;height:40px;position:absolute;right:14px;top:12px;width:40px}
+@keyframes street-sheet-up{from{transform:translateY(100%)}to{transform:none}}
+}
+@media(prefers-reduced-motion:reduce){.street-sheet{animation:none}}
+.street-segment-grid button:focus-visible,.street-segment-switch button:focus-visible,.street-profile-options button:focus-visible,.suburb-gate-form button:focus-visible,.street-sticky button:focus-visible{outline:3px solid var(--lime);outline-offset:2px}
+.street-segment-grid button:active,.street-profile-options button:active{transform:scale(.98)}
+/* iOS Safari zooms the page when a focused input is under 16px — keep every
+   funnel input at 16px on touch widths (suburb + street gates, phone, search). */
+@media(max-width:800px){
+.suburb-gate-form input[type=text],.suburb-gate-form input[type=email],.suburb-gate-form select,.suburb-phone-form input[type=tel],.street-profile-other input,.suburb-widget-search input,.exit-modal .signup-form input{font-size:16px}
+}
 
 /* Improve contrast for the approach section eyebrow on the cream background */
 .cagr-section .eyebrow.light{color:var(--ink)}

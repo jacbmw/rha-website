@@ -1,0 +1,21 @@
+{
+  "pageKey": "panel-street-review",
+  "props": {
+    "eyebrow": "Street Review · 15 minutes · free",
+    "buyingHeading": "Book a 15-minute Street Review of {street}",
+    "buyingPitch": "We'll tell you straight whether we'd buy on {street} — and if we wouldn't, which streets in {suburb} (or nearby) we'd look at instead, and why.",
+    "buyingButton": "Book my Street Review",
+    "ownHeading": "What {street} means for your equity",
+    "ownPitch": "You already hold the asset. In 15 minutes we'll walk through what the street-level data means for its value, whether it's dragging on your portfolio, and what the sensible next move looks like.",
+    "ownButton": "Book my Street Review",
+    "rentHeading": "Want the rent-vs-buy numbers for you?",
+    "rentPitch": "No hard sell. If you'd like, we'll run the rentvesting maths for your situation — keep renting where you want to live, buy where the numbers work.",
+    "rentButton": "Send me the numbers",
+    "phonePlaceholder": "Your mobile number",
+    "consentIntro": "How should we follow up? Both are optional — the Review itself needs neither.",
+    "noSalesLine": "No sales call unless you book one.",
+    "doneCopy": "Got it. Pick a time below and we'll bring {street} — and any other streets you're weighing up — to the call.",
+    "curiousHeading": "Keep an eye on {suburb}",
+    "curiousCopy": "We'll email you if {street}'s score moves."
+  }
+}
