@@ -1,0 +1,11 @@
+{ "pageKey": "panel-street-rail", "props": {
+  "eyebrow": "Street Score · free",
+  "heading": "The suburb passed. *Did the street?*",
+  "copy": "Two streets a block apart can trade like different suburbs. We score every street in Australia on four tests and show you where it sits against its own suburb.",
+  "tests": ["Owner-occupiers above 65%", "Public housing 5% or less", "Rent at or above suburb median", "Yield at or above suburb"],
+  "cta": "Check a street",
+  "finePrint": "Free · no sign-up to see the score",
+  "href": "/streets",
+  "sampleScore": 75,
+  "sampleSuburbAverage": 50
+}}

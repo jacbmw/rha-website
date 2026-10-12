@@ -1,0 +1,8 @@
+{ "pageKey": "panel-exit-intent-street", "props": {
+  "eyebrow": "Before you go",
+  "heading": "Suburb averages hide a lot.\n*Your street's score doesn't.*",
+  "text": "Type any Australian street and see how it scores against the rest of its suburb — free, and no email needed to see the number.",
+  "cta": "Check a street now",
+  "dismiss": "No thanks, the suburb average is fine",
+  "href": "/streets"
+}}

@@ -3,20 +3,18 @@
 import {
   createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState,
 } from 'react';
-import WebinarBanner from './WebinarBanner';
-import ArticleEbookPanel from './panels/ArticleEbookPanel';
-import ArticleFooterPanel from './panels/ArticleFooterPanel';
-import ArticleInlinePanel from './panels/ArticleInlinePanel';
-import SuburbScoreWidget from './SuburbScoreWidget';
+import StreetRailPanel from './panels/StreetRailPanel';
+import StreetInlinePanel from './panels/StreetInlinePanel';
+import StreetFooterPanel from './panels/StreetFooterPanel';
+import StreetCardPanel from './panels/StreetCardPanel';
 
 const STORAGE_KEY = 'rha_admix_stats';
 
 const PANELS = [
-  { key: 'panel-webinar-banner', component: WebinarBanner, defaultProps: { placement: 'inline' } },
-  { key: 'panel-article-ebook', component: ArticleEbookPanel },
-  { key: 'panel-article-footer', component: ArticleFooterPanel },
-  { key: 'panel-article-inline', component: ArticleInlinePanel },
-  { key: 'panel-suburb-score', component: SuburbScoreWidget, defaultProps: { placement: 'article' } },
+  { key: 'panel-street-rail', component: StreetRailPanel, defaultProps: { placement: 'inline' } },
+  { key: 'panel-street-inline', component: StreetInlinePanel },
+  { key: 'panel-street-footer', component: StreetFooterPanel },
+  { key: 'panel-street-card', component: StreetCardPanel },
 ];
 
 const AdMixContext = createContext(null);
@@ -117,7 +115,7 @@ export function useAdSlot({ excludeOnDesktop = false } = {}) {
 
   useEffect(() => {
     if (!ctx?.ready) return undefined;
-    const excludedKeys = excludeOnDesktop && window.innerWidth > 1100 ? ['panel-webinar-banner'] : [];
+    const excludedKeys = excludeOnDesktop && window.innerWidth > 1100 ? ['panel-street-rail'] : [];
     const claimed = ctx.claim(id, excludedKeys);
     const frame = requestAnimationFrame(() => setPanel(claimed));
     return () => cancelAnimationFrame(frame);
@@ -134,4 +132,12 @@ export function useAdSlot({ excludeOnDesktop = false } = {}) {
     recordClick: ctx.recordClick,
     recordConversion: ctx.recordConversion,
   };
+}
+
+// Read one resolved variant out of the AdMix context (null-safe). Used by
+// panels that render outside the ranked slot rotation, e.g. the inline
+// street pitch after the article body.
+export function useAdMixVariant(key) {
+  const ctx = useContext(AdMixContext);
+  return ctx?.variants?.[key] || null;
 }

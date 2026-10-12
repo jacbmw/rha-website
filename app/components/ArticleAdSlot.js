@@ -2,18 +2,16 @@
 
 import { useId, useRef } from 'react';
 import { useAdSlot } from './AdMixProvider';
-import WebinarBanner from './WebinarBanner';
-import ArticleEbookPanel from './panels/ArticleEbookPanel';
-import ArticleFooterPanel from './panels/ArticleFooterPanel';
-import ArticleInlinePanel from './panels/ArticleInlinePanel';
-import SuburbScoreWidget from './SuburbScoreWidget';
+import StreetRailPanel from './panels/StreetRailPanel';
+import StreetInlinePanel from './panels/StreetInlinePanel';
+import StreetFooterPanel from './panels/StreetFooterPanel';
+import StreetCardPanel from './panels/StreetCardPanel';
 
 const COMPONENTS = {
-  'panel-webinar-banner': WebinarBanner,
-  'panel-article-ebook': ArticleEbookPanel,
-  'panel-article-footer': ArticleFooterPanel,
-  'panel-article-inline': ArticleInlinePanel,
-  'panel-suburb-score': SuburbScoreWidget,
+  'panel-street-rail': StreetRailPanel,
+  'panel-street-inline': StreetInlinePanel,
+  'panel-street-footer': StreetFooterPanel,
+  'panel-street-card': StreetCardPanel,
 };
 
 export default function ArticleAdSlot({ className = '', excludeWebinarOnDesktop = false }) {

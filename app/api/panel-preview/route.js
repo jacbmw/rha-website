@@ -31,7 +31,7 @@ export async function GET(request) {
       if (entry && streets[0]) target = `/streets/tas/battery-point/${streets[0].slug}`;
       else target = '/streets';
     } catch { target = '/streets'; }
-  } else if (panel !== 'panel-blog-hero') {
+  } else if (panel !== 'panel-blog-hero' && panel !== 'panel-street-hero') {
     try {
       const posts = await listBlogItems({ limit: 1 });
       if (posts[0]?.slug) target = `/resources/blog/${posts[0].slug}`;

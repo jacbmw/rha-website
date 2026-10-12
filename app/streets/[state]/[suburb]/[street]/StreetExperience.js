@@ -8,6 +8,7 @@ import usePanelTracking from '../../../../components/panels/usePanelTracking';
 import { getVisitorId, getAttribution, recordStreetCheck, getStreetChecks } from '../../../../../lib/visitor';
 import { irIdentify } from '../../../../../lib/ir';
 import { trackActivity, trackEngagement } from '../../../../../lib/activity';
+import { creditPanelReferral } from '../../../../../lib/abTracking';
 import { resolvePanelClient } from '../../../../../lib/panelClient';
 import { SEGMENT_OPTIONS, SEGMENT_LABELS, CONSENT_TEXT, COLLECTION_NOTICE } from '../../../../../lib/streetShared';
 import reportPanelDefault from '../../../../../content/panels/panel-street-report.json';
@@ -359,6 +360,8 @@ export default function StreetExperience({ snapshot }) {
       window.fbq?.('track', 'Lead');
       window.gtag?.('event', 'generate_lead', { event_category: 'conversion', event_label: 'street-score' });
       trackActivity('report_unlock', ctx({ returning: false, origin }));
+      // Conversion credit for the Market Intel panel that sent this visitor.
+      creditPanelReferral('street_report_unlock');
       if (origin === 'gate') trackGateConversion('report_unlock');
       setExitOpen(false);
       setFormOpen(false);

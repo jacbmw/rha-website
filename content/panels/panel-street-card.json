@@ -1,0 +1,9 @@
+{ "pageKey": "panel-street-card", "props": {
+  "flag": "Free tool",
+  "heading": "Four tests every street has to pass before we'd buy on it",
+  "text": "Owner-occupiers above 65%. Public housing at 5% or less. Rent and yield at or above the suburb. Every street in Australia, scored and ranked within its suburb — not averaged away.",
+  "linkLabel": "See how yours scores",
+  "href": "/streets",
+  "sampleScore": 75,
+  "sampleSuburbAverage": 50
+}}

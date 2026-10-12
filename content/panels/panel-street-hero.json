@@ -1,0 +1,7 @@
+{ "pageKey": "panel-street-hero", "props": {
+  "eyebrow": "New · Street Score",
+  "heading": "Start with a street you know.",
+  "copy": "Every Australian street, scored against its suburb. Free, no sign-up to see the score.",
+  "cta": "Check a street",
+  "href": "/streets"
+}}

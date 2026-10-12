@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Footer from '../../components/Footer.js';
 import MobileNav from '../../components/MobileNav';
 import { listBlogItems } from '../../../lib/blog-store';
-import BlogHeroPanel from '../../components/panels/BlogHeroPanel';
+import StreetHeroPanel from '../../components/panels/StreetHeroPanel';
 import BlogGrid from './BlogGrid';
 import { resolvePanel } from '../../../lib/panelVariants';
 import { pageMetadata } from '../../../lib/seo';
@@ -66,7 +66,7 @@ export default async function BlogPage() {
   } catch (error) {
     console.error('Unable to load Market Intel:', error.message);
   }
-  const heroPanel = await resolvePanel('panel-blog-hero');
+  const heroPanel = await resolvePanel('panel-street-hero');
 
   return (
     <main className="blog-page">
@@ -76,11 +76,11 @@ export default async function BlogPage() {
         <h1>Market <i>Intel.</i></h1>
         <div className="blog-hero-row">
           <p>News decoded, data analysed, suburbs dissected and strategy tested — everything we publish exists to make your next property decision sharper.</p>
-          <BlogHeroPanel variant={heroPanel} />
+          <StreetHeroPanel variant={heroPanel} />
         </div>
       </section>
       <section className="blog-content section-shell"><BlogGrid posts={posts} /></section>
-      <section className="blog-cta section-shell"><div><p className="eyebrow light"><span /> Want the bigger picture?</p><h2>Strategy starts<br />with <i>context.</i></h2><p>Talk to our team about what the market means for your next move.</p><Link className="button button-light" href="/discovery-call">Book Discovery Call <span>↗</span></Link></div></section>
+      <section className="blog-cta section-shell"><div><p className="eyebrow light"><span /> Street Score</p><h2>Strategy starts<br />at <i>street level.</i></h2><p>Every Australian street, scored against its own suburb. Check the one you&rsquo;re thinking about — free, and we show our working.</p><Link className="button button-light" href="/streets?int_ref=blog-index">Check a street <span>↗</span></Link></div></section>
 
       <Footer />
     </main>

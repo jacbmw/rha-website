@@ -1,0 +1,7 @@
+{ "pageKey": "panel-street-inline", "props": {
+  "label": "Put this to work",
+  "text": "Market Intel tells you where a market is heading. Street Score tells you whether the street you're looking at will come along for the ride — every Australian street, scored against its suburb.",
+  "cta": "Score a street",
+  "finePrint": "Free. Ten seconds. No email needed to see the score.",
+  "href": "/streets"
+}}

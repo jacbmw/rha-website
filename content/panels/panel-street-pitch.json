@@ -1,0 +1,6 @@
+{ "pageKey": "panel-street-pitch", "props": {
+  "before": "If there's a specific street you're weighing up right now, check its ",
+  "linkText": "Street Score",
+  "after": " first — it's free, takes ten seconds, and tells you whether that street is pulling the suburb average up or riding on it.",
+  "href": "/streets"
+}}

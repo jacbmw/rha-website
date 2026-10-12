@@ -3,9 +3,9 @@ import Footer from '../../../components/Footer';
 import MobileNav from '../../../components/MobileNav';
 import { notFound } from 'next/navigation';
 import { getBlogItemBySlug, listBlogItems } from '../../../../lib/blog-store';
-import WebinarBanner from '../../../components/WebinarBanner';
+import StreetRailPanel from '../../../components/panels/StreetRailPanel';
 import ArticleAdSlot from '../../../components/ArticleAdSlot';
-import ArticleWebinarPitch from '../../../components/ArticleWebinarPitch';
+import ArticleStreetPitch from '../../../components/panels/ArticleStreetPitch';
 import { AdMixProvider } from '../../../components/AdMixProvider';
 import EndlessScroll from '../../../components/EndlessScroll';
 import { splitBody } from '../../../../lib/blog-body';
@@ -59,12 +59,12 @@ export default async function BlogArticle({ params }) {
     }
   } catch { /* related content is optional */ }
 
-  const [webinarPanel, ebookPanel, footerPanel, inlinePanel, suburbPanel] = await Promise.all([
-    resolvePanel('panel-webinar-banner'),
-    resolvePanel('panel-article-ebook'),
-    resolvePanel('panel-article-footer'),
-    resolvePanel('panel-article-inline'),
-    resolvePanel('panel-suburb-score'),
+  const [railPanel, inlinePanel, footerPanel, cardPanel, pitchPanel] = await Promise.all([
+    resolvePanel('panel-street-rail'),
+    resolvePanel('panel-street-inline'),
+    resolvePanel('panel-street-footer'),
+    resolvePanel('panel-street-card'),
+    resolvePanel('panel-street-pitch'),
   ]);
 
   const [bodyLead, bodyRest] = splitBody(post.body, 0.5);
@@ -74,11 +74,11 @@ export default async function BlogArticle({ params }) {
       <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/#story">Our story</Link><Link href="/#approach">Our approach</Link><Link className="active" href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/resources/blog">← All stories</Link><MobileNav links={[{ label: 'Our story', href: '/#story' }, { label: 'Our approach', href: '/#approach' }, { label: 'Market intel', href: '/resources/blog' }, { label: 'Contact', href: '/#contact' }]} /></header>
 
       <AdMixProvider variants={{
-        'panel-webinar-banner': webinarPanel,
-        'panel-article-ebook': ebookPanel,
-        'panel-article-footer': footerPanel,
-        'panel-article-inline': inlinePanel,
-        'panel-suburb-score': suburbPanel,
+        'panel-street-rail': railPanel,
+        'panel-street-inline': inlinePanel,
+        'panel-street-footer': footerPanel,
+        'panel-street-card': cardPanel,
+        'panel-street-pitch': pitchPanel,
       }}
       >
         <div className="article-layout">
@@ -96,7 +96,7 @@ export default async function BlogArticle({ params }) {
             <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyLead }} />
             <ArticleAdSlot excludeWebinarOnDesktop />
             <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyRest }} />
-            <ArticleWebinarPitch pitch={post.webinarPitch} post={post} />
+            <ArticleStreetPitch post={post} />
             {post.faq?.items?.length > 0 && (
               <section className="article-faq" aria-labelledby="article-faq-heading">
                 <h2 id="article-faq-heading">Frequently asked questions</h2>
@@ -130,8 +130,8 @@ export default async function BlogArticle({ params }) {
             <p className="article-disclaimer">General information only. It does not take your objectives, financial situation or needs into account, and nothing here is legal, financial, taxation or investment advice specific to your circumstances.</p>
           </article>
 
-          <aside className="article-rail" aria-label="Webinar">
-            <WebinarBanner variant={webinarPanel} placement="rail" />
+          <aside className="article-rail" aria-label="Street Score">
+            <StreetRailPanel variant={railPanel} placement="rail" />
           </aside>
         </div>
 

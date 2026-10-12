@@ -1,0 +1,7 @@
+{ "pageKey": "panel-street-footer", "props": {
+  "eyebrow": "Ten seconds, not ten minutes",
+  "heading": "You've read the research.\n*Now check your street.*",
+  "text": "Whether you own on it, rent on it or are about to bid on it — see how your street scores against the rest of its suburb. Free, and we publish exactly how it's calculated.",
+  "cta": "Check my street",
+  "href": "/streets"
+}}

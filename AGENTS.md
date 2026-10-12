@@ -83,3 +83,18 @@ records consent unless the address is already restricted.
   streetKey/streetName/segment/streetScore/suburbStreetAverage/streetsChecked/suburbsChecked/
   consents/webProfile/entry*; persisted by rha-dashboard `lib/streetScoreCapture.js`.
 - `NEXT_PUBLIC_RHA_YOUTUBE_URL` (optional) shows the YouTube link to "curious" visitors.
+
+## Market Intel CTA takeover (Street Score)
+- Every CTA on `/resources/blog` (index, articles, mobile endless feed, blog exit intent) points
+  at `/streets?int_ref=blog-<placement>`. Panels + JSON defaults (`content/panels/`):
+  `panel-street-hero` (index hero), `panel-street-rail` (desktop sticky rail; also rotates
+  inline on <1101px), `panel-street-inline`, `panel-street-footer`, `panel-street-card`
+  (the 4 keys in the `AdMixProvider` rotation), `panel-street-pitch` (sentence after the body,
+  variant read via `useAdMixVariant`), `panel-exit-intent-street` (ExitIntentModal on blog
+  paths only; newsletter modal everywhere else). Index footer block is static in `page.js`.
+- Components live in `app/components/panels/Street*.js`; `StreetScoreArt` is the static dial.
+  Each click → `usePanelTracking` click + `storePanelReferral`; the street report unlock calls
+  `creditPanelReferral('street_report_unlock')` so panel variants get conversion credit.
+  Clicks also stream as `street_cta_click` activity with `{ pageKey, placement }`.
+- Old newsletter/webinar/ebook/suburb-widget panel keys stay registered for other pages; the
+  dashboard needs the new `panel-street-*` keys added before copy can be A/B'd there.
