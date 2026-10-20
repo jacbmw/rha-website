@@ -1,20 +1,20 @@
 {
   "pageKey": "panel-street-report",
   "props": {
-    "segmentHeading": "What brings you to this street?",
-    "segmentCopy": "Tap one and we'll tailor the full report to you. Optional.",
-    "segmentSkip": "Skip — just show me the full report",
-    "heading": "Get the full {street} report",
-    "headingSegment": "Get the full {street} report — for {segment}",
-    "copy": "Unlocks here instantly and lands in your inbox. Free. No phone number.",
+    "segmentHeading": "Tailor your {street} report (optional)",
+    "segmentCopy": "Tap one to customise what we unlock — or enter your email below for the full street & {suburb} ranking.",
+    "segmentSkip": "Just show me the full report ↓",
+    "heading": "Unlock the full {street} report + {suburb} rankings",
+    "headingSegment": "Unlock the {street} report — tailored for {segment}",
+    "copy": "See the block-by-block breakdown, 3 better-scoring streets nearby, and the Top 5 & Bottom 5 streets in {suburb}. Unlocks instantly here and lands in your inbox. Free, no phone number.",
     "firstNamePlaceholder": "First name (optional)",
-    "emailPlaceholder": "Your email",
+    "emailPlaceholder": "Enter your email address",
     "streetWatchLabel": "Tell me when {street}'s score changes (Street Watch). Unsubscribe any time.",
-    "buttonLabel": "Unlock the full report",
+    "buttonLabel": "Unlock the full report →",
     "buttonSendingLabel": "Unlocking…",
-    "stickyLabel": "Unlock the full {street} report",
-    "exitHeading": "Want the full {street} report?",
-    "exitCopy": "We'll email it to you and unlock it here — including how it compares with every other street in {suburb}.",
-    "exitButton": "Email it to me"
+    "stickyLabel": "Unlock {street} + top {suburb} streets",
+    "exitHeading": "Want the full {street} report + {suburb}'s top streets?",
+    "exitCopy": "We'll unlock it right here and email you a copy — including the 3 highest-scoring streets near {street} and the Top 5 & Bottom 5 in {suburb}.",
+    "exitButton": "Unlock & email it to me"
   }
 }

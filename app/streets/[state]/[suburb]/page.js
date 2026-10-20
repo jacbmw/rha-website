@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Footer from '../../../components/Footer';
 import MobileNav from '../../../components/MobileNav';
 import StreetSearch from '../../../components/StreetSearch';
+import SuburbStreetsUnlock from './SuburbStreetsUnlock';
 import { findSuburbBySlug } from '../../../../lib/suburbs';
 import { getSuburbStreets } from '../../../../lib/streets';
 import { pageMetadata } from '../../../../lib/seo';
@@ -54,6 +55,7 @@ export default async function SuburbStreetsPage({ params }) {
   const { entry, data } = page;
   const { suburb, streets } = data;
   const suburbPath = `${suburb.state.toLowerCase()}/${suburb.slug}`;
+  const anchorStreet = streets.find((s) => s.score !== null && s.confidence !== 'low') || streets[0] || null;
 
   return (
     <main className="suburb-index-page street-index-page">
@@ -74,6 +76,10 @@ export default async function SuburbStreetsPage({ params }) {
         </p>
         <StreetSearch suburb={{ id: entry.id, name: entry.name, state: entry.state, slug: suburbPath }} />
       </section>
+
+      {suburb.scoredStreets >= 3 && anchorStreet && (
+        <SuburbStreetsUnlock suburb={suburb} suburbPath={suburbPath} anchorKey={anchorStreet.key} />
+      )}
 
       <section className="suburb-index-list section-shell">
         <div className="section-label">All streets</div>

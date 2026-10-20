@@ -108,8 +108,12 @@ export default async function StreetPage({ params }) {
     path: snapshot.path,
     score: snapshot.score,
     gap: snapshot.gap,
+    rank: snapshot.rank,
+    betterCount: snapshot.betterCount ?? 0,
+    topScore: snapshot.topScore ?? null,
+    blocks: snapshot.blocks ?? 1,
     confidence: snapshot.confidence,
-    suburb: { id: suburb.id, name: suburb.name, state: suburb.state, slug: suburb.slug, average: suburb.average },
+    suburb: { id: suburb.id, name: suburb.name, state: suburb.state, slug: suburb.slug, average: suburb.average, streetCount: suburb.streetCount },
   };
   const compareRows = [
     { label: snapshot.name, value: snapshot.score, accent: true },
@@ -172,6 +176,13 @@ export default async function StreetPage({ params }) {
               {` · ${snapshot.addresses.toLocaleString('en-AU')} addresses across ${snapshot.blocks} census block${snapshot.blocks === 1 ? '' : 's'}`}
               {` · Tenure: ${snapshot.sources.tenure}`}{snapshot.sources.market ? ` · Rent & yield: ${snapshot.sources.market}` : ''}
             </p>
+            <p className="street-hero-cta">
+              <a href="#report">
+                {snapshot.betterCount > 0
+                  ? <><b>{snapshot.betterCount} street{snapshot.betterCount === 1 ? '' : 's'} in {suburb.name} score higher</b>{snapshot.topScore ? ` (up to ${snapshot.topScore}/100)` : ''} — see the top-scoring streets &amp; full report ↓</>
+                  : <><b>See the Top 5 &amp; Bottom 5 streets in {suburb.name}</b> + full block-by-block report ↓</>}
+              </a>
+            </p>
             <p className="suburb-compliance">Scores describe measured conditions on the blocks this street runs through — not your home, not personal advice, and not a forecast.</p>
           </div>
         </div>
@@ -210,9 +221,19 @@ export default async function StreetPage({ params }) {
             <p>{stats.rent === null || suburb.rent === null ? 'Rental data is thin for the blocks on this street.' : `Against a ${suburb.name} median of $${Math.round(suburb.rent)}/wk.`}</p>
           </div>
           <div className="suburb-teaser">
-            <span className="suburb-teaser-label">Gross yield</span>
-            <strong>{stats.yieldRate === null ? '—' : `${stats.yieldRate}%`}</strong>
-            <p>{stats.yieldRate === null || suburb.yieldRate === null ? 'Not enough sales and rents here to measure yield reliably.' : `Against ${Math.round(suburb.yieldRate * 1000) / 10}% across ${suburb.name}.`}</p>
+            {snapshot.betterCount > 0 ? (
+              <>
+                <span className="suburb-teaser-label">Higher-scoring in {suburb.name}</span>
+                <strong>{snapshot.betterCount} {snapshot.betterCount === 1 ? 'street' : 'streets'}</strong>
+                <p>Score higher than {snapshot.name}{snapshot.topScore ? ` (up to ${snapshot.topScore}/100)` : ''}. <a href="#report">Unlock the top streets ↓</a></p>
+              </>
+            ) : (
+              <>
+                <span className="suburb-teaser-label">Gross yield</span>
+                <strong>{stats.yieldRate === null ? '—' : `${stats.yieldRate}%`}</strong>
+                <p>{stats.yieldRate === null || suburb.yieldRate === null ? 'Not enough sales and rents here to measure yield reliably.' : `Against ${Math.round(suburb.yieldRate * 1000) / 10}% across ${suburb.name}.`} <a href="#report">See all {suburb.streetCount} ranked streets ↓</a></p>
+              </>
+            )}
           </div>
         </div>
       </section>

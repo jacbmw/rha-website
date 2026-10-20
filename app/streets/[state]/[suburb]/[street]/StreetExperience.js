@@ -42,22 +42,23 @@ const subscribeMobile = (cb) => {
 };
 const useIsMobile = () => useSyncExternalStore(subscribeMobile, () => window.matchMedia(MOBILE_QUERY).matches, () => false);
 
-// Layer 2 pitch — honest, segment-aware, and deliberately lower-pressure for
-// renters. "Curious" visitors get no call offer at all (protects the calendar).
+// Layer 2 pitch — honest, segment-aware, and lower-pressure for renters.
+// Visitors who skipped the segment tap (or picked "curious") still get the
+// default buying/general Street Review offer so no unlocked lead hits a dead end.
 function layer2Copy(props, segment, tokens) {
-  if (!['buying', 'own', 'rent'].includes(segment)) return null;
+  const key = ['buying', 'own', 'rent'].includes(segment) ? segment : 'buying';
   return {
-    heading: fill(props[`${segment}Heading`], tokens),
-    pitch: fill(props[`${segment}Pitch`], tokens),
-    button: fill(props[`${segment}Button`], tokens),
+    heading: fill(props[`${key}Heading`], tokens),
+    pitch: fill(props[`${key}Pitch`], tokens),
+    button: fill(props[`${key}Button`], tokens),
   };
 }
 
-function SegmentCards({ props, segment, onSelect, onSkip, visible }) {
+function SegmentCards({ props, tokens, segment, onSelect }) {
   return (
-    <div className={`street-segment${visible ? ' in' : ''}`} role="group" aria-label="What brings you here?">
-      <p className="street-segment-heading">{props.segmentHeading}</p>
-      <p className="street-segment-copy">{props.segmentCopy}</p>
+    <div className="street-segment in" role="group" aria-label="What brings you here?">
+      <p className="street-segment-heading">{fill(props.segmentHeading, tokens)}</p>
+      <p className="street-segment-copy">{fill(props.segmentCopy, tokens)}</p>
       <div className="street-segment-grid">
         {SEGMENT_OPTIONS.map((option) => (
           <button type="button" key={option.value} className={segment === option.value ? 'active' : ''} aria-pressed={segment === option.value} onClick={() => onSelect(option.value)}>
@@ -65,17 +66,25 @@ function SegmentCards({ props, segment, onSelect, onSkip, visible }) {
           </button>
         ))}
       </div>
-      <button type="button" className="street-segment-skip" onClick={onSkip}>{props.segmentSkip}</button>
     </div>
   );
 }
 
-// The email gate. Rendered inline on desktop and inside a bottom sheet on
-// mobile (same markup, same tracking).
-function GatePanel({ props, tokens, segment, previewRows, formStatus, formError, onSubmit, onFieldFocus, onClose }) {
+// The email gate. Rendered inline on the page (always visible while locked)
+// and also inside the mobile sticky CTA bottom sheet when opened from scroll.
+function GatePanel({ props, tokens, snapshot, segment, onSegmentSelect, previewRows, formStatus, formError, onSubmit, onFieldFocus, onClose, emailRef }) {
+  const topScore = snapshot.topScore ?? 100;
   return (
     <div className="suburb-locked street-locked">
-      <div className="suburb-preview" aria-hidden="true">
+      <div className="suburb-preview street-preview" aria-hidden="true">
+        <div className="street-preview-Sample">
+          <p className="street-preview-kicker">Unlocked in the {snapshot.suburb.name} street report</p>
+          <div className="street-preview-leaders">
+            <div className="street-preview-leader"><span>#1 in {snapshot.suburb.name}</span><b>████████████ Street</b><strong>{topScore}/100</strong></div>
+            <div className="street-preview-leader"><span>#2 in {snapshot.suburb.name}</span><b>██████████ Avenue</b><strong>{Math.max(50, topScore - 12)}/100</strong></div>
+            <div className="street-preview-leader"><span>#3 in {snapshot.suburb.name}</span><b>████████████ Road</b><strong>{Math.max(50, topScore - 25)}/100</strong></div>
+          </div>
+        </div>
         <div className="suburb-preview-rows">
           {previewRows.map((label) => <div className="suburb-preview-row" key={label}><span>{label}</span><b>██ ▇▇▇ ██</b></div>)}
         </div>
@@ -83,12 +92,24 @@ function GatePanel({ props, tokens, segment, previewRows, formStatus, formError,
       <div className="suburb-gate street-gate">
         {onClose && <button type="button" className="street-sheet-close" aria-label="Close" onClick={onClose}>×</button>}
         <p className="suburb-gate-heading">{fill(segment ? props.headingSegment : props.heading, tokens)}</p>
-        <p className="suburb-gate-copy">{props.copy}</p>
+        <p className="suburb-gate-copy">{fill(props.copy, tokens)}</p>
+        <ul className="street-gate-bullets">
+          {previewRows.map((label) => <li key={label}><span aria-hidden="true">✓</span>{label}</li>)}
+        </ul>
+        {onSegmentSelect && (
+          <div className="street-gate-pills" role="group" aria-label="Tailor report for">
+            {SEGMENT_OPTIONS.map((option) => (
+              <button type="button" key={option.value} className={segment === option.value ? 'active' : ''} aria-pressed={segment === option.value} onClick={() => onSegmentSelect(option.value)}>
+                {option.label}
+              </button>
+            ))}
+          </div>
+        )}
         <form className="suburb-gate-form" onSubmit={onSubmit}>
           <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="suburb-honeypot" />
           <div className="suburb-gate-fields">
+            <input ref={emailRef} type="email" name="email" required placeholder={props.emailPlaceholder} autoComplete="email" inputMode="email" onFocus={onFieldFocus} />
             <input type="text" name="firstName" placeholder={props.firstNamePlaceholder} autoComplete="given-name" onFocus={onFieldFocus} />
-            <input type="email" name="email" required placeholder={props.emailPlaceholder} autoComplete="email" inputMode="email" onFocus={onFieldFocus} />
           </div>
           <label className="suburb-gate-consent">
             <input type="checkbox" name="streetWatch" defaultChecked />
@@ -107,8 +128,9 @@ function StreetLink({ street, suburbSlug, onClick }) {
   return <Link href={`/streets/${suburbSlug}/${street.slug}`} onClick={onClick}>{street.name}</Link>;
 }
 
-function ReportBody({ report, snapshot, onStreetClick }) {
+function ReportBody({ report, snapshot, activeSegment, onStreetClick }) {
   const suburbSlug = snapshot.suburb.slug;
+  const seg = activeSegment || report.segment || 'buying';
   return (
     <>
       <div className="suburb-components street-drivers">
@@ -144,21 +166,7 @@ function ReportBody({ report, snapshot, onStreetClick }) {
         </p>
       </div>
 
-      {report.segment === 'buying' && report.betterStreets?.length > 0 && (
-        <div className="street-segment-block">
-          <p className="street-subhead">3 better-scoring streets nearby</p>
-          <ul className="street-list">
-            {report.betterStreets.map((s) => (
-              <li key={s.slug}><StreetLink street={s} suburbSlug={suburbSlug} onClick={() => onStreetClick('better_street_click', s.slug)} /><span>{s.score}/100{s.soldPrice ? ` · blocks selling around ${fmtMoney(s.soldPrice)}` : ''}{s.priceMatched ? ' · similar price' : ''}</span></li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {report.segment === 'buying' && !report.betterStreets?.length && (
-        <div className="street-segment-block"><p className="street-note">No street in {snapshot.suburb.name} scores higher than {snapshot.name} on these measures — it&apos;s at the top of its suburb.</p></div>
-      )}
-
-      {report.segment === 'own' && (
+      {seg === 'own' && (
         <div className="street-segment-block">
           <p className="street-subhead">Value guide</p>
           <p className="street-note">
@@ -170,7 +178,7 @@ function ReportBody({ report, snapshot, onStreetClick }) {
         </div>
       )}
 
-      {report.segment === 'rent' && (
+      {seg === 'rent' && (
         <div className="street-segment-block">
           <p className="street-subhead">Is the rent fair?</p>
           {report.rentCheck ? (
@@ -187,7 +195,20 @@ function ReportBody({ report, snapshot, onStreetClick }) {
         </div>
       )}
 
-      {report.segment === 'curious' && (report.best?.length > 0) && (
+      {report.betterStreets?.length > 0 ? (
+        <div className="street-segment-block">
+          <p className="street-subhead">3 better-scoring streets nearby</p>
+          <ul className="street-list">
+            {report.betterStreets.map((s) => (
+              <li key={s.slug}><StreetLink street={s} suburbSlug={suburbSlug} onClick={() => onStreetClick('better_street_click', s.slug)} /><span>{s.score}/100{s.soldPrice ? ` · blocks selling around ${fmtMoney(s.soldPrice)}` : ''}{s.priceMatched ? ' · similar price' : ''}</span></li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div className="street-segment-block"><p className="street-note">No street in {snapshot.suburb.name} scores higher than {snapshot.name} on these measures — it&apos;s at the top of its suburb.</p></div>
+      )}
+
+      {report.best?.length > 0 && (
         <div className="street-segment-block street-bestworst">
           <div>
             <p className="street-subhead">Top 5 streets in {snapshot.suburb.name}</p>
@@ -210,8 +231,9 @@ export default function StreetExperience({ snapshot }) {
   const [firstName, setFirstName] = useState('');
   const [returning, setReturning] = useState(false);
   const [segment, setSegment] = useState(null);
-  const [formOpen, setFormOpen] = useState(false);
-  const [tapVisible, setTapVisible] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [checksInfo, setChecksInfo] = useState({ streetsChecked: 1, suburbsChecked: 1 });
+  const [multiPrompt, setMultiPrompt] = useState(false);
   const [formStatus, setFormStatus] = useState('idle');
   const [formError, setFormError] = useState('');
   const [switching, setSwitching] = useState(false);
@@ -221,9 +243,11 @@ export default function StreetExperience({ snapshot }) {
   const [exitOpen, setExitOpen] = useState(false);
   const segmentRef = useRef(null);
   const unlockedRef = useRef(false);
+  const gateOpenedRef = useRef(false);
   const gateFocusedRef = useRef(false);
-  const formOpenRef = useRef(false);
-  useEffect(() => { formOpenRef.current = formOpen; }, [formOpen]);
+  const sheetOpenRef = useRef(false);
+  const inlineEmailRef = useRef(null);
+  useEffect(() => { sheetOpenRef.current = sheetOpen; }, [sheetOpen]);
   const isMobile = useIsMobile();
   const tokens = { street: snapshot.name, suburb: snapshot.suburb.name, segment: segment ? SEGMENT_LABELS[segment].toLowerCase() : '' };
 
@@ -247,6 +271,13 @@ export default function StreetExperience({ snapshot }) {
   const reviewProps = reviewPanel.props;
 
   const ctx = useCallback((extra = {}) => ({ pageKey: 'street-score', streetKey: snapshot.key, suburbId: snapshot.suburb.id, segment: segmentRef.current, ...extra }), [snapshot.key, snapshot.suburb.id]);
+
+  const recordGateOpen = useCallback((origin) => {
+    if (!gateOpenedRef.current) {
+      gateOpenedRef.current = true;
+      trackActivity('gate_open', ctx({ origin }));
+    }
+  }, [ctx]);
 
   const chooseSegment = useCallback((value, origin) => {
     segmentRef.current = value;
@@ -287,6 +318,10 @@ export default function StreetExperience({ snapshot }) {
     const checks = recordStreetCheck(snapshot.key, snapshot.suburb.id);
     const stored = readStorage(SEGMENT_KEY, null);
     if (SEGMENT_LABELS[stored]) segmentRef.current = stored;
+    queueMicrotask(() => {
+      setChecksInfo(checks);
+      if (SEGMENT_LABELS[stored]) setSegment(stored);
+    });
     trackActivity('street_view', ctx({ score: snapshot.score, gap: snapshot.gap, confidence: snapshot.confidence, streetsChecked: checks.streetsChecked, suburbsChecked: checks.suburbsChecked }));
     window.gtag?.('event', 'street_view', { event_category: 'street_score', event_label: snapshot.path });
     const stopEngagement = trackEngagement(ctx());
@@ -305,23 +340,22 @@ export default function StreetExperience({ snapshot }) {
     return () => { cancelled = true; stopEngagement(); };
   }, [snapshot.key, snapshot.suburb.id, snapshot.score, snapshot.gap, snapshot.confidence, snapshot.path, ctx, fetchReport, markRecorded, applyUnlock]);
 
-  // The segment tap animates in only once the free score/comparison has been
-  // seen — value before any ask.
+  // Multi-street comparison prompt: visitors checking their 3rd+ street without
+  // unlocking are high-intent comparers — prompt them once per session to unlock
+  // all streets + the suburb Top/Bottom 5 list in one go.
   useEffect(() => {
-    const target = document.getElementById('compare');
-    if (!target || !('IntersectionObserver' in window)) {
-      const t = setTimeout(() => setTapVisible(true), 0);
-      return () => clearTimeout(t);
-    }
-    const observer = new IntersectionObserver((entries) => {
-      if (entries.some((e) => e.isIntersecting)) {
-        setTapVisible(true);
-        observer.disconnect();
-      }
-    }, { threshold: 0.4 });
-    observer.observe(target);
-    return () => observer.disconnect();
-  }, []);
+    if (stage !== 'locked' || checksInfo.streetsChecked < 3) return undefined;
+    if (sessionStorage.getItem('rha_street_multi_prompt')) return undefined;
+    const timer = setTimeout(() => {
+      if (unlockedRef.current || sheetOpenRef.current || gateFocusedRef.current || sessionStorage.getItem('rha_street_multi_prompt')) return;
+      sessionStorage.setItem('rha_street_multi_prompt', '1');
+      sessionStorage.setItem('rha_street_exit_shown', '1');
+      setMultiPrompt(true);
+      setExitOpen(true);
+      trackActivity('exit_intent_shown', ctx({ reason: 'multi_street', streetsChecked: checksInfo.streetsChecked }));
+    }, 3200);
+    return () => clearTimeout(timer);
+  }, [stage, checksInfo.streetsChecked, ctx]);
 
   // Exit-intent recapture — once per session, only while locked.
   useEffect(() => {
@@ -329,9 +363,10 @@ export default function StreetExperience({ snapshot }) {
     let maxY = 0;
     const armedAt = Date.now();
     const trigger = () => {
-      // Never stack on the gate (sheet or inline form already open).
-      if (unlockedRef.current || formOpenRef.current || sessionStorage.getItem('rha_street_exit_shown')) return;
+      // Never stack on the gate sheet or while the user is actively typing.
+      if (unlockedRef.current || sheetOpenRef.current || gateFocusedRef.current || sessionStorage.getItem('rha_street_exit_shown')) return;
       sessionStorage.setItem('rha_street_exit_shown', '1');
+      setMultiPrompt(false);
       setExitOpen(true);
       trackActivity('exit_intent_shown', ctx());
     };
@@ -364,7 +399,7 @@ export default function StreetExperience({ snapshot }) {
       creditPanelReferral('street_report_unlock');
       if (origin === 'gate') trackGateConversion('report_unlock');
       setExitOpen(false);
-      setFormOpen(false);
+      setSheetOpen(false);
       setFormStatus('idle');
       applyUnlock(payload, false);
     } catch (error) {
@@ -379,6 +414,7 @@ export default function StreetExperience({ snapshot }) {
     if (formStatus === 'sending') return;
     const data = Object.fromEntries(new FormData(event.currentTarget));
     if (data.company) return;
+    recordGateOpen('submit');
     unlock({ email: data.email, name: data.firstName, streetWatch: data.streetWatch === 'on', origin: 'gate' });
   };
 
@@ -387,7 +423,7 @@ export default function StreetExperience({ snapshot }) {
     if (formStatus === 'sending') return;
     const data = Object.fromEntries(new FormData(event.currentTarget));
     if (data.company) return;
-    trackActivity('exit_intent_submit', ctx());
+    trackActivity('exit_intent_submit', ctx({ multiPrompt }));
     unlock({ email: data.email, streetWatch: true, origin: 'exit' });
   };
 
@@ -439,25 +475,31 @@ export default function StreetExperience({ snapshot }) {
   const copy = layer2Copy(reviewProps, segment, tokens);
   const reviewLabel = `Street Review — ${snapshot.name}, ${snapshot.suburb.name} ${snapshot.suburb.state}`;
   const previewRows = [
-    'Why it scores what it scores — all 4 tests', 'Block-by-block breakdown', 'Listing evidence (3 years)',
-    segment === 'buying' ? '3 better-scoring streets nearby' : segment === 'own' ? 'Value guide + portfolio drag check' : segment === 'rent' ? 'Fair-rent check + rent-vs-own maths' : `Top 5 & bottom 5 streets in ${snapshot.suburb.name}`,
+    'Why it scores what it scores — all 4 test figures',
+    `Block-by-block census breakdown (${snapshot.blocks || 1} ${snapshot.blocks === 1 ? 'block' : 'blocks'})`,
+    segment === 'own'
+      ? 'Value guide ($ range) + portfolio drag check'
+      : segment === 'rent'
+        ? 'Fair-rent check + rent-vs-own weekly maths'
+        : `3 better-scoring streets in ${snapshot.suburb.name}`,
+    `Top 5 & bottom 5 streets in ${snapshot.suburb.name}`,
   ];
   const onGateFieldFocus = () => {
+    recordGateOpen('focus');
     trackGateClick();
     if (!gateFocusedRef.current) { gateFocusedRef.current = true; trackActivity('gate_focus', ctx()); }
   };
-  const openGate = (origin) => {
-    setFormOpen(true);
-    trackActivity('gate_open', ctx({ origin }));
-    if (!isMobile) requestAnimationFrame(() => document.getElementById('street-gate')?.scrollIntoView({ behavior: 'smooth', block: 'center' }));
+  const focusInlineGate = (origin) => {
+    recordGateOpen(origin);
+    requestAnimationFrame(() => {
+      document.getElementById('street-gate')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => inlineEmailRef.current?.focus({ preventScroll: true }), 260);
+    });
   };
-  const gateNode = (
-    <GatePanel
-      props={gateProps} tokens={tokens} segment={segment} previewRows={previewRows}
-      formStatus={formStatus} formError={formError} onSubmit={onGateSubmit} onFieldFocus={onGateFieldFocus}
-      onClose={isMobile ? () => { setFormOpen(false); trackActivity('gate_close', ctx()); } : null}
-    />
-  );
+  const openStickySheet = () => {
+    setSheetOpen(true);
+    recordGateOpen('sticky');
+  };
 
   return (
     <>
@@ -466,20 +508,55 @@ export default function StreetExperience({ snapshot }) {
 
         {stage === 'locked' ? (
           <>
+            {checksInfo.streetsChecked >= 2 && (
+              <div className="street-multi-banner">
+                <div>
+                  <span className="street-multi-badge">Comparing streets · {checksInfo.streetsChecked} streets checked</span>
+                  <p>
+                    Stop checking one street at a time — enter your email once to unlock <b>every street you check</b>, plus the <b>Top 5 &amp; Bottom 5 streets in {snapshot.suburb.name}</b>.
+                  </p>
+                </div>
+                <button type="button" onClick={() => focusInlineGate('multi_banner')}>Unlock all {snapshot.suburb.name} streets ↓</button>
+              </div>
+            )}
             <SegmentCards
               props={gateProps}
+              tokens={tokens}
               segment={segment}
-              visible={tapVisible}
-              onSelect={(value) => { chooseSegment(value, 'tap'); openGate('tap'); }}
-              onSkip={() => { trackActivity('segment_skip', ctx()); openGate('skip'); }}
+              onSelect={(value) => { chooseSegment(value, 'tap'); focusInlineGate('tap'); }}
             />
-            {formOpen && !isMobile && <div id="street-gate">{gateNode}</div>}
-            {/* Mobile: the gate is a bottom sheet (value stays visible behind it). */}
-            {formOpen && isMobile && (
-              <div className="street-sheet-overlay" role="dialog" aria-modal="true" aria-label="Unlock the full report" onClick={() => setFormOpen(false)}>
+            <div id="street-gate">
+              <GatePanel
+                props={gateProps}
+                tokens={tokens}
+                snapshot={snapshot}
+                segment={segment}
+                previewRows={previewRows}
+                formStatus={formStatus}
+                formError={formError}
+                onSubmit={onGateSubmit}
+                onFieldFocus={onGateFieldFocus}
+                emailRef={inlineEmailRef}
+              />
+            </div>
+            {/* Mobile sticky CTA opens a compact bottom sheet when the visitor taps the sticky bar. */}
+            {sheetOpen && isMobile && (
+              <div className="street-sheet-overlay" role="dialog" aria-modal="true" aria-label="Unlock the full report" onClick={() => { setSheetOpen(false); trackActivity('gate_close', ctx()); }}>
                 <div className="street-sheet" onClick={(event) => event.stopPropagation()}>
                   <div className="street-sheet-handle" aria-hidden="true" />
-                  {gateNode}
+                  <GatePanel
+                    props={gateProps}
+                    tokens={tokens}
+                    snapshot={snapshot}
+                    segment={segment}
+                    onSegmentSelect={(value) => chooseSegment(value, 'sheet')}
+                    previewRows={previewRows}
+                    formStatus={formStatus}
+                    formError={formError}
+                    onSubmit={onGateSubmit}
+                    onFieldFocus={onGateFieldFocus}
+                    onClose={() => { setSheetOpen(false); trackActivity('gate_close', ctx()); }}
+                  />
                 </div>
               </div>
             )}
@@ -498,64 +575,66 @@ export default function StreetExperience({ snapshot }) {
               ))}
             </div>
 
-            <ReportBody report={report} snapshot={snapshot} onStreetClick={onStreetClick} />
+            <ReportBody report={report} snapshot={snapshot} activeSegment={segment || report.segment} onStreetClick={onStreetClick} />
 
             <p className="street-compare-another">
               Weighing up another street? <Link href={`/streets/${snapshot.suburb.slug}`} onClick={() => trackActivity('compare_another_click', ctx())}>Compare with any street in {snapshot.suburb.name} →</Link>
             </p>
 
-            {copy ? (
-              <div className="suburb-layer2">
-                <p className="eyebrow light"><span /> {reviewProps.eyebrow}</p>
-                <h2>{copy.heading}</h2>
-                <p className="suburb-layer2-pitch">{copy.pitch}</p>
-                {phoneStage !== 'done' ? (
-                  <form className="street-phone-form" onSubmit={onPhoneSubmit}>
-                    <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="suburb-honeypot" />
-                    <div className="suburb-phone-form">
-                      <input type="tel" name="phone" required placeholder={reviewProps.phonePlaceholder} autoComplete="tel" inputMode="tel" onFocus={trackReviewClick} />
-                      <button type="submit" disabled={phoneStage === 'sending'}>{phoneStage === 'sending' ? 'One moment…' : copy.button}</button>
-                    </div>
-                    <p className="street-consent-intro">{reviewProps.consentIntro}</p>
-                    <label className="street-consent"><input type="checkbox" name="smsConsent" onChange={(e) => trackActivity('consent_toggle', ctx({ type: 'sms', checked: e.target.checked }))} /><span><b>Text me.</b> {CONSENT_TEXT.sms}</span></label>
-                    <label className="street-consent"><input type="checkbox" name="aiCallConsent" onChange={(e) => trackActivity('consent_toggle', ctx({ type: 'ai_call', checked: e.target.checked }))} /><span><b>Call me.</b> {CONSENT_TEXT.aiCall}</span></label>
-                    <p className="street-consent-fine"><b>{reviewProps.noSalesLine}</b></p>
-                    <CollectionNotice className="street-consent-fine" />
-                    {phoneError && <p className="suburb-form-error" role="alert">{phoneError}</p>}
-                  </form>
-                ) : (
-                  <>
-                    <p className="suburb-phone-done" role="status">{fill(reviewProps.doneCopy, tokens)}</p>
-                    {segment !== 'rent' && (
-                      <SuburbCalendly
-                        suburbName={`${snapshot.name}, ${snapshot.suburb.name}`}
-                        suburbSlug={snapshot.slug}
-                        firstName={firstName}
-                        sessionLabel={reviewLabel}
-                        utmContent={`street-${snapshot.suburb.slug.replace('/', '-')}-${snapshot.slug}`}
-                        onBooked={() => { setBooked(true); trackActivity('review_booked', ctx()); }}
-                      />
-                    )}
-                    <StreetProfile snapshot={snapshot} segment={segment} heading={booked ? 'While you wait — help us tailor your Street Review' : 'Help us tailor your Street Review'} />
-                  </>
-                )}
-              </div>
-            ) : (
+            {segment === 'curious' && (
               <div className="street-curious">
                 <p className="street-subhead">{fill(reviewProps.curiousHeading, tokens)}</p>
                 <p className="street-note">{fill(reviewProps.curiousCopy, tokens)}{YOUTUBE_URL ? ' Prefer to watch? We break down streets and suburbs like this on YouTube.' : ' You\u2019ll get our market notes too.'}</p>
                 {YOUTUBE_URL && <a className="text-link" href={YOUTUBE_URL} target="_blank" rel="noreferrer" onClick={() => trackActivity('youtube_click', ctx())}>Watch on YouTube →</a>}
-                <StreetProfile snapshot={snapshot} segment={segment || 'curious'} heading="Two quick questions (optional)" />
               </div>
             )}
+
+            <div className="suburb-layer2">
+              <p className="eyebrow light"><span /> {reviewProps.eyebrow}</p>
+              <h2>{copy.heading}</h2>
+              <p className="suburb-layer2-pitch">{copy.pitch}</p>
+              {phoneStage !== 'done' ? (
+                <form className="street-phone-form" onSubmit={onPhoneSubmit}>
+                  <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="suburb-honeypot" />
+                  <div className="suburb-phone-form">
+                    <input type="tel" name="phone" required placeholder={reviewProps.phonePlaceholder} autoComplete="tel" inputMode="tel" onFocus={trackReviewClick} />
+                    <button type="submit" disabled={phoneStage === 'sending'}>{phoneStage === 'sending' ? 'One moment…' : copy.button}</button>
+                  </div>
+                  <p className="street-consent-intro">{reviewProps.consentIntro}</p>
+                  <label className="street-consent"><input type="checkbox" name="smsConsent" onChange={(e) => trackActivity('consent_toggle', ctx({ type: 'sms', checked: e.target.checked }))} /><span><b>Text me.</b> {CONSENT_TEXT.sms}</span></label>
+                  <label className="street-consent"><input type="checkbox" name="aiCallConsent" onChange={(e) => trackActivity('consent_toggle', ctx({ type: 'ai_call', checked: e.target.checked }))} /><span><b>Call me.</b> {CONSENT_TEXT.aiCall}</span></label>
+                  <p className="street-consent-fine"><b>{reviewProps.noSalesLine}</b></p>
+                  <CollectionNotice className="street-consent-fine" />
+                  {phoneError && <p className="suburb-form-error" role="alert">{phoneError}</p>}
+                </form>
+              ) : (
+                <>
+                  <p className="suburb-phone-done" role="status">{fill(reviewProps.doneCopy, tokens)}</p>
+                  {segment !== 'rent' && (
+                    <SuburbCalendly
+                      suburbName={`${snapshot.name}, ${snapshot.suburb.name}`}
+                      suburbSlug={snapshot.slug}
+                      firstName={firstName}
+                      sessionLabel={reviewLabel}
+                      utmContent={`street-${snapshot.suburb.slug.replace('/', '-')}-${snapshot.slug}`}
+                      onBooked={() => { setBooked(true); trackActivity('review_booked', ctx()); }}
+                    />
+                  )}
+                  <StreetProfile snapshot={snapshot} segment={segment} heading={booked ? 'While you wait — help us tailor your Street Review' : 'Help us tailor your Street Review'} />
+                </>
+              )}
+              {phoneStage !== 'done' && (
+                <StreetProfile snapshot={snapshot} segment={segment || 'buying'} heading="While you read — two quick questions (optional)" />
+              )}
+            </div>
           </div>
         )}
       </section>
 
       {/* Mobile sticky action — the primary CTA never scrolls out of reach. */}
-      {stage === 'locked' && !formOpen && !exitOpen && (
+      {stage === 'locked' && !sheetOpen && !exitOpen && (
         <div className="street-sticky" aria-hidden={!isMobile}>
-          <button type="button" onClick={() => openGate('sticky')}>{fill(gateProps.stickyLabel, tokens)}</button>
+          <button type="button" onClick={openStickySheet}>{fill(gateProps.stickyLabel, tokens)}</button>
         </div>
       )}
 
@@ -563,13 +642,17 @@ export default function StreetExperience({ snapshot }) {
         <div className="exit-overlay" role="dialog" aria-modal="true" aria-label="Email me the street report" onClick={() => setExitOpen(false)}>
           <div className="exit-modal" onClick={(event) => event.stopPropagation()}>
             <button className="exit-close" aria-label="Close" onClick={() => setExitOpen(false)}>×</button>
-            <p className="eyebrow"><span /> Before you go</p>
-            <h3>{fill(gateProps.exitHeading, tokens)}</h3>
-            <p className="exit-copy">{fill(gateProps.exitCopy, tokens)}</p>
+            <p className="eyebrow"><span /> {multiPrompt ? `Comparing streets · ${checksInfo.streetsChecked} streets checked` : 'Before you go'}</p>
+            <h3>{multiPrompt ? `Comparing streets in ${snapshot.suburb.name}?` : fill(gateProps.exitHeading, tokens)}</h3>
+            <p className="exit-copy">
+              {multiPrompt
+                ? `Enter your email once to unlock the full report on every street you check — plus the Top 5 & Bottom 5 streets in ${snapshot.suburb.name} so you don\u2019t have to check them one by one.`
+                : fill(gateProps.exitCopy, tokens)}
+            </p>
             <form className="signup-form" onSubmit={onExitSubmit}>
               <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="suburb-honeypot" />
               <input type="email" name="email" required placeholder="Your email address" autoComplete="email" inputMode="email" />
-              <button type="submit" disabled={formStatus === 'sending'}>{formStatus === 'sending' ? 'Sending…' : gateProps.exitButton}</button>
+              <button type="submit" disabled={formStatus === 'sending'}>{formStatus === 'sending' ? 'Sending…' : (multiPrompt ? `Unlock all ${snapshot.suburb.name} streets` : gateProps.exitButton)}</button>
             </form>
             {formError && <p className="suburb-form-error" role="alert">{formError}</p>}
             <button className="exit-dismiss" onClick={() => setExitOpen(false)}>No thanks, I&apos;m just looking</button>

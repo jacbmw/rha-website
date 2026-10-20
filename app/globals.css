@@ -783,8 +783,35 @@
 .street-list a{display:inline-block;padding:6px 0}
 @media(prefers-reduced-motion:reduce){.street-segment{transition:none}.street-compare-track span{transition:none}}
 .street-profile.done p{font-family:Georgia,serif;font-size:18px;margin:0}
-.street-search-suburb{align-items:center;display:flex;font-family:Georgia,serif;font-size:20px;gap:14px;margin:0 0 12px}
-.street-search-suburb button{background:none;border:0;color:var(--muted);cursor:pointer;font:inherit;font-family:Arial,sans-serif;font-size:12px;text-decoration:underline}
+.street-search-suburb{align-items:center;display:flex;flex-wrap:wrap;font-family:Georgia,serif;font-size:20px;gap:10px 16px;margin:0 0 12px}
+.street-search-suburb button,.street-search-suburb a{background:none;border:0;color:var(--muted);cursor:pointer;font:inherit;font-family:Arial,sans-serif;font-size:12px;text-decoration:underline}
+.street-search-suburb a{color:var(--ink)}
+.street-search-group-label{border-bottom:1px solid var(--line);color:var(--muted);font-size:10.5px;font-weight:700;letter-spacing:.11em;padding:9px 14px;text-transform:uppercase}
+.street-hero-cta{margin:14px 0 0}
+.street-hero-cta a{border-bottom:1px solid var(--lime);color:var(--ink);font-size:13.5px;line-height:1.5}
+.suburb-teaser p a{border-bottom:1px solid var(--lime);color:var(--ink);font-weight:700}
+.street-preview-Sample{background:var(--cream);margin-bottom:18px;padding:18px 20px}
+.street-preview-kicker{color:#8a6a0c;font-size:10px;font-weight:700;letter-spacing:.14em;margin:0 0 10px;text-transform:uppercase}
+.street-preview-leaders{display:flex;flex-direction:column;gap:8px}
+.street-preview-leader{align-items:baseline;border-bottom:1px solid var(--line);display:flex;font-size:12.5px;gap:10px;justify-content:space-between;padding-bottom:7px}
+.street-preview-leader:last-child{border-bottom:0;padding-bottom:0}
+.street-preview-leader span{color:var(--muted);font-size:11px;min-width:110px}
+.street-preview-leader b{filter:blur(5px);flex:1;font-family:Georgia,serif;font-size:15px;font-weight:400;user-select:none}
+.street-preview-leader strong{color:#8a6a0c;font-family:Georgia,serif;font-size:15px}
+.street-gate-bullets{display:none;list-style:none;margin:0 0 16px;padding:0}
+.street-gate-bullets li{align-items:center;color:rgba(255,255,255,.85);display:flex;font-size:12.5px;gap:8px;padding:4px 0}
+.street-gate-bullets li span{color:var(--lime);font-weight:700}
+.street-gate-pills{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 14px}
+.street-gate-pills button{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:18px;color:#fff;cursor:pointer;font:inherit;font-size:12px;padding:7px 12px}
+.street-gate-pills button.active{background:var(--lime);border-color:var(--lime);color:var(--ink);font-weight:700}
+.street-multi-banner{align-items:center;background:var(--cream);border:1px solid var(--line);border-left:4px solid var(--lime);display:flex;flex-wrap:wrap;gap:16px 24px;justify-content:space-between;margin:24px 0 0;padding:20px 24px}
+.street-multi-badge{color:#8a6a0c;display:block;font-size:10px;font-weight:700;letter-spacing:.14em;margin-bottom:5px;text-transform:uppercase}
+.street-multi-banner p{font-size:14px;line-height:1.55;margin:0;max-width:620px}
+.street-multi-banner button{background:var(--ink);border:0;border-radius:2px;color:#fff;cursor:pointer;font:inherit;font-size:13px;font-weight:700;min-height:44px;padding:12px 18px;white-space:nowrap}
+.street-suburb-unlock{padding-bottom:36px}
+.street-suburb-gate{margin-top:0}
+.street-suburb-unlocked{background:var(--cream);border-left:3px solid var(--lime);padding:26px 30px}
+.street-suburb-unlocked .street-bestworst{border-top:0;margin-top:14px;padding-top:0}
 @media(max-width:900px){
 .street-compare,.street-bestworst{grid-template-columns:1fr;gap:30px}
 .street-segment-grid{grid-template-columns:1fr 1fr}
@@ -821,6 +848,7 @@
 .street-sheet-handle{background:rgba(20,26,50,.2);border-radius:3px;height:5px;margin:6px auto 10px;width:40px}
 .street-sheet .street-locked{display:block;margin:0}
 .street-sheet .suburb-preview{display:none}
+.street-sheet .street-gate-bullets,.street-locked .street-gate-bullets{display:block}
 .street-sheet .suburb-gate{border-radius:14px 14px 0 0;padding:30px 22px calc(26px + env(safe-area-inset-bottom))}
 .street-sheet-close{background:rgba(255,255,255,.14);border:0;border-radius:50%;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;height:40px;position:absolute;right:14px;top:12px;width:40px}
 @keyframes street-sheet-up{from{transform:translateY(100%)}to{transform:none}}
