@@ -2,10 +2,12 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Footer from '../../../../components/Footer';
 import MobileNav from '../../../../components/MobileNav';
+import LocationFaqSection from '../../../../components/LocationFaqSection';
 import StreetExperience from './StreetExperience';
 import { StreetDial, CompareBars } from './StreetVisuals';
 import { findSuburbBySlug, getSuburbSnapshot } from '../../../../../lib/suburbs';
 import { getStreetSnapshot } from '../../../../../lib/streets';
+import { getSuburbLocationContext, buildStreetFaqs } from '../../../../../lib/locations';
 import { pageMetadata, SITE_URL } from '../../../../../lib/seo';
 
 // One template, every G-NAF street. ISR 24h, rendered on demand — the street
@@ -92,8 +94,10 @@ const MIN_NATIONAL_STREETS = 300000;
 export default async function StreetPage({ params }) {
   const data = await loadPage(params);
   if (!data) notFound();
-  const { snapshot, suburbSnapshot } = data;
+  const { entry, snapshot, suburbSnapshot } = data;
   const { stats, suburb } = snapshot;
+  const locationContext = await getSuburbLocationContext(entry.id).catch(() => ({ lga: null, city: null }));
+  const faqs = buildStreetFaqs(snapshot, suburbSnapshot);
   const gapWords = snapshot.gap === null
     ? null
     : snapshot.gap === 0
@@ -134,12 +138,37 @@ export default async function StreetPage({ params }) {
 
       {/* ── Layer 0 — free, no gate ─────────────────────────────────────── */}
       <section className="suburb-hero section-shell">
+        <nav className="loc-breadcrumbs" aria-label="Breadcrumb">
+          <Link href="/locations">Locations</Link>
+          {locationContext.city && (
+            <>
+              <span>/</span>
+              <Link href={locationContext.city.path}>{locationContext.city.name}</Link>
+            </>
+          )}
+          {locationContext.lga && (
+            <>
+              <span>/</span>
+              <Link href={locationContext.lga.path}>{locationContext.lga.name} LGA</Link>
+            </>
+          )}
+          <span>/</span>
+          <Link href={`/suburbs/${suburb.slug}`}>{suburb.name}</Link>
+          <span>/</span>
+          <Link href={`/streets/${suburb.slug}`}>Streets</Link>
+          <span>/</span>
+          <span aria-current="page">{snapshot.name}</span>
+        </nav>
+
         <p className="eyebrow"><span /> Street Score{snapshot.asOf ? ` · Data as of ${snapshot.asOf}` : ''}</p>
         <h1>{snapshot.name}, <i>{suburb.name} {suburb.state}</i></h1>
         <p className="suburb-meta">
           {`${snapshot.addresses.toLocaleString('en-AU')} addresses`}
           {snapshot.rank && suburb.streetCount ? ` · ${rankWords(snapshot, suburb)}` : ''}
           {' · '}<Link href={`/suburbs/${suburb.slug}`}>See the {suburb.name} suburb score</Link>
+          {locationContext.lga ? (
+            <> · <Link href={locationContext.lga.path}>{locationContext.lga.name} council area</Link></>
+          ) : null}
         </p>
 
         <div className="suburb-scoreband street-scoreband">
@@ -241,6 +270,13 @@ export default async function StreetPage({ params }) {
       {/* ── Segment tap + Layers 1 + 2 + profiling (client) ─────────────── */}
       <noscript><style>{'.street-segment{opacity:1;transform:none}'}</style></noscript>
       <StreetExperience snapshot={clientSnapshot} />
+
+      <LocationFaqSection
+        eyebrow={`${snapshot.name}, ${suburb.name} FAQs`}
+        heading={`Frequently Asked Questions: ${snapshot.name}, ${suburb.name} ${suburb.state}`}
+        intro={`Block-level census tenure, rent and yield answers for ${snapshot.name} in ${suburb.name}.`}
+        faqs={faqs}
+      />
 
       <section className="suburb-footnote section-shell" id="method">
         <p>

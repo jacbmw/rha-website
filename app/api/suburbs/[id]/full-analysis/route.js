@@ -3,10 +3,12 @@ import { findSuburbById } from '../../../../../lib/suburbs';
 import { rateLimited, requestIp } from '../../../../../lib/rateLimit';
 import { readUnlockCookie, UNLOCK_COOKIE_NAME } from '../../../../../lib/suburbGate';
 import { forwardToRha } from '../../../../../lib/rha-api';
+import { attributionFields } from '../../../../../lib/streetLead';
+import { CONSENT_TEXT, CONSENT_VERSION } from '../../../../../lib/streetShared';
 
-// Layer 2 — phone capture for the Suburb Strategy Session. Updates the
-// existing lead (phone + "Suburb Analysis Requested" tag + score bump) so it
-// surfaces in the dashboard power-dialer queue.
+// Layer 2 — phone + SMS/AI-call consent capture for the Suburb Strategy Session.
+// Updates the existing lead (phone + "Suburb Analysis Requested" tag + consents)
+// so it surfaces in the dashboard power-dialer queue with full consent audit.
 export async function POST(request, { params }) {
   if (rateLimited(`analysis:${requestIp(request)}`, { limit: 5, windowMs: 60000 })) {
     return NextResponse.json({ message: 'Too many requests' }, { status: 429 });
@@ -17,6 +19,7 @@ export async function POST(request, { params }) {
   if (!entry) return NextResponse.json({ message: 'Suburb not found' }, { status: 404 });
 
   const body = await request.json().catch(() => ({}));
+  if (body.company) return NextResponse.json({ ok: true });
   const identity = readUnlockCookie(request.cookies.get(UNLOCK_COOKIE_NAME)?.value);
   const email = identity?.email || body.email;
   const phone = String(body.phone || '').trim();
@@ -24,6 +27,13 @@ export async function POST(request, { params }) {
   if (!/^[\d\s()+-]{8,}$/.test(phone)) {
     return NextResponse.json({ message: 'A valid phone number is required.' }, { status: 400 });
   }
+
+  const capturedAt = new Date().toISOString();
+  const smsConsent = body.smsConsent === true;
+  const aiCallConsent = body.aiCallConsent === true;
+  const tags = ['Suburb Analysis Requested', `Suburb Score — ${entry.name}`];
+  if (smsConsent) tags.push('SMS Consent — Street Score');
+  if (aiCallConsent) tags.push('Call Consent — Street Score');
 
   try {
     const result = await forwardToRha(process.env.RHA_PUBLIC_LEAD_PATH || '/api/public/leads', {
@@ -35,12 +45,22 @@ export async function POST(request, { params }) {
         fullname: identity?.firstName || body.firstName || '',
         leadSource: 'rha-website-suburb-widget',
         form_source: 'website_suburb-analysis_2026',
-        newTags: ['Suburb Analysis Requested', `Suburb Score — ${entry.name}`],
+        newTags: tags,
         touchExisting: true,
         suburbId: entry.id,
         suburbName: `${entry.name} ${entry.state}`,
         qualifier: body.qualifier || undefined,
         vid: body.visitorId || undefined,
+        consents: {
+          version: CONSENT_VERSION,
+          capturedAt,
+          pageUrl: `/suburbs/${entry.state.toLowerCase()}/${entry.slug}`,
+          sms: smsConsent,
+          smsText: CONSENT_TEXT.sms,
+          aiCall: aiCallConsent,
+          aiCallText: CONSENT_TEXT.aiCall,
+        },
+        ...attributionFields(body.attribution),
       }),
     });
     if (result.ok || result.status === 409) return NextResponse.json({ ok: true });

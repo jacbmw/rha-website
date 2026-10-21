@@ -8,7 +8,7 @@ import ArticleAdSlot from '../../../components/ArticleAdSlot';
 import ArticleStreetPitch from '../../../components/panels/ArticleStreetPitch';
 import { AdMixProvider } from '../../../components/AdMixProvider';
 import EndlessScroll from '../../../components/EndlessScroll';
-import { splitBody } from '../../../../lib/blog-body';
+import { splitBody, extractMentionedLocations } from '../../../../lib/blog-body';
 import { resolvePanel } from '../../../../lib/panelVariants';
 import { pageMetadata } from '../../../../lib/seo';
 
@@ -68,6 +68,7 @@ export default async function BlogArticle({ params }) {
   ]);
 
   const [bodyLead, bodyRest] = splitBody(post.body, 0.5);
+  const mentionedLocations = extractMentionedLocations(post, 10);
 
   return (
     <main className="article-page">
@@ -97,6 +98,27 @@ export default async function BlogArticle({ params }) {
             <ArticleAdSlot excludeWebinarOnDesktop />
             <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyRest }} />
             <ArticleStreetPitch post={post} />
+            {mentionedLocations.length > 0 && (
+              <section className="article-locations-box" aria-label="Locations mentioned in this article">
+                <p className="eyebrow"><span /> Market data &amp; R-Scores for locations in this article</p>
+                <h2>Drill Down Into the Markets Mentioned Above</h2>
+                <p className="article-locations-copy">
+                  Inspect live monthly R-Scores, median prices, rental yields, and street-by-street scores for the cities and council areas referenced in this article:
+                </p>
+                <div className="article-locations-chips">
+                  {mentionedLocations.map((loc) => (
+                    <Link key={loc.path} href={loc.path} className="article-location-chip">
+                      <span>{loc.kind}</span>
+                      <b>Property Investment in {loc.label} →</b>
+                    </Link>
+                  ))}
+                  <Link href="/locations" className="article-location-chip article-location-chip-all">
+                    <span>Directory</span>
+                    <b>All 30 Cities, 540+ LGAs, Suburbs &amp; Streets →</b>
+                  </Link>
+                </div>
+              </section>
+            )}
             {post.faq?.items?.length > 0 && (
               <section className="article-faq" aria-labelledby="article-faq-heading">
                 <h2 id="article-faq-heading">Frequently asked questions</h2>

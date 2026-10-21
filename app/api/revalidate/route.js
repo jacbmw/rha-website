@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { revalidateTag } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 function isAuthorized(request) {
   const configured = process.env.REVALIDATE_SECRET;
@@ -17,5 +17,6 @@ export async function POST(request) {
   const body = await request.json().catch(() => ({}));
   const tag = String(body?.tag || 'case-studies').trim();
   revalidateTag(tag);
+  revalidatePath('/sitemap.xml');
   return NextResponse.json({ revalidated: true, tag, now: Date.now() });
 }

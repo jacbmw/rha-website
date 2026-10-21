@@ -1,18 +1,42 @@
 'use client';
 
-export default function SuburbScorecardPanel({ variant, snapshot, qualifiers, onSubmit, onFieldFocus, formStatus, formError }) {
+export default function SuburbScorecardPanel({
+  variant,
+  snapshot,
+  qualifiers,
+  onSubmit,
+  onFieldFocus,
+  onFieldBlur,
+  onFieldInput,
+  onClose,
+  emailRef,
+  formStatus,
+  formError,
+}) {
   const { props } = variant;
   const interpolate = (value) => String(value || '').replace(/\{name\}/g, snapshot.name);
+  const bullets = [
+    `18-month R-Score history for ${snapshot.name}`,
+    `All 4 score pillars (Demand, Supply, Momentum, Yield)`,
+    `3-year median house price, weekly rent & days-on-market charts`,
+    `Also unlocks every Street Score report in ${snapshot.name}`,
+  ];
 
   return (
-    <div className="suburb-gate">
+    <div className="suburb-gate street-gate">
+      {onClose && <button type="button" className="street-sheet-close" aria-label="Close" onClick={onClose}>×</button>}
       <p className="suburb-gate-heading">{interpolate(props.heading)}</p>
       <p className="suburb-gate-copy">{props.copy}</p>
+      <ul className="street-gate-bullets">
+        {bullets.map((item) => (
+          <li key={item}><span aria-hidden="true">✓</span>{item}</li>
+        ))}
+      </ul>
       <form className="suburb-gate-form" onSubmit={onSubmit}>
         <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="suburb-honeypot" />
         <div className="suburb-gate-fields">
-          <input type="text" name="firstName" placeholder={props.firstNamePlaceholder} autoComplete="given-name" onFocus={onFieldFocus} />
-          <input type="email" name="email" required placeholder={props.emailPlaceholder} autoComplete="email" onFocus={onFieldFocus} />
+          <input ref={emailRef} type="email" name="email" required placeholder={props.emailPlaceholder} autoComplete="email" inputMode="email" onFocus={onFieldFocus} onBlur={onFieldBlur} onInput={onFieldInput} />
+          <input type="text" name="firstName" placeholder={props.firstNamePlaceholder} autoComplete="given-name" onFocus={onFieldFocus} onBlur={onFieldBlur} onInput={onFieldInput} />
         </div>
         <select name="qualifier" defaultValue="" aria-label={props.qualifierPlaceholder}>
           <option value="" disabled>{props.qualifierPlaceholder}</option>

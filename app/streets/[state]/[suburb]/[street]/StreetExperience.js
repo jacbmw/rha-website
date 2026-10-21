@@ -72,7 +72,7 @@ function SegmentCards({ props, tokens, segment, onSelect }) {
 
 // The email gate. Rendered inline on the page (always visible while locked)
 // and also inside the mobile sticky CTA bottom sheet when opened from scroll.
-function GatePanel({ props, tokens, snapshot, segment, onSegmentSelect, previewRows, formStatus, formError, onSubmit, onFieldFocus, onClose, emailRef }) {
+function GatePanel({ props, tokens, snapshot, segment, onSegmentSelect, previewRows, formStatus, formError, onSubmit, onFieldFocus, onFieldBlur, onFieldInput, onClose, emailRef }) {
   const topScore = snapshot.topScore ?? 100;
   return (
     <div className="suburb-locked street-locked">
@@ -108,8 +108,8 @@ function GatePanel({ props, tokens, snapshot, segment, onSegmentSelect, previewR
         <form className="suburb-gate-form" onSubmit={onSubmit}>
           <input type="text" name="company" tabIndex={-1} autoComplete="off" aria-hidden="true" className="suburb-honeypot" />
           <div className="suburb-gate-fields">
-            <input ref={emailRef} type="email" name="email" required placeholder={props.emailPlaceholder} autoComplete="email" inputMode="email" onFocus={onFieldFocus} />
-            <input type="text" name="firstName" placeholder={props.firstNamePlaceholder} autoComplete="given-name" onFocus={onFieldFocus} />
+            <input ref={emailRef} type="email" name="email" required placeholder={props.emailPlaceholder} autoComplete="email" inputMode="email" onFocus={onFieldFocus} onBlur={onFieldBlur} onInput={onFieldInput} />
+            <input type="text" name="firstName" placeholder={props.firstNamePlaceholder} autoComplete="given-name" onFocus={onFieldFocus} onBlur={onFieldBlur} onInput={onFieldInput} />
           </div>
           <label className="suburb-gate-consent">
             <input type="checkbox" name="streetWatch" defaultChecked />
@@ -245,6 +245,8 @@ export default function StreetExperience({ snapshot }) {
   const unlockedRef = useRef(false);
   const gateOpenedRef = useRef(false);
   const gateFocusedRef = useRef(false);
+  const gateActiveRef = useRef(false);
+  const autoFocusingRef = useRef(false);
   const sheetOpenRef = useRef(false);
   const inlineEmailRef = useRef(null);
   useEffect(() => { sheetOpenRef.current = sheetOpen; }, [sheetOpen]);
@@ -347,7 +349,7 @@ export default function StreetExperience({ snapshot }) {
     if (stage !== 'locked' || checksInfo.streetsChecked < 3) return undefined;
     if (sessionStorage.getItem('rha_street_multi_prompt')) return undefined;
     const timer = setTimeout(() => {
-      if (unlockedRef.current || sheetOpenRef.current || gateFocusedRef.current || sessionStorage.getItem('rha_street_multi_prompt')) return;
+      if (unlockedRef.current || sheetOpenRef.current || gateActiveRef.current || sessionStorage.getItem('rha_street_multi_prompt')) return;
       sessionStorage.setItem('rha_street_multi_prompt', '1');
       sessionStorage.setItem('rha_street_exit_shown', '1');
       setMultiPrompt(true);
@@ -364,7 +366,7 @@ export default function StreetExperience({ snapshot }) {
     const armedAt = Date.now();
     const trigger = () => {
       // Never stack on the gate sheet or while the user is actively typing.
-      if (unlockedRef.current || sheetOpenRef.current || gateFocusedRef.current || sessionStorage.getItem('rha_street_exit_shown')) return;
+      if (unlockedRef.current || sheetOpenRef.current || gateActiveRef.current || sessionStorage.getItem('rha_street_exit_shown')) return;
       sessionStorage.setItem('rha_street_exit_shown', '1');
       setMultiPrompt(false);
       setExitOpen(true);
@@ -484,16 +486,31 @@ export default function StreetExperience({ snapshot }) {
         : `3 better-scoring streets in ${snapshot.suburb.name}`,
     `Top 5 & bottom 5 streets in ${snapshot.suburb.name}`,
   ];
-  const onGateFieldFocus = () => {
+  const recordRealGateFocus = () => {
+    gateActiveRef.current = true;
     recordGateOpen('focus');
     trackGateClick();
     if (!gateFocusedRef.current) { gateFocusedRef.current = true; trackActivity('gate_focus', ctx()); }
+  };
+  const onGateFieldFocus = () => {
+    if (autoFocusingRef.current) return;
+    recordRealGateFocus();
+  };
+  const onGateFieldBlur = () => {
+    gateActiveRef.current = false;
+  };
+  const onGateFieldInput = () => {
+    recordRealGateFocus();
   };
   const focusInlineGate = (origin) => {
     recordGateOpen(origin);
     requestAnimationFrame(() => {
       document.getElementById('street-gate')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      setTimeout(() => inlineEmailRef.current?.focus({ preventScroll: true }), 260);
+      setTimeout(() => {
+        autoFocusingRef.current = true;
+        inlineEmailRef.current?.focus({ preventScroll: true });
+        autoFocusingRef.current = false;
+      }, 260);
     });
   };
   const openStickySheet = () => {
@@ -536,6 +553,8 @@ export default function StreetExperience({ snapshot }) {
                 formError={formError}
                 onSubmit={onGateSubmit}
                 onFieldFocus={onGateFieldFocus}
+                onFieldBlur={onGateFieldBlur}
+                onFieldInput={onGateFieldInput}
                 emailRef={inlineEmailRef}
               />
             </div>
@@ -555,6 +574,8 @@ export default function StreetExperience({ snapshot }) {
                     formError={formError}
                     onSubmit={onGateSubmit}
                     onFieldFocus={onGateFieldFocus}
+                    onFieldBlur={onGateFieldBlur}
+                    onFieldInput={onGateFieldInput}
                     onClose={() => { setSheetOpen(false); trackActivity('gate_close', ctx()); }}
                   />
                 </div>

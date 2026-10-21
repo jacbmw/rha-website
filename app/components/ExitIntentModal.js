@@ -51,8 +51,8 @@ export default function ExitIntentModal() {
     const armedAt = Date.now();
     let maxY = 0;
     const trigger = () => {
-      // Suburb + street pages run their own report recapture — never stack popups there.
-      if (/^\/(suburbs|streets)(\/|$)/.test(window.location.pathname)) return;
+      // Location, suburb + street pages run their own report recapture — never stack popups there.
+      if (/^\/(locations|suburbs|streets)(\/|$)/.test(window.location.pathname)) return;
       if (sessionStorage.getItem(STORAGE_KEY)) return;
       sessionStorage.setItem(STORAGE_KEY, '1');
       show();

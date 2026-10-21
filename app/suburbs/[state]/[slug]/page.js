@@ -2,8 +2,14 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import Footer from '../../../components/Footer';
 import MobileNav from '../../../components/MobileNav';
+import LocationFaqSection from '../../../components/LocationFaqSection';
 import SuburbExperience from './SuburbExperience';
 import { findSuburbBySlug, getSuburbSnapshot } from '../../../../lib/suburbs';
+import {
+  getSuburbLocationContext,
+  fetchTopStreetsForSuburbs,
+  buildSuburbFaqs,
+} from '../../../../lib/locations';
 import { pageMetadata, SITE_URL } from '../../../../lib/seo';
 
 // One template, ~15,000 pages. ISR with 24h revalidate — the underlying data
@@ -56,8 +62,14 @@ const navLinks = [
 export default async function SuburbPage({ params }) {
   const data = await loadPage(params);
   if (!data) notFound();
-  const { snapshot } = data;
+  const { entry, snapshot } = data;
   const { stats } = snapshot;
+
+  const [locationContext, topStreets] = await Promise.all([
+    getSuburbLocationContext(entry.id).catch(() => ({ lga: null, city: null, siblingSuburbs: [] })),
+    fetchTopStreetsForSuburbs([entry.id], 6).catch(() => []),
+  ]);
+  const faqs = buildSuburbFaqs(snapshot, locationContext, topStreets);
 
   return (
     <main className="suburb-page">
@@ -70,11 +82,38 @@ export default async function SuburbPage({ params }) {
 
       {/* ── Layer 0 — free snapshot ─────────────────────────────────────── */}
       <section className="suburb-hero section-shell">
+        <nav className="loc-breadcrumbs" aria-label="Breadcrumb">
+          <Link href="/locations">Locations</Link>
+          <span>/</span>
+          <Link href={`/suburbs/${snapshot.state.toLowerCase()}`}>{snapshot.state}</Link>
+          {locationContext.city && (
+            <>
+              <span>/</span>
+              <Link href={locationContext.city.path}>{locationContext.city.name}</Link>
+            </>
+          )}
+          {locationContext.lga && (
+            <>
+              <span>/</span>
+              <Link href={locationContext.lga.path}>{locationContext.lga.name} LGA</Link>
+            </>
+          )}
+          <span>/</span>
+          <span aria-current="page">{snapshot.name}</span>
+        </nav>
+
         <p className="eyebrow"><span /> Your suburb, scored · Data as of {snapshot.asOf}</p>
         <h1>{snapshot.name}, <i>{snapshot.state}</i></h1>
         <p className="suburb-meta">
           {snapshot.postcodes.length ? `Postcode ${snapshot.postcodes.join(', ')}` : ''}
-          {snapshot.lga ? ` · ${snapshot.lga} council area` : ''}
+          {locationContext.lga ? (
+            <> · <Link href={locationContext.lga.path}>{locationContext.lga.name} council area</Link></>
+          ) : snapshot.lga ? (
+            ` · ${snapshot.lga} council area`
+          ) : ''}
+          {locationContext.city ? (
+            <> · <Link href={locationContext.city.path}>Greater {locationContext.city.name}</Link></>
+          ) : null}
           {` · One of 15,000 suburbs we score across 27 indicators, updated monthly`}
         </p>
 
@@ -143,6 +182,68 @@ export default async function SuburbPage({ params }) {
 
       {/* ── Layers 1 + 2 (client) ───────────────────────────────────────── */}
       <SuburbExperience snapshot={snapshot} />
+
+      {/* ── Street-level drill-down + Council context ───────────────────── */}
+      <section className="suburb-index-list section-shell" id="best-streets">
+        <div className="section-label">Street-Level Research in {snapshot.name}</div>
+        <h2 className="loc-section-h2">Best Streets in {snapshot.name}, {snapshot.state}</h2>
+        <p className="suburb-meta" style={{ marginBottom: '18px' }}>
+          Two streets in the same suburb can sit in completely different census blocks for owner-occupiers, public housing, and rental yield. Drill down into {snapshot.name}&apos;s streets below.
+        </p>
+        {topStreets.length > 0 ? (
+          <div className="loc-card-grid loc-card-grid-compact" style={{ marginBottom: '18px' }}>
+            {topStreets.map((st) => (
+              <Link key={st.key} href={st.path} className="loc-card loc-card-compact">
+                <div className="loc-card-top">
+                  <span className="loc-card-rank">{snapshot.name} · {st.addresses} addresses</span>
+                  <span className="loc-card-score">Street Score <b>{st.score}/100</b></span>
+                </div>
+                <h3>{st.name}</h3>
+                <div className="loc-card-stats">
+                  {st.rent ? <span>Rent <b>${st.rent}/wk</b></span> : null}
+                  {st.yieldRate !== null ? <span>Yield <b>{st.yieldRate}%</b></span> : null}
+                  <span>View street report →</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        ) : null}
+        <p className="suburb-street-link" style={{ marginTop: '8px' }}>
+          <Link href={`/streets/${snapshot.slug}`}>
+            Compare every street in {snapshot.name} ({snapshot.state}) on the Street Score →
+          </Link>
+        </p>
+
+        {locationContext.lga && locationContext.siblingSuburbs.length > 0 && (
+          <div style={{ marginTop: '32px' }}>
+            <div className="section-label">Nearby in {locationContext.lga.name} Council</div>
+            <h3 className="loc-section-h3">
+              Other High-Scoring Suburbs in{' '}
+              <Link href={locationContext.lga.path}>{locationContext.lga.name} ({locationContext.lga.state})</Link>
+            </h3>
+            <ul className="suburb-plain-list loc-suburb-grid" style={{ marginTop: '12px' }}>
+              {locationContext.siblingSuburbs.map((sub) => (
+                <li key={sub.id} className="loc-suburb-item">
+                  <Link href={sub.path} className="loc-suburb-main">
+                    <b>{sub.name}</b>
+                  </Link>
+                  <span className="loc-suburb-links">
+                    R-Score <b>{sub.score}/100</b> · <Link href={sub.streetsPath}>Streets →</Link>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </section>
+
+      {/* ── LLM-Optimised FAQ Panel ─────────────────────────────────────── */}
+      <LocationFaqSection
+        eyebrow={`${snapshot.name} ${snapshot.state} FAQs`}
+        heading={`Frequently Asked Questions: Investing in ${snapshot.name}, ${snapshot.state}`}
+        intro={`Key answers from the ${snapshot.asOf} Ripehouse Advisory suburb and street research bake for ${snapshot.name}.`}
+        faqs={faqs}
+      />
 
       <section className="suburb-footnote section-shell">
         <p>
