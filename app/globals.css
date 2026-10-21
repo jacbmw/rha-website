@@ -1183,11 +1183,11 @@ main.article-page{overflow:visible}.article-layout{display:grid;grid-template-co
 .loc-suburb-links{color:var(--muted);font-size:12px;white-space:nowrap}
 .loc-suburb-links a:hover{color:var(--ink);text-decoration:underline}
 .loc-type-pill{background:var(--cream);border-radius:10px;color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.06em;margin-left:6px;padding:2px 7px;text-transform:uppercase}
-.loc-suburb-option{align-items:center;display:flex;justify-content:space-between;gap:8px;padding-right:12px}
-.loc-suburb-option>button:first-child{flex:1;min-width:0}
-.loc-drill-streets-btn{background:var(--cream);border:1px solid var(--line);border-radius:4px;color:var(--ink);cursor:pointer;flex-shrink:0;font-size:11.5px;font-weight:700;padding:6px 10px;white-space:nowrap}
-.loc-drill-streets-btn:hover{background:var(--ink);color:#fff}
-.loc-search-inline-btn{background:none;border:0;color:var(--ink);cursor:pointer;font-size:11.5px;font-weight:700;text-decoration:underline}
+.loc-widget-search{max-width:620px}
+.suburb-widget-results li.loc-suburb-option{align-items:center;border-bottom:1px solid rgba(20,26,50,.06);display:flex;gap:8px;padding-right:10px}
+.suburb-widget-results li.loc-suburb-option .loc-suburb-row-btn{border-bottom:0;flex:1;min-width:0}
+.suburb-widget-results li.loc-suburb-option .loc-drill-streets-btn{background:var(--cream);border:1px solid var(--line);border-radius:3px;color:var(--ink);cursor:pointer;flex-shrink:0;font-size:11px;font-weight:700;padding:6px 10px;width:auto;white-space:nowrap}
+.suburb-widget-results li.loc-suburb-option .loc-drill-streets-btn:hover{background:var(--ink);color:#fff}
 .loc-table-sub{color:var(--muted);font-size:12px;font-weight:400}
 
 /* LLM-SEO FAQ Section */

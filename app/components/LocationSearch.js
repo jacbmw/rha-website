@@ -1,12 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { trackActivity } from '../../lib/activity';
 
-// Unified autosuggest across Australian Cities (30), LGAs (550+), Suburbs (15k),
-// and Streets. Can also be pre-scoped with `localSuburbs` on a City or LGA page
-// so visitors can filter suburbs inside that City/LGA immediately or search nationally.
+// Unified autosuggest across Australian Cities (30), LGAs (540+), Suburbs (15k),
+// and Streets — styled with the exact same .suburb-widget / .street-search classes
+// as StreetSearch.js.
 export default function LocationSearch({
   localSuburbs = null,
   scopeName = '',
@@ -61,7 +62,6 @@ export default function LocationSearch({
       return;
     }
 
-    // Instant local match within the current City/LGA's suburbs while remote search runs
     const q = trimmed.toLowerCase();
     const localMatches = (localSuburbs || [])
       .filter((s) => s.name.toLowerCase().includes(q) || (s.postcodes || []).some((p) => p.startsWith(q)))
@@ -141,61 +141,51 @@ export default function LocationSearch({
   const hasAny = results.cities.length > 0 || results.lgas.length > 0 || shownSuburbs.length > 0;
 
   return (
-    <div className="suburb-search street-search loc-search" ref={boxRef}>
+    <div className="suburb-widget suburb-widget-index street-search loc-search" ref={boxRef}>
       {selectedSuburb ? (
         <>
-          <div className="street-search-Crumb">
-            <span>Streets in <b>{selectedSuburb.name} {selectedSuburb.state}</b></span>
-            <div style={{ display: 'flex', gap: '12px' }}>
-              <button type="button" onClick={() => go(selectedSuburb.path, 'loc_suburb_select', { suburbId: selectedSuburb.id })}>
-                View {selectedSuburb.name} Suburb Report →
-              </button>
-              <button type="button" onClick={() => { setSelectedSuburb(null); setStreets(null); setStreetQuery(''); }}>
-                Change location
-              </button>
-            </div>
-          </div>
-          <div className="suburb-search-bar">
-            <span className="suburb-search-icon" aria-hidden="true">⌕</span>
+          <p className="street-search-suburb">
+            <span><b>{selectedSuburb.name} {selectedSuburb.state}</b>{streets ? ` · ${streets.length} streets` : ''}</span>
+            <button type="button" onClick={() => { setSelectedSuburb(null); setStreets(null); setStreetQuery(''); }}>Change suburb</button>
+            <Link href={selectedSuburb.path}>View {selectedSuburb.name} Suburb Report →</Link>
+            <Link href={selectedSuburb.streetsPath}>See all streets in {selectedSuburb.name} →</Link>
+          </p>
+          <div className="suburb-widget-search" role="combobox" aria-expanded={open} aria-haspopup="listbox">
             <input
-              type="search"
+              type="text"
               value={streetQuery}
-              placeholder={`Type a street name in ${selectedSuburb.name}…`}
+              placeholder={status === 'loading' ? `Loading streets in ${selectedSuburb.name}…` : `Type a street name in ${selectedSuburb.name} (or pick below)…`}
               aria-label={`Street name in ${selectedSuburb.name}`}
               autoComplete="off"
+              disabled={status === 'loading'}
               onChange={(e) => { setStreetQuery(e.target.value); setOpen(true); }}
               onFocus={() => setOpen(true)}
             />
-            {status === 'loading' && <span className="suburb-search-spin" aria-hidden="true" />}
-          </div>
-          {open && streets && filteredStreets().length > 0 && (
-            <ul className="suburb-search-list" role="listbox">
-              <li className="street-search-hint">
-                <span>{streetQuery.trim() ? 'Matching streets' : `Popular streets in ${selectedSuburb.name}`}</span>
-                <button type="button" className="loc-search-inline-btn" onClick={() => go(selectedSuburb.streetsPath, 'loc_all_streets', { suburbId: selectedSuburb.id })}>
-                  See all {streets.length} streets →
-                </button>
-              </li>
-              {filteredStreets().map((item) => (
-                <li key={item.slug} role="option" aria-selected="false">
-                  <button
-                    type="button"
-                    onClick={() => go(`/streets/${selectedSuburb.slug}/${item.slug}`, 'street_search_select', { suburbId: selectedSuburb.id, streetKey: `${selectedSuburb.id}~${item.slug}` })}
-                  >
-                    <span className="suburb-search-name">{item.name}</span>
-                    <span className="suburb-search-meta">{selectedSuburb.name} {selectedSuburb.state} · {item.addresses} addresses</span>
-                  </button>
+            {open && streets && (
+              <ul className="suburb-widget-results" role="listbox">
+                <li className="street-search-group-label" role="presentation">
+                  {streetQuery.trim() ? 'Matching streets' : `Popular streets in ${selectedSuburb.name} — or start typing above`}
                 </li>
-              ))}
-            </ul>
-          )}
+                {filteredStreets().map((item) => (
+                  <li key={item.slug} role="option" aria-selected="false">
+                    <button
+                      type="button"
+                      onClick={() => go(`/streets/${selectedSuburb.slug}/${item.slug}`, 'street_search_select', { suburbId: selectedSuburb.id, streetKey: `${selectedSuburb.id}~${item.slug}` })}
+                    >
+                      {item.name} <span>{item.addresses} addresses</span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <p className="suburb-widget-fine">Every street, scored — free, no sign-up to see the score.</p>
         </>
       ) : (
         <>
-          <div className="suburb-search-bar">
-            <span className="suburb-search-icon" aria-hidden="true">⌕</span>
+          <div className="suburb-widget-search loc-widget-search" role="combobox" aria-expanded={open} aria-haspopup="listbox">
             <input
-              type="search"
+              type="text"
               value={query}
               placeholder={placeholder}
               aria-label={placeholder}
@@ -203,67 +193,71 @@ export default function LocationSearch({
               onChange={(e) => onInput(e.target.value)}
               onFocus={() => { if (hasAny || localSuburbs?.length) setOpen(true); }}
             />
-            {status === 'loading' && <span className="suburb-search-spin" aria-hidden="true" />}
+
+            {open && hasAny && (
+              <ul className="suburb-widget-results" role="listbox">
+                {results.cities.length > 0 && (
+                  <>
+                    <li className="street-search-group-label" role="presentation">Cities</li>
+                    {results.cities.map((city) => (
+                      <li key={`city-${city.path}`} role="option" aria-selected="false">
+                        <button type="button" onClick={() => go(city.path, 'loc_city_select', { city: city.name })}>
+                          <span><b>{city.name}</b> <small className="loc-type-pill">City · {city.state}</small></span>
+                          <span>{city.suburbCount} suburbs{city.rScoreAvg ? ` · R-Score ${city.rScoreAvg}/100` : ''}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </>
+                )}
+
+                {results.lgas.length > 0 && (
+                  <>
+                    <li className="street-search-group-label" role="presentation">Council Areas (LGAs)</li>
+                    {results.lgas.map((lga) => (
+                      <li key={`lga-${lga.id}`} role="option" aria-selected="false">
+                        <button type="button" onClick={() => go(lga.path, 'loc_lga_select', { lgaId: lga.id })}>
+                          <span><b>{lga.name}</b> <small className="loc-type-pill">LGA · {lga.state}</small></span>
+                          <span>{lga.suburbCount} suburbs{lga.rScoreAvg ? ` · R-Score ${lga.rScoreAvg}/100` : ''}</span>
+                        </button>
+                      </li>
+                    ))}
+                  </>
+                )}
+
+                {shownSuburbs.length > 0 && (
+                  <>
+                    <li className="street-search-group-label" role="presentation">
+                      {query.trim() ? 'Suburbs — click to open suburb report or check streets' : `Top suburbs in ${scopeName || 'this area'} — or start typing above`}
+                    </li>
+                    {shownSuburbs.map((sub) => (
+                      <li key={`sub-${sub.id}`} role="option" aria-selected="false" className="loc-suburb-option">
+                        <button type="button" className="loc-suburb-row-btn" onClick={() => go(sub.path, 'loc_suburb_select', { suburbId: sub.id })}>
+                          <span>
+                            <b>{sub.name}</b> <small className="loc-type-pill">{sub.state}{sub.postcode ? ` ${sub.postcode}` : ''}</small>
+                          </span>
+                          <span>
+                            {sub.score != null ? `R-Score ${sub.score}/100 · ` : ''}Suburb report →
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          className="loc-drill-streets-btn"
+                          onClick={(e) => pickSuburbForStreets(sub, e)}
+                        >
+                          Check streets ↓
+                        </button>
+                      </li>
+                    ))}
+                  </>
+                )}
+              </ul>
+            )}
           </div>
-
-          {open && hasAny && (
-            <ul className="suburb-search-list loc-search-dropdown" role="listbox">
-              {results.cities.length > 0 && (
-                <>
-                  <li className="street-search-hint"><span>Cities</span></li>
-                  {results.cities.map((city) => (
-                    <li key={`city-${city.path}`} role="option" aria-selected="false">
-                      <button type="button" onClick={() => go(city.path, 'loc_city_select', { city: city.name })}>
-                        <span className="suburb-search-name">{city.name} <small className="loc-type-pill">City · {city.state}</small></span>
-                        <span className="suburb-search-meta">{city.suburbCount} suburbs{city.rScoreAvg ? ` · R-Score avg ${city.rScoreAvg}/100` : ''}</span>
-                      </button>
-                    </li>
-                  ))}
-                </>
-              )}
-
-              {results.lgas.length > 0 && (
-                <>
-                  <li className="street-search-hint"><span>Council Areas (LGAs)</span></li>
-                  {results.lgas.map((lga) => (
-                    <li key={`lga-${lga.id}`} role="option" aria-selected="false">
-                      <button type="button" onClick={() => go(lga.path, 'loc_lga_select', { lgaId: lga.id })}>
-                        <span className="suburb-search-name">{lga.name} <small className="loc-type-pill">LGA · {lga.state}</small></span>
-                        <span className="suburb-search-meta">{lga.suburbCount} suburbs{lga.rScoreAvg ? ` · R-Score avg ${lga.rScoreAvg}/100` : ''}</span>
-                      </button>
-                    </li>
-                  ))}
-                </>
-              )}
-
-              {shownSuburbs.length > 0 && (
-                <>
-                  <li className="street-search-hint">
-                    <span>{query.trim() ? 'Suburbs (click suburb or drill down to streets)' : `Top suburbs in ${scopeName || 'this area'}`}</span>
-                  </li>
-                  {shownSuburbs.map((sub) => (
-                    <li key={`sub-${sub.id}`} role="option" aria-selected="false" className="loc-suburb-option">
-                      <button type="button" onClick={() => go(sub.path, 'loc_suburb_select', { suburbId: sub.id })}>
-                        <span className="suburb-search-name">
-                          {sub.name} <small className="loc-type-pill">Suburb · {sub.state} {sub.postcode}</small>
-                        </span>
-                        <span className="suburb-search-meta">
-                          {sub.score != null ? `R-Score ${sub.score}/100 · ` : ''}Suburb report →
-                        </span>
-                      </button>
-                      <button
-                        type="button"
-                        className="loc-drill-streets-btn"
-                        onClick={(e) => pickSuburbForStreets(sub, e)}
-                      >
-                        Check streets ↓
-                      </button>
-                    </li>
-                  ))}
-                </>
-              )}
-            </ul>
-          )}
+          <p className="suburb-widget-fine">
+            {scopeName
+              ? `Click inside the search box to browse ${scopeName} suburbs or drill down to individual streets.`
+              : 'Search any Australian city, council area (LGA), suburb or 4-digit postcode — free, no sign-up to see the score.'}
+          </p>
         </>
       )}
     </div>
