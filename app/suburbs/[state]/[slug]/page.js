@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Footer from '../../../components/Footer';
 import MobileNav from '../../../components/MobileNav';
 import LocationFaqSection from '../../../components/LocationFaqSection';
+import ScorecardEmbedBox from '../../../components/ScorecardEmbedBox';
 import SuburbExperience from './SuburbExperience';
 import { findSuburbBySlug, getSuburbSnapshot } from '../../../../lib/suburbs';
 import {
@@ -353,6 +354,13 @@ export default async function SuburbPage({ params }) {
           </div>
           <Link className="button button-primary" href="/discovery-call">Book a Free Discovery Call <span>↗</span></Link>
         </div>
+
+        <ScorecardEmbedBox
+          title={`${snapshot.name} ${snapshot.state}${postcode ? ` ${postcode}` : ''} Property Market R-Score`}
+          pageUrl={suburbUrl}
+          ogImageUrl={`${SITE_URL}/api/og/suburb/${snapshot.id}`}
+          scoreLabel={`R-Score ${snapshot.score ?? '—'}/100`}
+        />
       </section>
 
       {/* ── LLM-Optimised FAQ Panel ─────────────────────────────────────── */}

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { COMPARE_PAGES, WHO_WE_HELP_PAGES } from '../../lib/compare-and-personas';
+import { GLOSSARY_TERMS } from '../../lib/glossary';
 
 const logoUrl = '/images/rha-logo-dark.png';
 const ripeholdLogoUrl = 'https://ripehold.com.au/img/ripehold_logo_full_white.png';
@@ -106,8 +107,9 @@ export default function Footer({ backHref = '/', backLabel = 'Back home ↑' }) 
             <Link href="/suburbs/best">Best Suburbs Leaderboard →</Link>
             <Link href="/suburbs">All 15,000 Suburbs →</Link>
             <Link href="/streets">Street Score Search →</Link>
-            <Link href="/compare">Compare Buyer’s Agents &amp; Strategies →</Link>
+            <Link href="/compare">Compare Buyer’s Agents →</Link>
             <Link href="/who-we-help">Who We Help →</Link>
+            <Link href="/resources/glossary">Property Glossary →</Link>
           </div>
         </div>
 
@@ -165,6 +167,17 @@ export default function Footer({ backHref = '/', backLabel = 'Back home ↑' }) 
             ))}
           </ul>
         </div>
+
+        <div className="footer-seo-group">
+          <h3>Australian Property Investment Glossary &amp; Quantitative Metrics</h3>
+          <ul className="footer-seo-list">
+            {GLOSSARY_TERMS.map((item) => (
+              <li key={item.slug}>
+                <Link href={`/resources/glossary/${item.slug}`}>{item.term}</Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       <div className="footer-row">
@@ -179,6 +192,7 @@ export default function Footer({ backHref = '/', backLabel = 'Back home ↑' }) 
           <Link href="/streets">Streets</Link>
           <Link href="/compare">Compare</Link>
           <Link href="/who-we-help">Who We Help</Link>
+          <Link href="/resources/glossary">Glossary</Link>
           <Link href="/legal/privacy-policy">Privacy</Link>
           <Link href="/legal/terms-and-conditions">Terms</Link>
           <Link href={backHref}>{backLabel}</Link>

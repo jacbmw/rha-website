@@ -14,9 +14,61 @@ import { pageMetadata, SITE_URL } from '../../../../lib/seo';
 
 const logoUrl = '/images/rha-logo-dark.png';
 
-function cleanSeoTitle(raw) {
+const NAMED_TOPIC_ENTITIES = [
+  [/\bsuncorp\b[\s\S]{0,80}\banz\b|\banz\b[\s\S]{0,80}\bsuncorp\b/i, 'Suncorp to ANZ Home Loan Changes (2026)'],
+  [/\bsection\s+100a\b|\bfamily\s+trust/i, 'Family Trust Property Tax Rules (2026)'],
+  [/\bthree[- ]strike|\brental\s+minimum\s+standards|\blandlord\s+licen/i, 'Rental Compliance & Landlord Rules (2026)'],
+  [/\bprivate\s+credit\b|\bproperty[- ]backed\b/i, 'Private Credit & Property Developer Risk (2026)'],
+  [/\bclearance\s+rate|\bsqm\s+research\b|\bcotality\b/i, 'Australian Auction Clearance & Stock Data (2026)'],
+  [/\b5%\s+deposit|\bfirst\s+home\s+guarantee\b/i, 'First Home Guarantee & 5% Deposit Rules (2026)'],
+  [/\bnegative\s+gearing\b|\bcgt\b|\bcapital\s+gains\s+tax\b/i, 'Negative Gearing & Property Tax Strategy (2026)'],
+  [/\bcredit\s+default\s+swap|\bus\s+tech\b|\betf\b/i, 'Home Equity vs ETF & Share Market Risk (2026)'],
+  [/\brba\b|\breserve\s+bank\b|\binterest\s+rate/i, 'RBA Interest Rates & Property Strategy (2026)'],
+];
+
+function extractFactualParagraphs(bodyHtml) {
+  const matches = [...String(bodyHtml || '').matchAll(/<p[^>]*>([\s\S]*?)<\/p>/gi)];
+  const paragraphs = matches
+    .map((m) => m[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim())
+    .filter((text) => text.length >= 55 && text.length <= 420);
+
+  const nonPersona = paragraphs.filter(
+    (t) => !/^(she|he)\s+is\s+\d+\b|composite\s+illustration|not\s+a\s+real\s+person/i.test(t)
+  );
+  const dataRich = nonPersona.filter(
+    (t) => /(\$[\d,.]+|\d+(\.\d+)?\s*(%|per\s+cent)|rba|reserve\s+bank|abc|cotality|corelogic|sqm|anz|cba|westpac|nab|suncorp|ato|asic|apra|census|r-score)/i.test(t)
+  );
+  return dataRich.length >= 2 ? dataRich : (nonPersona.length ? nonPersona : paragraphs);
+}
+
+function cleanSeoTitle(raw, post, mentionedLocations = [], factualParagraphs = []) {
   const base = String(raw || '').replace(/\s*[|–—-]\s*Ripehouse Advisory\s*$/i, '').trim();
-  return base ? `${base} | Ripehouse Advisory` : 'Market Intel | Ripehouse Advisory';
+  if (!base) return 'Market Intel | Ripehouse Advisory';
+
+  // If the headline starts with an anonymous pronoun ("She is...", "He was...", "Her ETF..."),
+  // prefix it with the detected entity/market topic so search engines and LLMs index the real subject.
+  if (/^(she|he|her|his|they)\b/i.test(base)) {
+    const sampleText = `${base} ${factualParagraphs.slice(0, 3).join(' ')}`;
+    const matchedTopic = NAMED_TOPIC_ENTITIES.find(([re]) => re.test(sampleText));
+    if (matchedTopic) {
+      return `${matchedTopic[1]}: ${base} | Ripehouse Advisory`;
+    }
+    if (mentionedLocations.length > 0) {
+      return `${mentionedLocations[0].label} Property Analysis: ${base} | Ripehouse Advisory`;
+    }
+  }
+  return `${base} | Ripehouse Advisory`;
+}
+
+function buildSmartSeoDescription(post, factualParagraphs = []) {
+  const raw = String(post.seoDescription || post.summary || '').replace(/\s+/g, ' ').trim();
+  const isPersonaLead = /^(she|he)\s+is\s+\d+\b/i.test(raw);
+  if (raw.length >= 65 && !isPersonaLead) return raw;
+  if (factualParagraphs.length > 0) {
+    const combined = factualParagraphs.slice(0, 2).join(' ');
+    return combined.length > 160 ? `${combined.slice(0, 157).replace(/\s+\S*$/, '')}…` : combined;
+  }
+  return raw || 'Independent Australian property market intelligence and quantitative research from Ripehouse Advisory.';
 }
 
 function isSummaryDuplicateOfBody(summary, bodyHtml) {
@@ -30,10 +82,12 @@ function isSummaryDuplicateOfBody(summary, bodyHtml) {
   return cleanSum === firstPText || (prefixLen >= 30 && firstPText.startsWith(cleanSum.slice(0, prefixLen)));
 }
 
-function buildAtAGlanceBullets(post) {
+function buildAtAGlanceBullets(post, factualParagraphs = []) {
   const bullets = [];
   const desc = String(post.seoDescription || '').replace(/\s+/g, ' ').trim();
-  if (desc && desc.length >= 40) bullets.push(desc);
+  if (desc && desc.length >= 45 && !/^(she|he)\s+is\s+\d+\b/i.test(desc)) {
+    bullets.push(desc);
+  }
 
   if (Array.isArray(post.faq?.items)) {
     for (const item of post.faq.items) {
@@ -46,7 +100,39 @@ function buildAtAGlanceBullets(post) {
       }
     }
   }
+
+  for (const para of factualParagraphs) {
+    if (bullets.length >= 3) break;
+    const clipped = para.length > 210 ? `${para.slice(0, 205).replace(/\s+\S*$/, '')}…` : para;
+    if (clipped.length >= 45 && !bullets.includes(clipped)) {
+      bullets.push(clipped);
+    }
+  }
   return bullets.slice(0, 3);
+}
+
+function buildArticleFaqs(post, factualParagraphs = [], mentionedLocations = []) {
+  if (Array.isArray(post.faq?.items) && post.faq.items.length > 0) {
+    return post.faq.items;
+  }
+  if (factualParagraphs.length < 2) return [];
+  const locText = mentionedLocations.length > 0
+    ? mentionedLocations.slice(0, 3).map((l) => l.label).join(', ')
+    : 'Australian capital cities and regional council areas';
+  return [
+    {
+      question: /\?$/.test(post.name.trim()) ? post.name.trim() : `What is the key data takeaway in "${post.name}"?`,
+      answer: factualParagraphs.slice(0, 2).join(' '),
+    },
+    {
+      question: 'What does this mean for Australian property investors with usable equity or cash?',
+      answer: `${factualParagraphs[2] || factualParagraphs[1]} Ripehouse Advisory recommends stress-testing borrowing buffers first and selecting individual suburbs and streets on objective data rather than macro headlines.`,
+    },
+    {
+      question: `How can I check the Suburb R-Score and Street Score for ${locText}?`,
+      answer: `Use Ripehouse Advisory’s free research tools at ripehouseadvisory.com.au/locations, /suburbs, and /streets to inspect the monthly 27-indicator R-Score, median house price, rental yield, vacancy rate, and ABS SA1 census street scores for ${locText}.`,
+    },
+  ];
 }
 
 function fmtDate(value) {
@@ -67,11 +153,14 @@ export async function generateMetadata({ params }) {
   const slug = (await params).slug;
   const post = await getBlogItemBySlug(slug).catch(() => null);
   if (!post) return { title: 'Market Intel | Ripehouse Advisory' };
-  const fullTitle = cleanSeoTitle(post.seoTitle || post.name);
+  const mentioned = extractMentionedLocations(post, 5);
+  const factualParagraphs = extractFactualParagraphs(post.body);
+  const fullTitle = cleanSeoTitle(post.seoTitle || post.name, post, mentioned, factualParagraphs);
   const cleanHeadline = fullTitle.replace(/\s*\|\s*Ripehouse Advisory$/, '');
+  const description = buildSmartSeoDescription(post, factualParagraphs);
   return pageMetadata({
     title: fullTitle,
-    description: post.seoDescription || post.summary,
+    description,
     ogTitle: cleanHeadline,
     path: `/resources/blog/${slug}`,
     image: post.image ? { url: post.image, alt: post.imageAlt || post.name } : undefined,
@@ -106,9 +195,12 @@ export default async function BlogArticle({ params }) {
 
   const [bodyLead, bodyRest] = splitBody(post.body, 0.5);
   const mentionedLocations = extractMentionedLocations(post, 10);
+  const factualParagraphs = extractFactualParagraphs(post.body);
   const showSummaryLead = Boolean(post.summary) && !isSummaryDuplicateOfBody(post.summary, post.body);
-  const atAGlanceBullets = buildAtAGlanceBullets(post);
-  const fullTitle = cleanSeoTitle(post.seoTitle || post.name);
+  const atAGlanceBullets = buildAtAGlanceBullets(post, factualParagraphs);
+  const articleFaqs = buildArticleFaqs(post, factualParagraphs, mentionedLocations);
+  const fullTitle = cleanSeoTitle(post.seoTitle || post.name, post, mentionedLocations, factualParagraphs);
+  const smartDescription = buildSmartSeoDescription(post, factualParagraphs);
   const articleUrl = `${SITE_URL}/resources/blog/${post.slug}`;
   const wordCount = String(post.body || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
 
@@ -119,9 +211,9 @@ export default async function BlogArticle({ params }) {
         '@type': post.category === 'News' ? 'NewsArticle' : 'Article',
         '@id': `${articleUrl}#article`,
         mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
-        headline: post.name,
-        alternativeHeadline: post.seoTitle ? post.seoTitle.replace(/\s*\|\s*Ripehouse Advisory\s*$/i, '') : undefined,
-        description: post.seoDescription || post.summary || undefined,
+        headline: fullTitle.replace(/\s*\|\s*Ripehouse Advisory$/, ''),
+        alternativeHeadline: post.name,
+        description: smartDescription || undefined,
         image: post.image ? [post.image] : [`${SITE_URL}/images/rha-logo-dark.png`],
         datePublished: post.publishedDate || undefined,
         dateModified: post.publishedDate || undefined,
@@ -243,14 +335,14 @@ export default async function BlogArticle({ params }) {
                 </div>
               </section>
             )}
-            {post.faq?.items?.length > 0 && (
+            {articleFaqs.length > 0 && (
               <section className="article-faq" aria-labelledby="article-faq-heading">
                 <h2 id="article-faq-heading">Frequently asked questions</h2>
                 {/* Collapsed <details> accordion: the full Q&A stays in the
                     server-rendered HTML so search/LLM crawlers index it; the
                     FAQPage JSON-LD below makes the pairs explicit either way. */}
-                {post.faq.items.map((item) => (
-                  <details className="article-faq-item" key={item.question}>
+                {articleFaqs.map((item, idx) => (
+                  <details className="article-faq-item" key={item.question} open={idx === 0}>
                     <summary><h3>{item.question}</h3><span aria-hidden="true">+</span></summary>
                     <p>{item.answer}</p>
                   </details>
@@ -261,7 +353,7 @@ export default async function BlogArticle({ params }) {
                     __html: JSON.stringify({
                       '@context': 'https://schema.org',
                       '@type': 'FAQPage',
-                      mainEntity: post.faq.items.map((item) => ({
+                      mainEntity: articleFaqs.map((item) => ({
                         '@type': 'Question',
                         name: item.question,
                         acceptedAnswer: { '@type': 'Answer', text: item.answer },

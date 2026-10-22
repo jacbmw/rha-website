@@ -3,6 +3,7 @@ import { listPublicCaseStudies } from '../lib/case-studies';
 import { listSuburbSlugs, getLatestMonth } from '../lib/suburbs';
 import { getLocationRegistry } from '../lib/locations';
 import { COMPARE_PAGES, WHO_WE_HELP_PAGES } from '../lib/compare-and-personas';
+import { GLOSSARY_TERMS } from '../lib/glossary';
 
 export const revalidate = 3600;
 
@@ -122,6 +123,12 @@ export default async function sitemap() {
       url: `${baseUrl}/who-we-help/${item.slug}`,
       changeFrequency: 'monthly',
       priority: 0.8,
+    })),
+    { url: `${baseUrl}/resources/glossary`, changeFrequency: 'monthly', priority: 0.8 },
+    ...GLOSSARY_TERMS.map((item) => ({
+      url: `${baseUrl}/resources/glossary/${item.slug}`,
+      changeFrequency: 'monthly',
+      priority: 0.7,
     })),
     {
       url: `${baseUrl}/locations`,
