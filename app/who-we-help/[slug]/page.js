@@ -9,10 +9,10 @@ import { listPublicCaseStudies, displayName } from '../../../lib/case-studies';
 import { pageMetadata, SITE_URL } from '../../../lib/seo';
 
 export const revalidate = 86400;
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export function generateStaticParams() {
-  return WHO_WE_HELP_PAGES.map((page) => ({ slug: page.slug }));
+  return [];
 }
 
 const logoUrl = '/images/rha-logo-dark.png';

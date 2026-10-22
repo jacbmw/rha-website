@@ -9,10 +9,10 @@ import { getLocationRegistry } from '../../../../lib/locations';
 import { pageMetadata, SITE_URL } from '../../../../lib/seo';
 
 export const revalidate = 86400;
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 export function generateStaticParams() {
-  return GLOSSARY_TERMS.map((item) => ({ slug: item.slug }));
+  return [];
 }
 
 const logoUrl = '/images/rha-logo-dark.png';

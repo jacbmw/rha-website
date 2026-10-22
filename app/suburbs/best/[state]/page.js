@@ -9,12 +9,12 @@ import { getLocationRegistry, STATE_NAMES } from '../../../../lib/locations';
 import { pageMetadata, SITE_URL } from '../../../../lib/seo';
 
 export const revalidate = 86400;
-export const dynamicParams = false;
+export const dynamicParams = true;
 
 const STATE_ORDER = ['nsw', 'vic', 'qld', 'wa', 'sa', 'tas', 'act', 'nt'];
 
 export function generateStaticParams() {
-  return STATE_ORDER.map((state) => ({ state }));
+  return [];
 }
 
 const logoUrl = '/images/rha-logo-dark.png';

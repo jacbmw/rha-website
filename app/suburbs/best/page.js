@@ -29,7 +29,7 @@ export const metadata = pageMetadata({
 });
 
 export default async function BestSuburbsNationalPage() {
-  const { lgas = [], asOf = 'latest month' } = await getLocationRegistry();
+  const { lgas = [], asOf = 'latest month' } = await getLocationRegistry().catch(() => ({ lgas: [], asOf: 'latest month' }));
 
   const allSuburbs = lgas
     .flatMap((lga) => (lga.suburbs || []).map((s) => ({
