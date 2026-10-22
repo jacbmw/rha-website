@@ -68,7 +68,10 @@ export default async function StateSuburbsPage({ params }) {
       <section className="suburb-index-hero section-shell">
         <p className="eyebrow"><span /> Your suburb, scored</p>
         <h1>{stateName} <i>suburbs.</i></h1>
-        <p className="suburb-meta">{suburbs.length.toLocaleString('en-AU')} suburbs scored monthly across 27 indicators. Pick yours.</p>
+        <p className="suburb-meta">
+          {suburbs.length.toLocaleString('en-AU')} suburbs scored monthly across 27 indicators. Pick yours below, or{' '}
+          <Link href={`/suburbs/best/${code}`}><b>see the Top 25 Highest-Scoring Suburbs in {stateName} →</b></Link>
+        </p>
       </section>
 
       {/* Letter pages keep each HTML payload small — the full state list in

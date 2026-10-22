@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { COMPARE_PAGES, WHO_WE_HELP_PAGES } from '../../lib/compare-and-personas';
 
 const logoUrl = '/images/rha-logo-dark.png';
 const ripeholdLogoUrl = 'https://ripehold.com.au/img/ripehold_logo_full_white.png';
@@ -102,8 +103,11 @@ export default function Footer({ backHref = '/', backLabel = 'Back home ↑' }) 
           </div>
           <div className="footer-seo-hubs">
             <Link href="/locations">All 30 Cities &amp; 540+ LGAs →</Link>
+            <Link href="/suburbs/best">Best Suburbs Leaderboard →</Link>
             <Link href="/suburbs">All 15,000 Suburbs →</Link>
             <Link href="/streets">Street Score Search →</Link>
+            <Link href="/compare">Compare Buyer’s Agents &amp; Strategies →</Link>
+            <Link href="/who-we-help">Who We Help →</Link>
           </div>
         </div>
 
@@ -138,6 +142,29 @@ export default function Footer({ backHref = '/', backLabel = 'Back home ↑' }) 
             </Link>
           </p>
         </div>
+
+        <div className="footer-seo-group">
+          <h3>Compare Property Investment Models &amp; Investor Profiles</h3>
+          <ul className="footer-seo-list">
+            <li><Link href="/suburbs/best">Best Suburbs in Australia (2026)</Link></li>
+            <li><Link href="/suburbs/best/nsw">Best Suburbs in NSW</Link></li>
+            <li><Link href="/suburbs/best/vic">Best Suburbs in VIC</Link></li>
+            <li><Link href="/suburbs/best/qld">Best Suburbs in QLD</Link></li>
+            <li><Link href="/suburbs/best/wa">Best Suburbs in WA</Link></li>
+            <li><Link href="/suburbs/best/sa">Best Suburbs in SA</Link></li>
+            <li><Link href="/suburbs/best/tas">Best Suburbs in TAS</Link></li>
+            {COMPARE_PAGES.map((item) => (
+              <li key={item.slug}>
+                <Link href={`/compare/${item.slug}`}>{item.shortLabel}</Link>
+              </li>
+            ))}
+            {WHO_WE_HELP_PAGES.map((item) => (
+              <li key={item.slug}>
+                <Link href={`/who-we-help/${item.slug}`}>{item.persona}</Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
       <div className="footer-row">
@@ -147,8 +174,11 @@ export default function Footer({ backHref = '/', backLabel = 'Back home ↑' }) 
         <p>© 2026 Ripehouse Advisory. All rights reserved.</p>
         <div>
           <Link href="/locations">Locations</Link>
+          <Link href="/suburbs/best">Best Suburbs</Link>
           <Link href="/suburbs">Suburbs</Link>
           <Link href="/streets">Streets</Link>
+          <Link href="/compare">Compare</Link>
+          <Link href="/who-we-help">Who We Help</Link>
           <Link href="/legal/privacy-policy">Privacy</Link>
           <Link href="/legal/terms-and-conditions">Terms</Link>
           <Link href={backHref}>{backLabel}</Link>

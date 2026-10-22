@@ -50,15 +50,31 @@ export default async function SuburbsIndexPage() {
         <h1>Every suburb in Australia, <i>measured.</i></h1>
         <p className="suburb-meta">15,000 suburbs scored across 27 indicators — the same engine behind $2B+ of client purchases. Updated monthly. Free to check.</p>
         <SuburbScoreWidget variant={suburbPanel} placement="index" />
+        <div className="loc-quick-jumps">
+          <Link href="/suburbs/best">Top 25 Highest R-Score Suburbs in Australia →</Link>
+          <Link href="/suburbs/best#top-yield">Highest Rental Yield Suburbs Under $750k →</Link>
+          <Link href="/suburbs/best#lowest-vacancy">Tightest Rental Vacancy Suburbs →</Link>
+          <Link href="/locations">All 30 Cities &amp; 544 LGAs →</Link>
+        </div>
       </section>
 
       <section className="suburb-index-states section-shell">
-        <div className="section-label">Browse by state</div>
+        <div className="section-label">Browse by state or view state leaderboards</div>
         <ul className="suburb-state-list">
           {STATES.map((state) => (
-            <li key={state.code}><Link href={`/suburbs/${state.code}`}>{state.name} <span>→</span></Link></li>
+            <li key={state.code}>
+              <Link href={`/suburbs/${state.code}`}>{state.name} A–Z Directory <span>→</span></Link>
+            </li>
           ))}
         </ul>
+        <div className="loc-state-pills" style={{ marginTop: '22px' }}>
+          <Link href="/suburbs/best" className="loc-state-pill">National Leaderboard</Link>
+          {STATES.map((state) => (
+            <Link key={state.code} href={`/suburbs/best/${state.code}`} className="loc-state-pill">
+              Best Suburbs in {state.code.toUpperCase()}
+            </Link>
+          ))}
+        </div>
       </section>
 
       <Footer backHref="/" backLabel="Back home ↑" />

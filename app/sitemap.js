@@ -2,6 +2,7 @@ import { listAllBlogItems } from '../lib/blog-store';
 import { listPublicCaseStudies } from '../lib/case-studies';
 import { listSuburbSlugs, getLatestMonth } from '../lib/suburbs';
 import { getLocationRegistry } from '../lib/locations';
+import { COMPARE_PAGES, WHO_WE_HELP_PAGES } from '../lib/compare-and-personas';
 
 export const revalidate = 3600;
 
@@ -88,6 +89,18 @@ export default async function sitemap() {
       changeFrequency: 'monthly',
       priority: 0.8,
     },
+    {
+      url: `${baseUrl}/suburbs/best`,
+      ...(suburbLastMod ? { lastModified: suburbLastMod } : {}),
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    ...['qld', 'nsw', 'vic', 'sa', 'wa', 'tas', 'nt', 'act'].map((state) => ({
+      url: `${baseUrl}/suburbs/best/${state}`,
+      ...(suburbLastMod ? { lastModified: suburbLastMod } : {}),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    })),
     // Individual suburb pages ship in batched sitemaps at /suburbs/sitemap/[id].xml
     ...['qld', 'nsw', 'vic', 'sa', 'wa', 'tas', 'nt', 'act'].map((state) => ({
       url: `${baseUrl}/suburbs/${state}`,
@@ -98,6 +111,18 @@ export default async function sitemap() {
     ...letterBrowseRoutes,
     // Individual suburb street hubs & street pages ship in batched sitemaps at /streets/sitemap/[id].xml
     { url: `${baseUrl}/streets`, changeFrequency: 'monthly', priority: 0.8 },
+    { url: `${baseUrl}/compare`, changeFrequency: 'monthly', priority: 0.8 },
+    ...COMPARE_PAGES.map((item) => ({
+      url: `${baseUrl}/compare/${item.slug}`,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    })),
+    { url: `${baseUrl}/who-we-help`, changeFrequency: 'monthly', priority: 0.8 },
+    ...WHO_WE_HELP_PAGES.map((item) => ({
+      url: `${baseUrl}/who-we-help/${item.slug}`,
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    })),
     {
       url: `${baseUrl}/locations`,
       ...(suburbLastMod ? { lastModified: suburbLastMod } : {}),
