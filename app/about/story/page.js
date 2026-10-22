@@ -9,15 +9,52 @@ const annaImage = '/images/story-anna-cooper.webp';
 const suburbImage = '/images/australia-suburb.webp';
 
 export const metadata = pageMetadata({
-  title: 'Our Story | Ripehouse Advisory',
-  description: 'Meet Jacob Field and Anna Cooper, the founders behind Ripehouse Advisory and a more considered way to invest in property.',
+  title: 'Our Story — Jacob Field & Anna Cooper | Ripehouse Advisory',
+  description: 'Meet Jacob Field (Founder & CEO) and Anna Cooper (COO, former Managing Editor of Australian Property Investor Magazine), the founders behind Ripehouse Advisory.',
   path: '/about/story',
   image: { url: jacobImage, alt: 'Jacob Field, founder and CEO of Ripehouse Advisory' },
 });
 
+const storyJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'AboutPage',
+      '@id': `${SITE_URL}/about/story#webpage`,
+      url: `${SITE_URL}/about/story`,
+      name: 'Our Story — Jacob Field & Anna Cooper | Ripehouse Advisory',
+      about: { '@id': `${SITE_URL}/#organization` },
+    },
+    {
+      '@type': 'Person',
+      '@id': `${SITE_URL}/about/story#jacob-field`,
+      name: 'Jacob Field',
+      jobTitle: 'Founder & Chief Executive Officer',
+      image: jacobImage,
+      url: `${SITE_URL}/about/story`,
+      description: 'Software engineer and property investor who exited the 9–5 at age 32 and founded Ripehouse Advisory in 2011, building Australia’s 15,000-suburb 27-indicator property research engine.',
+      worksFor: { '@id': `${SITE_URL}/#organization` },
+    },
+    {
+      '@type': 'Person',
+      '@id': `${SITE_URL}/about/story#anna-cooper`,
+      name: 'Anna Cooper',
+      jobTitle: 'Chief Operations Officer',
+      image: `${SITE_URL}${annaImage}`,
+      url: `${SITE_URL}/about/story`,
+      description: 'Co-founder and Chief Operations Officer of Ripehouse Advisory, and former Managing Editor at Australian Property Investor Magazine.',
+      worksFor: { '@id': `${SITE_URL}/#organization` },
+    },
+  ],
+};
+
 export default function StoryPage() {
   return (
     <main className="story-page">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(storyJsonLd) }}
+      />
       <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link className="active" href="/about/story">Our story</Link><Link href="/#approach">Our approach</Link><Link href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/discovery-call">Book a call <span>↗</span></Link><MobileNav links={[{ label: 'Our story', href: '/about/story' }, { label: 'Our approach', href: '/#approach' }, { label: 'Market intel', href: '/resources/blog' }, { label: 'Contact', href: '/#contact' }]} /></header>
 
       <section className="story-hero section-shell"><div className="story-hero-copy"><p className="eyebrow"><span /> The people behind the plan</p><h1>Property advice<br />with <i>a point of view.</i></h1><p>Ripehouse Advisory exists because the property industry had a problem: too much noise, too little accountability, and no real system for helping everyday Australians build a future.</p></div><div className="story-hero-art"><video autoPlay muted loop playsInline poster="/authority-website-video-poster.jpg" aria-label="Aerial view of an Australian suburban street"><source src="/authority-website-video.mp4" type="video/mp4" /></video><span className="story-hero-stamp">Built for<br /><i>the long game.</i></span></div></section>

@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "bake:streets": "node --experimental-detect-module scripts/bake-streets.mjs"
+    "bake:streets": "node --experimental-detect-module scripts/bake-streets.mjs",
+    "seo:indexnow": "node scripts/submit-indexnow.mjs"
   },
   "dependencies": {
     "mysql2": "^3.23.2",

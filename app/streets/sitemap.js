@@ -49,7 +49,7 @@ export default async function sitemap({ id }) {
       `SELECT LOWER(s.state) AS state, s.slug AS suburb, b.slug AS street, b.baked_at
          FROM ${BAKE_TABLE} b JOIN ${SUBURB_BAKE_TABLE} s ON s.ssc_id = b.ssc_id
         WHERE b.confidence <> 'low' AND b.score IS NOT NULL AND s.error IS NULL
-        ORDER BY b.ssc_id, b.slug
+        ORDER BY b.addresses DESC, b.ssc_id, b.slug
         LIMIT ${BATCH_SIZE} OFFSET ${streetBatchId * BATCH_SIZE}`
     );
     return rows.map((row) => ({

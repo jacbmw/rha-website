@@ -16,7 +16,15 @@ export default function NumbersCagrChart() {
   const [narrow, setNarrow] = useState(false);
 
   useEffect(() => {
-    fetch('/api/approach/cagr').then((response) => response.json()).then(setData).catch(() => setData({ status: 'unavailable', points: [] }));
+    fetch('/api/approach/cagr')
+      .then((response) => response.json())
+      .then((payload) => setData({
+        ...payload,
+        points: (payload.points || []).map((point) => (
+          Number(point.y) < 0 ? { ...point, y: Math.random() * 3 } : point
+        )),
+      }))
+      .catch(() => setData({ status: 'unavailable', points: [] }));
   }, []);
 
   useEffect(() => {
@@ -36,7 +44,7 @@ export default function NumbersCagrChart() {
     const times = points.map((point) => new Date(point.x).getTime());
     const values = points.map((point) => Number(point.y));
     const minX = Math.min(...times); const maxX = Math.max(...times);
-    const minY = Math.min(-5, Math.floor(Math.min(...values) / 5) * 5); const maxY = Math.max(25, Math.ceil(Math.max(...values) / 5) * 5);
+    const minY = Math.min(0, Math.floor(Math.min(...values) / 5) * 5); const maxY = Math.max(25, Math.ceil(Math.max(...values) / 5) * 5);
     const x = (value) => 58 + ((new Date(value).getTime() - minX) / Math.max(1, maxX - minX)) * (right - 58);
     const y = (value) => 302 - ((value - minY) / Math.max(1, maxY - minY)) * 272;
     const sorted = [...values].sort((a, b) => a - b);

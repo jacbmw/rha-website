@@ -79,7 +79,7 @@ export default function BlogGrid({ posts }) {
       posts: take((post) => post.category === name, 3),
     }));
     const qaPosts = take((post) => post.category === 'Q&A');
-    const archivePosts = take(() => true);
+    const archivePosts = take(() => true, 24);
 
     return { lead, side, categorySections, qaPosts, archivePosts };
   }, [sorted]);

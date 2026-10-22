@@ -1227,3 +1227,21 @@ main.article-page{overflow:visible}.article-layout{display:grid;grid-template-co
 .loc-card-grid,.loc-card-grid-compact,.loc-suburb-grid{grid-template-columns:1fr}
 .footer-seo-list{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* Editorial At-a-Glance & Semantic Market Data Tables */
+.article-at-a-glance{background:var(--cream);border-left:3px solid var(--lime);margin:28px 0 36px;padding:24px 28px}
+.article-at-a-glance-title{color:#8a6a0c;font-size:10.5px;font-weight:700;letter-spacing:.15em;margin:0 0 12px;text-transform:uppercase}
+.article-at-a-glance ul{margin:0;padding-left:18px}
+.article-at-a-glance li{color:var(--ink);font-size:14.5px;line-height:1.65;margin-bottom:8px}
+.article-at-a-glance li:last-child{margin-bottom:0}
+.article-at-a-glance li a{border-bottom:1px solid var(--lime);font-weight:700}
+.rha-table-wrap{margin-top:22px;overflow-x:auto}
+.rha-data-table{background:#fff;border:1px solid var(--line);border-collapse:collapse;font-size:13.5px;width:100%}
+.rha-data-table th{background:var(--cream);border-bottom:1px solid var(--line);color:var(--ink);font-size:11px;font-weight:700;letter-spacing:.1em;padding:12px 16px;text-align:left;text-transform:uppercase}
+.rha-data-table td{border-bottom:1px solid rgba(20,26,50,.08);color:var(--muted);line-height:1.5;padding:12px 16px;vertical-align:top}
+.rha-data-table td:first-child{color:var(--ink);font-weight:700;white-space:nowrap}
+.rha-data-table td b{color:var(--ink)}
+.rha-data-table tr:last-child td{border-bottom:0}
+.rha-advisory-box{background:var(--cream);border:1px solid var(--line);border-left:3px solid var(--lime);display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center;margin-top:28px;padding:24px 28px}
+.rha-advisory-box h3{font-family:Georgia,serif;font-size:22px;font-weight:400;letter-spacing:-.03em;margin:0 0 6px}
+.rha-advisory-box p{color:var(--muted);font-size:13.5px;line-height:1.6;margin:0;max-width:680px}

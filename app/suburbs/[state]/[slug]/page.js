@@ -37,10 +37,14 @@ export async function generateMetadata({ params }) {
   const data = await loadPage(params);
   if (!data) return { title: 'Suburb data | Ripehouse Advisory', robots: { index: false } };
   const { snapshot } = data;
-  const title = `${snapshot.name} ${snapshot.state} Property Market Data & R-Score | Ripehouse Advisory`;
+  const postcode = snapshot.postcodes?.[0] ? ` ${snapshot.postcodes[0]}` : '';
+  const priceBit = snapshot.stats.medianPrice ? `${fmtMoney(snapshot.stats.medianPrice)} Median` : 'Property Market Data';
+  const yieldBit = snapshot.stats.grossYield !== null ? `, ${snapshot.stats.grossYield}% Yield` : '';
+  const scoreBit = snapshot.score !== null ? ` & R-Score ${snapshot.score}/100` : ' & R-Score';
+  const title = `${snapshot.name} ${snapshot.state}${postcode} Property Market Data (2026): ${priceBit}${yieldBit}${scoreBit} | Ripehouse Advisory`;
   const description = snapshot.score !== null
-    ? `${snapshot.name} ${snapshot.state} scores ${snapshot.score}/100 on the Ripehouse R-Score this month — median price ${fmtMoney(snapshot.stats.medianPrice)}, vacancy ${snapshot.stats.vacancy ?? '—'}%. See the full data.`
-    : `Current market data for ${snapshot.name} ${snapshot.state} from the Ripehouse research engine — 15,000 suburbs scored across 27 indicators, updated monthly.`;
+    ? `${snapshot.name} ${snapshot.state}${postcode} scores ${snapshot.score}/100 on the Ripehouse R-Score (${snapshot.asOf}) — median house price ${fmtMoney(snapshot.stats.medianPrice)}, weekly rent ${snapshot.stats.medianRent ? `$${Math.round(snapshot.stats.medianRent)}/wk` : '—'}, gross yield ${snapshot.stats.grossYield ?? '—'}%, vacancy ${snapshot.stats.vacancy ?? '—'}%. Compare streets & market data.`
+    : `Current property market data for ${snapshot.name} ${snapshot.state}${postcode} from the Ripehouse research engine — 15,000 suburbs scored across 27 indicators, updated monthly.`;
   return pageMetadata({
     title,
     description,
@@ -70,9 +74,72 @@ export default async function SuburbPage({ params }) {
     fetchTopStreetsForSuburbs([entry.id], 6).catch(() => []),
   ]);
   const faqs = buildSuburbFaqs(snapshot, locationContext, topStreets);
+  const suburbUrl = `${SITE_URL}/suburbs/${snapshot.slug}`;
+  const postcode = snapshot.postcodes?.[0] || '';
+
+  const suburbJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Place',
+        '@id': `${suburbUrl}#place`,
+        name: `${snapshot.name}, ${snapshot.state}${postcode ? ` ${postcode}` : ''}`,
+        url: suburbUrl,
+        description: `Property investment market data, monthly 27-indicator R-Score (${snapshot.score ?? '—'}/100), median house price (${fmtMoney(stats.medianPrice)}), gross rental yield (${stats.grossYield ?? '—'}%), and street scores for ${snapshot.name}, ${snapshot.state}.`,
+        address: {
+          '@type': 'PostalAddress',
+          addressLocality: snapshot.name,
+          addressRegion: snapshot.state,
+          ...(postcode ? { postalCode: postcode } : {}),
+          addressCountry: 'AU',
+        },
+        ...(locationContext.lga
+          ? {
+              containedInPlace: {
+                '@type': 'AdministrativeArea',
+                name: `${locationContext.lga.name} (${locationContext.lga.state})`,
+                url: `${SITE_URL}${locationContext.lga.path}`,
+              },
+            }
+          : {}),
+      },
+      {
+        '@type': 'Dataset',
+        '@id': `${suburbUrl}#dataset`,
+        name: `${snapshot.name} ${snapshot.state} Property Market Data & R-Score (${snapshot.asOf})`,
+        description: `Monthly Ripehouse Advisory suburb research dataset for ${snapshot.name} (${snapshot.state}): R-Score ${snapshot.score ?? '—'}/100, median price ${fmtMoney(stats.medianPrice)}, median rent ${stats.medianRent ? `$${Math.round(stats.medianRent)}/wk` : '—'}, gross yield ${stats.grossYield ?? '—'}%, vacancy ${stats.vacancy ?? '—'}%.`,
+        url: suburbUrl,
+        creator: { '@type': 'Organization', name: 'Ripehouse Advisory', url: SITE_URL },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${suburbUrl}#breadcrumb`,
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Locations', item: `${SITE_URL}/locations` },
+          { '@type': 'ListItem', position: 2, name: snapshot.state, item: `${SITE_URL}/suburbs/${snapshot.state.toLowerCase()}` },
+          ...(locationContext.city
+            ? [{ '@type': 'ListItem', position: 3, name: locationContext.city.name, item: `${SITE_URL}${locationContext.city.path}` }]
+            : []),
+          ...(locationContext.lga
+            ? [{ '@type': 'ListItem', position: locationContext.city ? 4 : 3, name: `${locationContext.lga.name} LGA`, item: `${SITE_URL}${locationContext.lga.path}` }]
+            : []),
+          {
+            '@type': 'ListItem',
+            position: (locationContext.city ? 1 : 0) + (locationContext.lga ? 1 : 0) + 3,
+            name: `${snapshot.name} ${snapshot.state}`,
+            item: suburbUrl,
+          },
+        ],
+      },
+    ],
+  };
 
   return (
     <main className="suburb-page">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(suburbJsonLd) }}
+      />
       <header className="site-header">
         <Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link>
         <nav className="desktop-nav" aria-label="Main navigation">{navLinks.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}</nav>
@@ -235,6 +302,57 @@ export default async function SuburbPage({ params }) {
             </ul>
           </div>
         )}
+
+        <div className="rha-table-wrap" style={{ marginTop: '36px' }}>
+          <div className="section-label">{snapshot.name} ({snapshot.state}) Market Snapshot ({snapshot.asOf})</div>
+          <table className="rha-data-table" aria-label={`${snapshot.name} ${snapshot.state} property market data table`}>
+            <thead>
+              <tr>
+                <th>Indicator</th>
+                <th>{snapshot.name} Reading</th>
+                <th>Context &amp; Benchmark</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ripehouse R-Score</td>
+                <td><b>{snapshot.score !== null ? `${snapshot.score} / 100` : '—'}</b></td>
+                <td>{snapshot.rank && snapshot.total ? `Ranked #${snapshot.rank.toLocaleString('en-AU')} of ${snapshot.total.toLocaleString('en-AU')} Australian suburbs (${snapshot.asOf})` : 'Measured across 27 supply, demand, momentum & yield indicators'}</td>
+              </tr>
+              <tr>
+                <td>Median House Price</td>
+                <td><b>{fmtMoney(stats.medianPrice)}</b></td>
+                <td>{stats.priceChange12m !== null ? `${stats.priceChange12m >= 0 ? `+${stats.priceChange12m}%` : `${stats.priceChange12m}%`} over the past 12 months of settled sales` : 'Settled house sales benchmark'}</td>
+              </tr>
+              <tr>
+                <td>Median Weekly Asking Rent</td>
+                <td><b>{stats.medianRent !== null ? `$${Math.round(stats.medianRent)}/wk` : '—'}</b></td>
+                <td>{stats.grossYield !== null ? `Implies a ${stats.grossYield}% gross rental yield at the current median price` : 'Measured across residential rental listings'}</td>
+              </tr>
+              <tr>
+                <td>Rental Vacancy Rate</td>
+                <td><b>{stats.vacancy !== null ? `${stats.vacancy}%` : '—'}</b></td>
+                <td>{stats.vacancy !== null ? (stats.vacancy < 1.5 ? 'Tight rental supply (below the 1.5% equilibrium threshold)' : 'Above the 1.5% tight-supply threshold') : 'Suburb rental vacancy reading'}</td>
+              </tr>
+              <tr>
+                <td>Median Days on Market</td>
+                <td><b>{stats.daysOnMarket !== null ? `${stats.daysOnMarket} days` : '—'}</b></td>
+                <td>{locationContext.lga ? `Part of ${locationContext.lga.name} (${locationContext.lga.state}) council area (LGA avg R-Score ${locationContext.lga.rScoreAvg ?? '—'}/100)` : 'Selling speed across recent residential listings'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="rha-advisory-box">
+          <div>
+            <p className="eyebrow" style={{ marginBottom: '8px' }}><span /> Buyer&apos;s Agent &amp; Quantitative Due Diligence</p>
+            <h3>Considering buying an investment property in {snapshot.name}, {snapshot.state}?</h3>
+            <p>
+              Since 2011, Ripehouse Advisory has helped Australian investors screen 15,000 suburbs and 518,000+ streets to avoid high-public-housing blocks, flood/overlay traps, and underperforming pockets. Speak with our team before you make an offer.
+            </p>
+          </div>
+          <Link className="button button-primary" href="/discovery-call">Book a Free Discovery Call <span>↗</span></Link>
+        </div>
       </section>
 
       {/* ── LLM-Optimised FAQ Panel ─────────────────────────────────────── */}

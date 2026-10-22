@@ -1,15 +1,15 @@
 import Link from 'next/link';
 import Footer from '../../components/Footer.js';
 import MobileNav from '../../components/MobileNav';
-import { listBlogItems } from '../../../lib/blog-store';
+import { listBlogItems, listAllBlogItems } from '../../../lib/blog-store';
 import StreetHeroPanel from '../../components/panels/StreetHeroPanel';
 import BlogGrid from './BlogGrid';
 import { resolvePanel } from '../../../lib/panelVariants';
 import { pageMetadata } from '../../../lib/seo';
 
 export const metadata = pageMetadata({
-  title: 'Market Intel | Ripehouse Advisory',
-  description: 'Independent property market intelligence, practical guides and strategic insight from Ripehouse Advisory.',
+  title: 'Market Intel — Australian Property Research, News & Strategy | Ripehouse Advisory',
+  description: 'Independent Australian property market intelligence, suburb deep dives, RBA rate analysis, and strategic investment guides from Ripehouse Advisory.',
   path: '/resources/blog',
 });
 
@@ -22,7 +22,7 @@ function toCardData(post) {
     name: post.name,
     slug: post.slug,
     summary: post.summary,
-    category: post.category,
+    category: post.category || 'Market Analysis',
     image: post.image,
     imageAlt: post.imageAlt,
     publishedDate: post.publishedDate,
@@ -31,9 +31,7 @@ function toCardData(post) {
 }
 
 // Cap each category to its latest N so high-volume categories (News publishes
-// many times daily) can never starve evergreen sections off the index.
-// Needs: lead block 3 (any category) + section grids 3 (Q&A 4) + archive strip 6
-// + tab depth. 12 per category covers all of that with headroom.
+// many times daily) can never starve evergreen sections off the interactive top grid.
 const PER_CATEGORY_CAP = 12;
 const BLOG_CATEGORIES = ['News', 'Market Analysis', 'Suburb Deep Dives', 'Strategy', 'Q&A'];
 
@@ -58,11 +56,24 @@ function capAndDedupe(items) {
 
 export default async function BlogPage() {
   let posts = [];
+  let allArchiveLinks = [];
   try {
-    const categoryPosts = await Promise.all(
-      BLOG_CATEGORIES.map((category) => listBlogItems({ category, limit: PER_CATEGORY_CAP })),
-    );
+    const [categoryPosts, allPosts] = await Promise.all([
+      Promise.all(
+        BLOG_CATEGORIES.map((category) => listBlogItems({ category, limit: PER_CATEGORY_CAP })),
+      ),
+      listAllBlogItems({ pageSize: 100, maxPages: 8 }).catch(() => []),
+    ]);
     posts = capAndDedupe(categoryPosts.flat().map(toCardData));
+    const shownSlugs = new Set(posts.map((p) => p.slug));
+    allArchiveLinks = (allPosts || [])
+      .filter((p) => p.slug && !p.isDraft && !p.isArchived && !shownSlugs.has(p.slug))
+      .sort((a, b) => new Date(b.publishedDate || 0) - new Date(a.publishedDate || 0))
+      .map((p) => ({
+        slug: p.slug,
+        name: p.name,
+        category: p.category || 'Market Intel',
+      }));
   } catch (error) {
     console.error('Unable to load Market Intel:', error.message);
   }
@@ -80,6 +91,26 @@ export default async function BlogPage() {
         </div>
       </section>
       <section className="blog-content section-shell"><BlogGrid posts={posts} /></section>
+
+      {allArchiveLinks.length > 0 && (
+        <section className="suburb-index-list section-shell" aria-labelledby="blog-archive-heading">
+          <div className="section-label">Complete Market Intel Archive ({allArchiveLinks.length + posts.length} Articles)</div>
+          <h2 className="loc-section-h2" id="blog-archive-heading">All Market Intel Research &amp; Briefings</h2>
+          <p className="suburb-meta" style={{ marginBottom: '18px' }}>
+            Browse every published Ripehouse Advisory market analysis, RBA interest rate briefing, tax and negative gearing guide, and suburb deep dive.
+          </p>
+          <ul className="suburb-plain-list loc-suburb-grid">
+            {allArchiveLinks.map((item) => (
+              <li key={item.slug} className="loc-suburb-item">
+                <Link href={`/resources/blog/${item.slug}`} className="loc-suburb-main" prefetch={false}>
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
       <section className="blog-cta section-shell"><div><p className="eyebrow light"><span /> Street Score</p><h2>Strategy starts<br />at <i>street level.</i></h2><p>Every Australian street, scored against its own suburb. Check the one you&rsquo;re thinking about — free, and we show our working.</p><Link className="button button-light" href="/streets?int_ref=blog-index">Check a street <span>↗</span></Link></div></section>
 
       <Footer />

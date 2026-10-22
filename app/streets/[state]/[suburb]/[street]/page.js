@@ -127,8 +127,69 @@ export default async function StreetPage({ params }) {
       : []),
   ];
 
+  const streetUrl = `${SITE_URL}${snapshot.path}`;
+  const streetJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Place',
+        '@id': `${streetUrl}#place`,
+        name: `${snapshot.name}, ${suburb.name} ${suburb.state}`,
+        url: streetUrl,
+        description: `Street Score (${snapshot.score ?? '—'}/100), ABS 2021 Census SA1 owner-occupier share (${stats.ownerOcc ?? '—'}%), public housing concentration (${stats.publicHousing ?? '—'}%), median rent (${stats.rent ? `$${stats.rent}/wk` : '—'}), and gross yield (${stats.yieldRate ?? '—'}%) for ${snapshot.name} in ${suburb.name}, ${suburb.state}.`,
+        address: {
+          '@type': 'PostalAddress',
+          streetAddress: snapshot.name,
+          addressLocality: suburb.name,
+          addressRegion: suburb.state,
+          addressCountry: 'AU',
+        },
+        containedInPlace: {
+          '@type': 'Place',
+          name: `${suburb.name}, ${suburb.state}`,
+          url: `${SITE_URL}/suburbs/${suburb.slug}`,
+        },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${streetUrl}#breadcrumb`,
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Locations', item: `${SITE_URL}/locations` },
+          ...(locationContext.city
+            ? [{ '@type': 'ListItem', position: 2, name: locationContext.city.name, item: `${SITE_URL}${locationContext.city.path}` }]
+            : []),
+          ...(locationContext.lga
+            ? [{ '@type': 'ListItem', position: locationContext.city ? 3 : 2, name: `${locationContext.lga.name} LGA`, item: `${SITE_URL}${locationContext.lga.path}` }]
+            : []),
+          {
+            '@type': 'ListItem',
+            position: (locationContext.city ? 1 : 0) + (locationContext.lga ? 1 : 0) + 2,
+            name: `${suburb.name} ${suburb.state}`,
+            item: `${SITE_URL}/suburbs/${suburb.slug}`,
+          },
+          {
+            '@type': 'ListItem',
+            position: (locationContext.city ? 1 : 0) + (locationContext.lga ? 1 : 0) + 3,
+            name: `Streets in ${suburb.name}`,
+            item: `${SITE_URL}/streets/${suburb.slug}`,
+          },
+          {
+            '@type': 'ListItem',
+            position: (locationContext.city ? 1 : 0) + (locationContext.lga ? 1 : 0) + 4,
+            name: snapshot.name,
+            item: streetUrl,
+          },
+        ],
+      },
+    ],
+  };
+
   return (
     <main className="suburb-page street-page">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(streetJsonLd) }}
+      />
       <header className="site-header">
         <Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link>
         <nav className="desktop-nav" aria-label="Main navigation">{navLinks.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}</nav>

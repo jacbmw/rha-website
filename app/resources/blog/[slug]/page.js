@@ -10,9 +10,44 @@ import { AdMixProvider } from '../../../components/AdMixProvider';
 import EndlessScroll from '../../../components/EndlessScroll';
 import { splitBody, extractMentionedLocations } from '../../../../lib/blog-body';
 import { resolvePanel } from '../../../../lib/panelVariants';
-import { pageMetadata } from '../../../../lib/seo';
+import { pageMetadata, SITE_URL } from '../../../../lib/seo';
 
 const logoUrl = '/images/rha-logo-dark.png';
+
+function cleanSeoTitle(raw) {
+  const base = String(raw || '').replace(/\s*[|–—-]\s*Ripehouse Advisory\s*$/i, '').trim();
+  return base ? `${base} | Ripehouse Advisory` : 'Market Intel | Ripehouse Advisory';
+}
+
+function isSummaryDuplicateOfBody(summary, bodyHtml) {
+  const cleanSum = String(summary || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  if (!cleanSum) return false;
+  const firstPMatch = /<p[^>]*>([\s\S]*?)<\/p>/i.exec(String(bodyHtml || ''));
+  if (!firstPMatch) return false;
+  const firstPText = firstPMatch[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase();
+  if (!firstPText) return false;
+  const prefixLen = Math.min(60, cleanSum.length, firstPText.length);
+  return cleanSum === firstPText || (prefixLen >= 30 && firstPText.startsWith(cleanSum.slice(0, prefixLen)));
+}
+
+function buildAtAGlanceBullets(post) {
+  const bullets = [];
+  const desc = String(post.seoDescription || '').replace(/\s+/g, ' ').trim();
+  if (desc && desc.length >= 40) bullets.push(desc);
+
+  if (Array.isArray(post.faq?.items)) {
+    for (const item of post.faq.items) {
+      if (bullets.length >= 3) break;
+      const ans = String(item?.answer || '').replace(/\s+/g, ' ').trim();
+      if (!ans) continue;
+      const firstSentence = ans.split(/(?<=[.?!])\s+/)[0] || ans;
+      if (firstSentence.length >= 35 && !bullets.includes(firstSentence)) {
+        bullets.push(firstSentence);
+      }
+    }
+  }
+  return bullets.slice(0, 3);
+}
 
 function fmtDate(value) {
   if (!value) return '';
@@ -32,16 +67,18 @@ export async function generateMetadata({ params }) {
   const slug = (await params).slug;
   const post = await getBlogItemBySlug(slug).catch(() => null);
   if (!post) return { title: 'Market Intel | Ripehouse Advisory' };
+  const fullTitle = cleanSeoTitle(post.seoTitle || post.name);
+  const cleanHeadline = fullTitle.replace(/\s*\|\s*Ripehouse Advisory$/, '');
   return pageMetadata({
-    title: `${post.seoTitle || post.name} | Ripehouse Advisory`,
+    title: fullTitle,
     description: post.seoDescription || post.summary,
-    ogTitle: post.seoTitle || post.name,
+    ogTitle: cleanHeadline,
     path: `/resources/blog/${slug}`,
     image: post.image ? { url: post.image, alt: post.imageAlt || post.name } : undefined,
     article: {
       publishedTime: post.publishedDate || undefined,
-      authors: post.author ? [post.author] : undefined,
-      section: post.category || undefined,
+      authors: post.author ? [post.author] : ['Jacob Field'],
+      section: post.category || 'Market Intel',
     },
   });
 }
@@ -69,9 +106,74 @@ export default async function BlogArticle({ params }) {
 
   const [bodyLead, bodyRest] = splitBody(post.body, 0.5);
   const mentionedLocations = extractMentionedLocations(post, 10);
+  const showSummaryLead = Boolean(post.summary) && !isSummaryDuplicateOfBody(post.summary, post.body);
+  const atAGlanceBullets = buildAtAGlanceBullets(post);
+  const fullTitle = cleanSeoTitle(post.seoTitle || post.name);
+  const articleUrl = `${SITE_URL}/resources/blog/${post.slug}`;
+  const wordCount = String(post.body || '').replace(/<[^>]+>/g, ' ').split(/\s+/).filter(Boolean).length;
+
+  const articleJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': post.category === 'News' ? 'NewsArticle' : 'Article',
+        '@id': `${articleUrl}#article`,
+        mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
+        headline: post.name,
+        alternativeHeadline: post.seoTitle ? post.seoTitle.replace(/\s*\|\s*Ripehouse Advisory\s*$/i, '') : undefined,
+        description: post.seoDescription || post.summary || undefined,
+        image: post.image ? [post.image] : [`${SITE_URL}/images/rha-logo-dark.png`],
+        datePublished: post.publishedDate || undefined,
+        dateModified: post.publishedDate || undefined,
+        articleSection: post.category || 'Market Intel',
+        wordCount: wordCount || undefined,
+        inLanguage: 'en-AU',
+        author: [
+          {
+            '@type': 'Person',
+            name: post.author || 'Jacob Field',
+            jobTitle: post.author && /anna/i.test(post.author) ? 'Chief Operations Officer' : 'Founder & Chief Executive Officer',
+            url: `${SITE_URL}/about/story`,
+            worksFor: { '@type': 'Organization', name: 'Ripehouse Advisory', url: SITE_URL },
+          },
+        ],
+        publisher: {
+          '@type': 'Organization',
+          name: 'Ripehouse Advisory',
+          url: SITE_URL,
+          logo: {
+            '@type': 'ImageObject',
+            url: `${SITE_URL}/images/rha-logo-dark.png`,
+          },
+        },
+        ...(mentionedLocations.length > 0
+          ? {
+              about: mentionedLocations.map((loc) => ({
+                '@type': loc.kind === 'City' ? 'City' : 'AdministrativeArea',
+                name: loc.label,
+                url: `${SITE_URL}${loc.path}`,
+              })),
+            }
+          : {}),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${articleUrl}#breadcrumb`,
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: SITE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Market Intel', item: `${SITE_URL}/resources/blog` },
+          { '@type': 'ListItem', position: 3, name: post.name, item: articleUrl },
+        ],
+      },
+    ],
+  };
 
   return (
     <main className="article-page">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       <header className="site-header"><Link className="brand" href="/" aria-label="Ripehouse Advisory home"><img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" /></Link><nav className="desktop-nav" aria-label="Main navigation"><Link href="/#story">Our story</Link><Link href="/#approach">Our approach</Link><Link className="active" href="/resources/blog">Market intel</Link><Link href="/#contact">Contact</Link></nav><Link className="header-cta" href="/resources/blog">← All stories</Link><MobileNav links={[{ label: 'Our story', href: '/#story' }, { label: 'Our approach', href: '/#approach' }, { label: 'Market intel', href: '/resources/blog' }, { label: 'Contact', href: '/#contact' }]} /></header>
 
       <AdMixProvider variants={{
@@ -87,11 +189,33 @@ export default async function BlogArticle({ params }) {
             className="article-content"
             data-feed-article
             data-slug={post.slug}
-            data-title={`${post.seoTitle || post.name} | Ripehouse Advisory`}
+            data-title={fullTitle}
           >
             <p className="eyebrow"><span /> {post.category || 'Market Intel'} · {fmtDate(post.publishedDate)} · {readMinutes(post.body)} min read</p>
             <h1>{post.name}</h1>
-            {post.summary && <p className="article-summary">{post.summary}</p>}
+            {showSummaryLead && <p className="article-summary">{post.summary}</p>}
+            {atAGlanceBullets.length >= 2 && (
+              <aside className="article-at-a-glance" aria-label="At a glance key takeaways">
+                <p className="article-at-a-glance-title">At a glance · Key takeaways</p>
+                <ul>
+                  {atAGlanceBullets.map((item, idx) => (
+                    <li key={idx}>{item}</li>
+                  ))}
+                  {mentionedLocations.length > 0 && (
+                    <li>
+                      Markets referenced:{' '}
+                      {mentionedLocations.slice(0, 3).map((loc, i) => (
+                        <span key={loc.path}>
+                          {i > 0 ? ', ' : ''}
+                          <Link href={loc.path}>{loc.label} R-Score &amp; Data</Link>
+                        </span>
+                      ))}
+                      .
+                    </li>
+                  )}
+                </ul>
+              </aside>
+            )}
             {post.image && !hasVideoEmbed(post.body) && <img className="article-image" src={post.image} alt={post.imageAlt} />}
 
             <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyLead }} />

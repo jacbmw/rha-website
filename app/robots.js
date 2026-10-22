@@ -11,21 +11,46 @@ export default async function robots() {
   ]);
   const suburbBatches = Math.max(1, Math.ceil(indexableSuburbs.length / 5000));
 
+  const sharedAllow = ['/', '/api/og/', '/llms.txt', '/llms-full.txt'];
+  const sharedDisallow = [
+    '/go/',
+    '/api/panel-preview',
+    '/five-markets/on-its-way',
+    '/worksheet-budget/on-its-way',
+    '/webinar/registered',
+  ];
+
   return {
     rules: [
       {
         userAgent: '*',
-        allow: ['/', '/api/og/'],
-        disallow: [
-          '/go/',
-          '/api/panel-preview',
-          '/five-markets/on-its-way',
-          '/worksheet-budget/on-its-way',
-          '/webinar/registered',
+        allow: sharedAllow,
+        disallow: sharedDisallow,
+      },
+      {
+        userAgent: [
+          'GPTBot',
+          'OAI-SearchBot',
+          'ChatGPT-User',
+          'ClaudeBot',
+          'Claude-SearchBot',
+          'Claude-User',
+          'PerplexityBot',
+          'Perplexity-User',
+          'Google-Extended',
+          'Applebot-Extended',
+          'Bingbot',
         ],
+        allow: sharedAllow,
+        disallow: sharedDisallow,
+      },
+      {
+        userAgent: ['CCBot', 'Bytespider'],
+        disallow: ['/'],
       },
     ],
     sitemap: [
+      `${baseUrl}/sitemap_index.xml`,
       `${baseUrl}/sitemap.xml`,
       // Batched suburb sitemaps (generateSitemaps in app/suburbs/sitemap.js).
       ...Array.from({ length: suburbBatches }, (_, id) => `${baseUrl}/suburbs/sitemap/${id}.xml`),

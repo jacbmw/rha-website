@@ -35,8 +35,8 @@ export async function generateMetadata({ params }) {
   const { state, slug } = await params;
   const lga = await findLgaBySlug(state, slug).catch(() => null);
   if (!lga) return { title: 'LGA Property Investment | Ripehouse Advisory', robots: { index: false } };
-  const title = `Property Investment in ${lga.name} (${lga.state}) — Suburb R-Scores, Yields & Streets | Ripehouse Advisory`;
-  const description = `Property investment research for ${lga.name} (${lga.state} LGA): ${lga.suburbCount} suburbs scored monthly. Council average R-Score ${lga.rScoreAvg ?? '—'}/100, median price ${fmtMoney(lga.medianPrice)}, gross yield ${lga.grossYield ?? '—'}%. Compare every suburb and street in ${lga.name}.`;
+  const title = `Property Investment & Buyer's Agent in ${lga.name} (${lga.state}) — 2026 Suburb R-Scores, Yields & Streets | Ripehouse Advisory`;
+  const description = `Property investment research & buyer's agent data for ${lga.name} (${lga.state} Council / LGA, ${lga.asOf}): ${lga.suburbCount} suburbs scored monthly. Council average R-Score ${lga.rScoreAvg ?? '—'}/100, median price ${fmtMoney(lga.medianPrice)}, gross yield ${lga.grossYield ?? '—'}%. Compare every suburb and street in ${lga.name}.`;
   return pageMetadata({
     title,
     description,
@@ -58,17 +58,42 @@ export default async function LgaResearchPage({ params }) {
     8
   );
   const faqs = buildLgaFaqs(lga, topStreets);
+  const lgaUrl = `https://www.ripehouseadvisory.com.au${lga.path}`;
 
   const areaJsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'AdministrativeArea',
-    name: `${lga.name} (${lga.state})`,
-    url: `https://www.ripehouseadvisory.com.au${lga.path}`,
-    description: `Property investment market data, suburb R-Scores, rental yields and street scores for ${lga.name} Local Government Area in ${lga.stateName}.`,
-    containedInPlace: {
-      '@type': 'AdministrativeArea',
-      name: lga.stateName,
-    },
+    '@graph': [
+      {
+        '@type': 'AdministrativeArea',
+        '@id': `${lgaUrl}#lga`,
+        name: `${lga.name} (${lga.state})`,
+        url: lgaUrl,
+        description: `Property investment market data, suburb R-Scores, rental yields and street scores for ${lga.name} Local Government Area in ${lga.stateName}.`,
+        containedInPlace: {
+          '@type': 'AdministrativeArea',
+          name: lga.stateName,
+        },
+      },
+      {
+        '@type': 'Dataset',
+        '@id': `${lgaUrl}#dataset`,
+        name: `${lga.name} (${lga.state}) Council Property Investment Data & Suburb R-Scores (${lga.asOf})`,
+        description: `Monthly Ripehouse Advisory dataset covering ${lga.suburbCount} suburbs in ${lga.name} (${lga.state}): council average R-Score ${lga.rScoreAvg ?? '—'}/100, median price ${fmtMoney(lga.medianPrice)}, gross yield ${lga.grossYield ?? '—'}%, vacancy ${lga.vacancy ?? '—'}%.`,
+        url: lgaUrl,
+        creator: { '@type': 'Organization', name: 'Ripehouse Advisory', url: 'https://www.ripehouseadvisory.com.au' },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${lgaUrl}#breadcrumb`,
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Locations', item: 'https://www.ripehouseadvisory.com.au/locations' },
+          ...(lga.cityName && lga.cityPath
+            ? [{ '@type': 'ListItem', position: 2, name: lga.cityName, item: `https://www.ripehouseadvisory.com.au${lga.cityPath}` }]
+            : [{ '@type': 'ListItem', position: 2, name: `${lga.state} LGAs`, item: `https://www.ripehouseadvisory.com.au/locations#state-${lga.state.toLowerCase()}` }]),
+          { '@type': 'ListItem', position: 3, name: `Property Investment in ${lga.name}`, item: lgaUrl },
+        ],
+      },
+    ],
   };
 
   return (
@@ -258,6 +283,57 @@ export default async function LgaResearchPage({ params }) {
             </li>
           ))}
         </ul>
+
+        <div className="rha-table-wrap" style={{ marginTop: '36px' }}>
+          <div className="section-label">{lga.name} ({lga.state}) Council Market Summary Table ({lga.asOf})</div>
+          <table className="rha-data-table" aria-label={`${lga.name} ${lga.state} council property market summary table`}>
+            <thead>
+              <tr>
+                <th>Metric / Indicator</th>
+                <th>{lga.name} ({lga.state}) Result</th>
+                <th>Council Context &amp; Scope</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Council Average R-Score</td>
+                <td><b>{lga.rScoreAvg !== null ? `${lga.rScoreAvg} / 100` : '—'}</b></td>
+                <td>Across {lga.scoredSuburbCount} scored suburbs in {lga.name} (highest-scoring suburb: <b>{lga.rScoreMax ?? '—'}/100</b>)</td>
+              </tr>
+              <tr>
+                <td>Typical Suburb Median Price</td>
+                <td><b>{fmtMoney(lga.medianPrice)}</b></td>
+                <td>{lga.priceMin && lga.priceMax ? `Suburb medians in ${lga.name} range from ${fmtMoney(lga.priceMin)} to ${fmtMoney(lga.priceMax)}` : `Measured across ${lga.suburbCount} suburbs`}</td>
+              </tr>
+              <tr>
+                <td>Gross Rental Yield &amp; Rent</td>
+                <td><b>{lga.grossYield !== null ? `${lga.grossYield}%` : '—'}</b>{lga.medianRent ? ` (~$${lga.medianRent}/wk)` : ''}</td>
+                <td>{lga.vacancy !== null ? `Vacancy rate: ${lga.vacancy}%${lga.daysOnMarket !== null ? ` · ~${lga.daysOnMarket} days on market` : ''}` : 'Measured across residential house listings'}</td>
+              </tr>
+              <tr>
+                <td>Population, Supply &amp; Infrastructure</td>
+                <td><b>{lga.population ? `~${lga.population.toLocaleString('en-AU')}` : '—'}</b>{lga.popGrowth3yr !== null ? ` (${lga.popGrowth3yr > 0 ? `+${lga.popGrowth3yr}%` : `${lga.popGrowth3yr}%`} 3yr)` : ''}</td>
+                <td>
+                  {[
+                    lga.supplyPct !== null ? `Building approvals: ${lga.supplyPct}% of stock` : null,
+                    lga.infraSpendM ? `Infrastructure pipeline: $${lga.infraSpendM >= 1000 ? `${(lga.infraSpendM / 1000).toFixed(1)}B` : `${lga.infraSpendM}M`}` : null,
+                  ].filter(Boolean).join(' · ') || `${lga.name} Local Government Area (${lga.stateName})`}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="rha-advisory-box">
+          <div>
+            <p className="eyebrow" style={{ marginBottom: '8px' }}><span /> {lga.name} Buyer&apos;s Agent &amp; Suburb Selection</p>
+            <h3>Investing in {lga.name} ({lga.state})? Screen the Suburb and Street First.</h3>
+            <p>
+              Ripehouse Advisory has helped Australian investors acquire 2,000+ properties since 2011 using quantitative 27-indicator suburb screening and SA1 street-level due diligence across {lga.name} and 540+ councils nationwide.
+            </p>
+          </div>
+          <Link className="button button-primary" href="/discovery-call">Book a Free Discovery Call <span>↗</span></Link>
+        </div>
       </section>
 
       {/* ── LLM-Optimised FAQ Panel ─────────────────────────────────────── */}

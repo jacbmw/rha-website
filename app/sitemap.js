@@ -45,11 +45,13 @@ export default async function sitemap() {
 
   // Per-state letter browse pages (/suburbs/[state]/browse/[letter]) provide the
   // crawlable HTML index into the suburb pages without exceeding the 100KB budget.
+  const validStates = new Set(['qld', 'nsw', 'vic', 'sa', 'wa', 'tas', 'nt', 'act']);
   const stateLetters = new Set();
   for (const entry of suburbSlugs || []) {
+    const stateCode = String(entry.state || '').toLowerCase();
     const letter = String(entry.slug || '')[0]?.toLowerCase();
-    if (entry.state && letter && /[a-z]/.test(letter)) {
-      stateLetters.add(`${entry.state}/browse/${letter}`);
+    if (validStates.has(stateCode) && letter && /[a-z]/.test(letter)) {
+      stateLetters.add(`${stateCode}/browse/${letter}`);
     }
   }
   const letterBrowseRoutes = [...stateLetters].sort().map((path) => ({

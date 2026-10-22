@@ -1,14 +1,16 @@
 import Link from 'next/link';
 import { assignSlugs, displayName, validProperties } from '../../lib/case-studies';
 
-async function getStudies() {
+async function getRandomStudy() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || (process.env.NODE_ENV === 'development' ? `http://localhost:${process.env.PORT || 3000}` : 'https://new.ripehouseadvisory.com.au');
   const fetchOpts = process.env.NODE_ENV === 'development' ? { cache: 'no-store' } : { next: { revalidate: 900, tags: ['case-studies'] } };
   try {
     const response = await fetch(`${baseUrl}/api/case-studies`, fetchOpts);
-    return assignSlugs((await response.json()).caseStudies);
+    const studies = assignSlugs((await response.json()).caseStudies);
+    if (!studies.length) return null;
+    return studies[Math.floor(Math.random() * studies.length)];
   } catch {
-    return [];
+    return null;
   }
 }
 
@@ -17,9 +19,8 @@ function initials(title) {
 }
 
 export default async function CaseStudyPreview() {
-  const studies = await getStudies();
-  if (!studies.length) return null;
-  const study = studies[Math.floor(Math.random() * studies.length)];
+  const study = await getRandomStudy();
+  if (!study) return null;
   const properties = validProperties(study.properties);
   const headshot = study.headshotUrl || study.photoUrl || study.image || (study.videoId ? `https://i.ytimg.com/vi/${encodeURIComponent(study.videoId)}/hqdefault.jpg` : null);
 

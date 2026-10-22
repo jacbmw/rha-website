@@ -36,8 +36,8 @@ export async function generateMetadata({ params }) {
   const { slug } = await params;
   const city = await findCityBySlug(slug).catch(() => null);
   if (!city) return { title: 'City Property Investment | Ripehouse Advisory', robots: { index: false } };
-  const title = `Property Investment in ${city.name} (${city.state}) — Best Suburbs, R-Scores & Yields | Ripehouse Advisory`;
-  const description = `Property investment research for ${city.name}, ${city.state}: ${city.suburbCount} suburbs across ${city.lgaCount} council areas scored monthly. Average R-Score ${city.rScoreAvg ?? '—'}/100, median price ${fmtMoney(city.medianPrice)}, gross yield ${city.grossYield ?? '—'}%. Drill down to the best suburbs and streets.`;
+  const title = `Property Investment & Buyer's Agent in ${city.name} (${city.state}) — 2026 Suburb R-Scores, Yields & Medians | Ripehouse Advisory`;
+  const description = `Property investment research & buyer's agent advisory for ${city.name}, ${city.state} (${city.asOf}): ${city.suburbCount} suburbs across ${city.lgaCount} council areas scored monthly. Average R-Score ${city.rScoreAvg ?? '—'}/100, median price ${fmtMoney(city.medianPrice)}, gross yield ${city.grossYield ?? '—'}%. Compare every council, suburb & street.`;
   return pageMetadata({
     title,
     description,
@@ -56,17 +56,40 @@ export default async function CityResearchPage({ params }) {
     .map((s) => s.id);
   const topStreets = await fetchTopStreetsForSuburbs(topSscIds, 8);
   const faqs = buildCityFaqs(city, topStreets);
+  const cityUrl = `https://www.ripehouseadvisory.com.au${city.path}`;
 
   const placeJsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'City',
-    name: city.name,
-    url: `https://www.ripehouseadvisory.com.au${city.path}`,
-    description: `Property investment market data, suburb R-Scores, rental yields and street scores for ${city.name}, ${city.stateName}.`,
-    containedInPlace: {
-      '@type': 'AdministrativeArea',
-      name: city.stateName,
-    },
+    '@graph': [
+      {
+        '@type': 'City',
+        '@id': `${cityUrl}#city`,
+        name: city.name,
+        url: cityUrl,
+        description: `Property investment market data, suburb R-Scores, rental yields and street scores for ${city.name}, ${city.stateName}.`,
+        containedInPlace: {
+          '@type': 'AdministrativeArea',
+          name: city.stateName,
+        },
+      },
+      {
+        '@type': 'Dataset',
+        '@id': `${cityUrl}#dataset`,
+        name: `${city.name} (${city.state}) Property Investment Market Data & Suburb R-Scores (${city.asOf})`,
+        description: `Monthly Ripehouse Advisory property market dataset covering ${city.suburbCount} suburbs and ${city.lgaCount} council areas in Greater ${city.name}: average R-Score ${city.rScoreAvg ?? '—'}/100, median house price ${fmtMoney(city.medianPrice)}, gross yield ${city.grossYield ?? '—'}%, vacancy ${city.vacancy ?? '—'}%.`,
+        url: cityUrl,
+        creator: { '@type': 'Organization', name: 'Ripehouse Advisory', url: 'https://www.ripehouseadvisory.com.au' },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        '@id': `${cityUrl}#breadcrumb`,
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Locations', item: 'https://www.ripehouseadvisory.com.au/locations' },
+          { '@type': 'ListItem', position: 2, name: city.state, item: `https://www.ripehouseadvisory.com.au/suburbs/${city.state.toLowerCase()}` },
+          { '@type': 'ListItem', position: 3, name: `Property Investment in ${city.name}`, item: cityUrl },
+        ],
+      },
+    ],
   };
 
   return (
@@ -274,6 +297,52 @@ export default async function CityResearchPage({ params }) {
             </li>
           ))}
         </ul>
+
+        <div className="rha-table-wrap" style={{ marginTop: '36px' }}>
+          <div className="section-label">Greater {city.name} Market Summary Table ({city.asOf})</div>
+          <table className="rha-data-table" aria-label={`Greater ${city.name} property market summary table`}>
+            <thead>
+              <tr>
+                <th>Metric / Indicator</th>
+                <th>{city.name} ({city.state}) Result</th>
+                <th>Market Context &amp; Scope</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Average Suburb R-Score</td>
+                <td><b>{city.rScoreAvg !== null ? `${city.rScoreAvg} / 100` : '—'}</b></td>
+                <td>Measured across {city.scoredSuburbCount} scored suburbs in {city.lgaCount} council areas (top suburb: <b>{city.rScoreMax ?? '—'}/100</b>)</td>
+              </tr>
+              <tr>
+                <td>Typical Suburb Median Price</td>
+                <td><b>{fmtMoney(city.medianPrice)}</b></td>
+                <td>{city.priceMin && city.priceMax ? `Suburb medians across ${city.name} range from ${fmtMoney(city.priceMin)} to ${fmtMoney(city.priceMax)}` : `Across ${city.suburbCount} suburbs in Greater ${city.name}`}</td>
+              </tr>
+              <tr>
+                <td>Gross Rental Yield &amp; Rent</td>
+                <td><b>{city.grossYield !== null ? `${city.grossYield}%` : '—'}</b>{city.medianRent ? ` (~$${city.medianRent}/wk)` : ''}</td>
+                <td>{city.vacancy !== null ? `Residential vacancy rate: ${city.vacancy}% (${city.vacancy < 1.5 ? 'tight rental supply <1.5%' : 'above 1.5% threshold'})` : 'House rental yield benchmark'}</td>
+              </tr>
+              <tr>
+                <td>Population &amp; Infrastructure</td>
+                <td><b>{city.population ? `~${city.population.toLocaleString('en-AU')}` : '—'}</b>{city.popGrowth3yr !== null ? ` (${city.popGrowth3yr > 0 ? `+${city.popGrowth3yr}%` : `${city.popGrowth3yr}%`} 3yr)` : ''}</td>
+                <td>{city.infraSpendM ? `Tracked infrastructure pipeline: $${city.infraSpendM >= 1000 ? `${(city.infraSpendM / 1000).toFixed(1)}B` : `${city.infraSpendM}M`}` : 'ABS Significant Urban Area / Greater Capital City scope'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div className="rha-advisory-box">
+          <div>
+            <p className="eyebrow" style={{ marginBottom: '8px' }}><span /> {city.name} Buyer&apos;s Agent &amp; Portfolio Strategy</p>
+            <h3>Looking for a Data-Driven Buyer&apos;s Agent in {city.name}?</h3>
+            <p>
+              Traditional {city.name} buyer&apos;s agents rely on local habits and off-market sales pitches. Ripehouse Advisory screens all {city.suburbCount} suburbs and every residential street in {city.name} against 15,000 national markets before recommending a single property.
+            </p>
+          </div>
+          <Link className="button button-primary" href="/discovery-call">Book a Free Discovery Call <span>↗</span></Link>
+        </div>
       </section>
 
       {/* ── LLM-Optimised FAQ Panel ─────────────────────────────────────── */}
