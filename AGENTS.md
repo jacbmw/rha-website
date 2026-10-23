@@ -4,10 +4,16 @@
 - `npm run dev` / `npm run build` / `npm run start` / `npm run lint`
 - Verify with `npm run lint` + `npm run build` before shipping. There are no tests.
 
-## Edge rate limiting + bot challenge (`proxy.js`)
-- Next 16 `proxy.js` (renamed middleware, Node runtime) rate-limits every
-  non-static request per real client IP (LAST `x-forwarded-for` entry —
-  CloudFront appends it; earlier entries are spoofable).
+## Edge rate limiting + bot challenge (`middleware.js`)
+- CRITICAL: keep the filename `middleware.js`, NOT the Next 16 `proxy.js`
+  convention. Amplify Hosting only supports Next <= 15 and its adapter ignores
+  proxy.js entirely (it compiled but never ran in prod — verified by probing).
+  middleware.js builds to the EDGE runtime, so lib/challenge.js must stay
+  node:*-import-free (HMAC = Web Crypto, crawler rDNS = DNS-over-HTTPS fetch).
+- Rate-limits every non-static request per real client IP (LAST
+  `x-forwarded-for` entry — CloudFront appends it; earlier entries are
+  spoofable). Buckets are per-instance; CloudFront-cached responses never
+  reach middleware at all — it only guards compute hits.
 - Two layers per IP — per-minute burst + per-day budget (min/day): verified
   search crawlers 600/30k, other declared bots 300/10k, browsers w/ Sec-Fetch
   120/5k, browser-UA w/o Sec-Fetch 60/2k (UA spoofers), scraper/fake-crawler
@@ -18,10 +24,11 @@
   as suburbGate). Challenged: `RHA_CHALLENGE_COUNTRIES` viewers (default SG),
   rate-limit trippers, failed crawler verification. Amplify forwards
   `CloudFront-Viewer-Country`; no extra geo infra needed.
-- UAs claiming Googlebot/Bing/DuckDuckGo/Applebot are rDNS-verified (PTR →
-  forward-confirm, cached 24h, lib/challenge.js `verifyCrawlerIp`). Verified =
-  never challenged; fake = scraper tier. Do NOT blanket-block crawler UAs or
-  you'll kill SEO.
+- UAs claiming Googlebot/Bing/DuckDuckGo/Applebot are DNS-verified via DoH
+  (PTR → forward-confirm, cached 24h, `verifyCrawlerIp` → 'yes'|'no'|'error').
+  'yes' = never challenged; 'no' = challenged immediately (proven fake);
+  'error' (DoH down) = bounded bot tier, never locked out. Do NOT blanket-block
+  crawler UAs or you'll kill SEO.
 - Env: `NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY` (free CF
   widget; absent = rate limits only, fail-open), `RHA_CHALLENGE_SECRET`,
   `RHA_CHALLENGE_COUNTRIES`, `RHA_RATE_LIMIT_ALLOWLIST` (IPs/"1.2.3." prefixes),

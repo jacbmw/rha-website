@@ -1,5 +1,8 @@
-// proxy.js — Next 16 replacement for the deprecated middleware.js convention.
-// Runs on the Node.js runtime before every non-static request.
+// middleware.js — runs before every non-static request.
+// NOTE: uses the deprecated `middleware` convention on purpose. Next 16 renamed
+// it to `proxy.js`, but Amplify Hosting only supports Next <= 15 and its
+// adapter does not recognise proxy.js — the file compiled but never ran in
+// prod (verified: 40 requests to a limited tier, zero 429s). Keep this name.
 //
 // Two defenses against scraper/bot floods (the rotating-IP SG traffic that
 // per-IP limits alone didn't stop):
@@ -14,10 +17,11 @@
 //    rate-limit trippers, and failed search-crawler verification. Bots that
 //    can't run the puzzle die on the redirect; real humans solve once.
 //
-// UAs claiming Googlebot/Bing/DuckDuckGo/Applebot are reverse-DNS verified
-// (cached 24h): verified crawlers are never challenged and get generous caps;
-// failed verification means a spoofed UA → scraper tier. Other declared bots
-// (social previews, AI crawlers) get bounded limits without verification.
+// UAs claiming Googlebot/Bing/DuckDuckGo/Applebot are verified by PTR/forward
+// DNS over DoH (lib/challenge.js — edge runtime, no node:dns). Verified = never
+// challenged + generous caps. A claim whose rDNS resolves but doesn't match is
+// a proven fake → challenged immediately. A DoH outage ('error') falls back to
+// a bounded bot tier so real crawlers are never locked out by our upstream.
 //
 // Env:
 //   NEXT_PUBLIC_TURNSTILE_SITE_KEY + TURNSTILE_SECRET_KEY  enable the challenge
@@ -49,10 +53,11 @@ const SCRAPER_UA =
 const MINUTE_MS = 60_000;
 const DAY_MS = 24 * 60 * MINUTE_MS;
 
-function policyFor({ ua, hasSecFetch, verifiedCrawler }) {
-  if (verifiedCrawler) return { perMin: 600, perDay: 30_000 };
+function policyFor({ ua, hasSecFetch, crawlerStatus }) {
+  if (crawlerStatus === 'yes') return { perMin: 600, perDay: 30_000 };
+  if (crawlerStatus === 'error') return { perMin: 300, perDay: 10_000 }; // DoH down: don't kill real crawlers
   if (!ua) return { perMin: 20, perDay: 300 };
-  if (SEARCH_CRAWLER_UA.test(ua)) return { perMin: 30, perDay: 500 }; // failed rDNS = fake
+  if (crawlerStatus === 'no' || SEARCH_CRAWLER_UA.test(ua)) return { perMin: 30, perDay: 500 };
   if (OTHER_BOT_UA.test(ua)) return { perMin: 300, perDay: 10_000 };
   if (SCRAPER_UA.test(ua)) return { perMin: 30, perDay: 500 };
   // Modern browsers send Sec-Fetch-* on every nav/fetch; HTTP libs faking a
@@ -83,7 +88,7 @@ function tooMany(status = 429) {
   });
 }
 
-export async function proxy(request) {
+export async function middleware(request) {
   if (process.env.RHA_RATE_LIMIT_DISABLED === '1') return NextResponse.next();
 
   const { pathname, search } = request.nextUrl;
@@ -95,28 +100,29 @@ export async function proxy(request) {
   if (isAllowlisted(ip)) return NextResponse.next();
 
   const ua = request.headers.get('user-agent') || '';
-  const human = verifyChallengeCookie(request.cookies.get(CHALLENGE_COOKIE_NAME)?.value, ip);
-  const verifiedCrawler =
-    !human && claimsSearchCrawler(ua) ? await verifyCrawlerIp(ip, ua) : false;
+  const human = await verifyChallengeCookie(request.cookies.get(CHALLENGE_COOKIE_NAME)?.value, ip);
+  const crawlerStatus =
+    !human && claimsSearchCrawler(ua) ? await verifyCrawlerIp(ip, ua) : 'none';
 
   const policy = policyFor({
     ua,
     hasSecFetch: !!(request.headers.get('sec-fetch-mode') || request.headers.get('sec-fetch-dest')),
-    verifiedCrawler,
+    crawlerStatus,
   });
   const limited =
     rateLimited(`proxy:m:${ip}`, { limit: policy.perMin, windowMs: MINUTE_MS }) ||
     fixedWindowLimited(`proxy:d:${ip}`, { limit: policy.perDay, windowMs: DAY_MS });
 
-  // Verified humans get a clean 429 if they somehow still trip the budget —
-  // redirecting them back to a challenge they already passed would loop.
-  if (human || verifiedCrawler) {
+  // Verified humans/crawlers get a clean 429 if they somehow still trip the
+  // budget — redirecting a solved human back to the challenge would loop.
+  if (human || crawlerStatus === 'yes' || crawlerStatus === 'error') {
     return limited ? tooMany() : NextResponse.next();
   }
 
   const challengeConfigured = !!process.env.TURNSTILE_SECRET_KEY;
   const challenged =
-    challengeConfigured && (challengeCountries.has(viewerCountry(request)) || limited);
+    challengeConfigured &&
+    (challengeCountries.has(viewerCountry(request)) || limited || crawlerStatus === 'no');
 
   if (challenged) {
     if (!rateLimited(`proxy-log:${ip}`, { limit: 1, windowMs: MINUTE_MS })) {

@@ -31,7 +31,7 @@ export async function POST(request) {
     return NextResponse.json({ ok: false }, { status: 403 });
   }
 
-  const cookie = buildChallengeCookie(ip);
+  const cookie = await buildChallengeCookie(ip);
   const out = NextResponse.json({ ok: true });
   out.cookies.set(cookie.name, cookie.value, cookie.options);
   return out;
