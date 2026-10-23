@@ -102,7 +102,11 @@ export async function middleware(request) {
   // TEMP DIAGNOSTIC: report middleware execution state on every response.
   const country = viewerCountry(request);
   const diag = () =>
-    `v1 c=${country || '??'} key=${process.env.TURNSTILE_SECRET_KEY ? 1 : 0} ip=${ip}`;
+    `v1 c=${country || '??'} pk=${process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ? 1 : 0}` +
+    ` sk=${process.env.TURNSTILE_SECRET_KEY ? 1 : 0}` +
+    ` xff=${request.headers.get('x-forwarded-for') || '-'}` +
+    ` cva=${request.headers.get('cloudfront-viewer-address') || '-'}` +
+    ` xri=${request.headers.get('x-real-ip') || '-'}`;
 
   const ua = request.headers.get('user-agent') || '';
   const human = await verifyChallengeCookie(request.cookies.get(CHALLENGE_COOKIE_NAME)?.value, ip);
@@ -126,7 +130,11 @@ export async function middleware(request) {
     return r;
   }
 
-  const challengeConfigured = !!process.env.TURNSTILE_SECRET_KEY;
+  // TURNSTILE_SECRET_KEY never reaches the middleware env sandbox on Amplify;
+  // the (public) site key is build-time inlined and is the reliable signal
+  // that Turnstile is configured. The secret itself is only used in the
+  // /api/challenge Node route.
+  const challengeConfigured = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const challenged =
     challengeConfigured &&
     (challengeCountries.has(viewerCountry(request)) || limited || crawlerStatus === 'no');
