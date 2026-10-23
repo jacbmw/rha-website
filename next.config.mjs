@@ -6,10 +6,11 @@ const isDev = process.env.NODE_ENV === 'development';
 // - Calendly inline widget (assets.calendly.com script/css, calendly.com iframe)
 // - YouTube testimonial embeds (youtube-nocookie.com, i.ytimg.com thumbnails)
 // - Webflow CDN imagery + blog rich text (img-src stays broad for CMS content)
+// - Cloudflare Turnstile on /challenge (script + iframe + API calls)
 // - First-party beacons to dashboard.picki.com.au
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://assets.calendly.com`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ''} https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://assets.calendly.com https://challenges.cloudflare.com`,
   "style-src 'self' 'unsafe-inline' https://assets.calendly.com",
   "img-src 'self' data: blob: https:",
   "font-src 'self' data: https://assets.calendly.com",
@@ -17,8 +18,8 @@ const csp = [
   // stats.g.doubleclick.net — CSP wildcards (*.analytics.google.com) do NOT
   // match the apex domain, which silently blocked every GA4 pageview after
   // the cutover (fixed 2026-08-13). Keep the bare hosts listed explicitly.
-  "connect-src 'self' https://dashboard.picki.com.au https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://stats.g.doubleclick.net https://*.g.doubleclick.net https://www.google.com https://www.google.com.au https://www.googletagmanager.com https://www.facebook.com https://connect.facebook.net https://*.calendly.com",
-  "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com https://calendly.com https://*.calendly.com",
+  "connect-src 'self' https://dashboard.picki.com.au https://challenges.cloudflare.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://stats.g.doubleclick.net https://*.g.doubleclick.net https://www.google.com https://www.google.com.au https://www.googletagmanager.com https://www.facebook.com https://connect.facebook.net https://*.calendly.com",
+  "frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com https://calendly.com https://*.calendly.com https://challenges.cloudflare.com",
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

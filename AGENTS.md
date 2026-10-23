@@ -4,17 +4,28 @@
 - `npm run dev` / `npm run build` / `npm run start` / `npm run lint`
 - Verify with `npm run lint` + `npm run build` before shipping. There are no tests.
 
-## Edge rate limiting (`proxy.js`)
+## Edge rate limiting + bot challenge (`proxy.js`)
 - Next 16 `proxy.js` (renamed middleware, Node runtime) rate-limits every
   non-static request per real client IP (LAST `x-forwarded-for` entry —
   CloudFront appends it; earlier entries are spoofable).
-- Two layers per IP — per-minute burst + per-day budget (min/day): declared
-  legit crawlers 600/30k, browsers w/ Sec-Fetch 120/5k, browser-UA w/o
-  Sec-Fetch 60/2k (UA spoofers), scraper UAs 30/500, empty UA 20/300.
-  Excess → 429 + `Retry-After: 60`. Buckets are per-instance.
-- Env: `RHA_RATE_LIMIT_ALLOWLIST` (comma-separated IPs or "1.2.3." prefixes),
-  `RHA_RATE_LIMIT_DISABLED=1` kill switch. `proxy-log:` keys throttle 429 logs
-  to 1/min/IP.
+- Two layers per IP — per-minute burst + per-day budget (min/day): verified
+  search crawlers 600/30k, other declared bots 300/10k, browsers w/ Sec-Fetch
+  120/5k, browser-UA w/o Sec-Fetch 60/2k (UA spoofers), scraper/fake-crawler
+  UAs 30/500, empty UA 20/300. Excess → 429 + `Retry-After: 60`, or a redirect
+  to /challenge when Turnstile is configured. Buckets are per-instance.
+- Turnstile challenge: `/challenge` page + `POST /api/challenge` (siteverify →
+  IP-bound signed `rha_human` cookie, 24h, lib/challenge.js — same HMAC scheme
+  as suburbGate). Challenged: `RHA_CHALLENGE_COUNTRIES` viewers (default SG),
+  rate-limit trippers, failed crawler verification. Amplify forwards
+  `CloudFront-Viewer-Country`; no extra geo infra needed.
+- UAs claiming Googlebot/Bing/DuckDuckGo/Applebot are rDNS-verified (PTR →
+  forward-confirm, cached 24h, lib/challenge.js `verifyCrawlerIp`). Verified =
+  never challenged; fake = scraper tier. Do NOT blanket-block crawler UAs or
+  you'll kill SEO.
+- Env: `NEXT_PUBLIC_TURNSTILE_SITE_KEY` + `TURNSTILE_SECRET_KEY` (free CF
+  widget; absent = rate limits only, fail-open), `RHA_CHALLENGE_SECRET`,
+  `RHA_CHALLENGE_COUNTRIES`, `RHA_RATE_LIMIT_ALLOWLIST` (IPs/"1.2.3." prefixes),
+  `RHA_RATE_LIMIT_DISABLED=1` kill switch. CSP allows challenges.cloudflare.com.
 
 ## Suburb widget ("Your Suburb, Scored")
 - Data layer: `lib/suburbs.js` reads Aurora `warehouse.ssc_data_dump` (one row per
