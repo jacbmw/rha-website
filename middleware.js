@@ -99,6 +99,11 @@ export async function middleware(request) {
   const ip = requestIp(request);
   if (isAllowlisted(ip)) return NextResponse.next();
 
+  // TEMP DIAGNOSTIC: report middleware execution state on every response.
+  const country = viewerCountry(request);
+  const diag = () =>
+    `v1 c=${country || '??'} key=${process.env.TURNSTILE_SECRET_KEY ? 1 : 0} ip=${ip}`;
+
   const ua = request.headers.get('user-agent') || '';
   const human = await verifyChallengeCookie(request.cookies.get(CHALLENGE_COOKIE_NAME)?.value, ip);
   const crawlerStatus =
@@ -116,7 +121,9 @@ export async function middleware(request) {
   // Verified humans/crawlers get a clean 429 if they somehow still trip the
   // budget — redirecting a solved human back to the challenge would loop.
   if (human || crawlerStatus === 'yes' || crawlerStatus === 'error') {
-    return limited ? tooMany() : NextResponse.next();
+    const r = limited ? tooMany() : NextResponse.next();
+    r.headers.set('x-rha-mw', `${diag()} lim=${limited ? 1 : 0} crawl=${crawlerStatus}`);
+    return r;
   }
 
   const challengeConfigured = !!process.env.TURNSTILE_SECRET_KEY;
@@ -132,19 +139,27 @@ export async function middleware(request) {
     if (request.method === 'GET' && !pathname.startsWith('/api/')) {
       const url = new URL('/challenge', request.url);
       url.searchParams.set('next', pathname + search);
-      return NextResponse.redirect(url);
+      const r = NextResponse.redirect(url);
+      r.headers.set('x-rha-mw', `${diag()} challenged crawl=${crawlerStatus}`);
+      return r;
     }
-    return tooMany();
+    const r = tooMany();
+    r.headers.set('x-rha-mw', `${diag()} challenged-nonget crawl=${crawlerStatus}`);
+    return r;
   }
 
   if (limited) {
     if (!rateLimited(`proxy-log:${ip}`, { limit: 1, windowMs: MINUTE_MS })) {
       console.warn(`[proxy] 429 ${ip} ${ua || '(no ua)'}`);
     }
-    return tooMany();
+    const r = tooMany();
+    r.headers.set('x-rha-mw', `${diag()} limited`);
+    return r;
   }
 
-  return NextResponse.next();
+  const r = NextResponse.next();
+  r.headers.set('x-rha-mw', `${diag()} pass crawl=${crawlerStatus}`);
+  return r;
 }
 
 export const config = {
