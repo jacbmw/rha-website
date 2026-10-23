@@ -5,9 +5,12 @@
 - Verify with `npm run lint` + `npm run build` before shipping. There are no tests.
 
 ## Edge rate limiting + bot challenge (`middleware.js`)
-- CRITICAL: keep the filename `middleware.js`, NOT the Next 16 `proxy.js`
-  convention. Amplify Hosting only supports Next <= 15 and its adapter ignores
-  proxy.js entirely (it compiled but never ran in prod — verified by probing).
+- CRITICAL: two Amplify constraints, both verified by probing prod:
+  (1) keep the filename `middleware.js`, NOT the Next 16 `proxy.js`
+  convention — the adapter ignores proxy.js;
+  (2) `npm run build` MUST stay `next build --webpack` — Amplify's adapter
+  doesn't understand Turbopack output (`server/edge/chunks/`) and silently
+  skips middleware; webpack emits the classic `server/middleware.js` entrypoint.
   middleware.js builds to the EDGE runtime, so lib/challenge.js must stay
   node:*-import-free (HMAC = Web Crypto, crawler rDNS = DNS-over-HTTPS fetch).
 - Rate-limits every non-static request per real client IP (LAST
