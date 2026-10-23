@@ -103,14 +103,7 @@ export async function middleware(request) {
   const ip = requestIp(request);
   if (isAllowlisted(ip)) return NextResponse.next();
 
-  // TEMP DIAGNOSTIC: report middleware execution state on every response.
   const country = viewerCountry(request);
-  const diag = () =>
-    `v1 c=${country || '??'} pk=${process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ? 1 : 0}` +
-    ` sk=${process.env.TURNSTILE_SECRET_KEY ? 1 : 0}` +
-    ` ip=${ip}` +
-    ` xri=${request.headers.get('x-real-ip') || '-'}`;
-
   const ua = request.headers.get('user-agent') || '';
   const human = await verifyChallengeCookie(request.cookies.get(CHALLENGE_COOKIE_NAME)?.value, ip);
   const crawlerStatus =
@@ -128,9 +121,7 @@ export async function middleware(request) {
   // Verified humans/crawlers get a clean 429 if they somehow still trip the
   // budget — redirecting a solved human back to the challenge would loop.
   if (human || crawlerStatus === 'yes' || crawlerStatus === 'error') {
-    const r = limited ? tooMany() : NextResponse.next();
-    r.headers.set('x-rha-mw', `${diag()} lim=${limited ? 1 : 0} crawl=${crawlerStatus}`);
-    return r;
+    return limited ? tooMany() : NextResponse.next();
   }
 
   // Per-instance IP budgets can't aggregate under Lambda fan-out, so they are
@@ -149,33 +140,25 @@ export async function middleware(request) {
 
   if (challenged) {
     if (!rateLimited(`proxy-log:${ip}`, { limit: 1, windowMs: MINUTE_MS })) {
-      console.warn(`[proxy] challenge ${ip} ${viewerCountry(request) || '??'} ${ua || '(no ua)'}`);
+      console.warn(`[mw] challenge ${ip} ${country || '??'} ${ua || '(no ua)'}`);
     }
     // Page navigations can solve; API/RSC/asset traffic gets a plain 429.
     if (request.method === 'GET' && !pathname.startsWith('/api/')) {
       const url = new URL('/challenge', request.url);
       url.searchParams.set('next', pathname + search);
-      const r = NextResponse.redirect(url);
-      r.headers.set('x-rha-mw', `${diag()} challenged crawl=${crawlerStatus}`);
-      return r;
+      return NextResponse.redirect(url);
     }
-    const r = tooMany();
-    r.headers.set('x-rha-mw', `${diag()} challenged-nonget crawl=${crawlerStatus}`);
-    return r;
+    return tooMany();
   }
 
   if (limited) {
     if (!rateLimited(`proxy-log:${ip}`, { limit: 1, windowMs: MINUTE_MS })) {
-      console.warn(`[proxy] 429 ${ip} ${ua || '(no ua)'}`);
+      console.warn(`[mw] 429 ${ip} ${ua || '(no ua)'}`);
     }
-    const r = tooMany();
-    r.headers.set('x-rha-mw', `${diag()} limited`);
-    return r;
+    return tooMany();
   }
 
-  const r = NextResponse.next();
-  r.headers.set('x-rha-mw', `${diag()} pass crawl=${crawlerStatus}`);
-  return r;
+  return NextResponse.next();
 }
 
 export const config = {

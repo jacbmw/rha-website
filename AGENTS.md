@@ -13,10 +13,13 @@
   skips middleware; webpack emits the classic `server/middleware.js` entrypoint.
   middleware.js builds to the EDGE runtime, so lib/challenge.js must stay
   node:*-import-free (HMAC = Web Crypto, crawler rDNS = DNS-over-HTTPS fetch).
-- Rate-limits every non-static request per real client IP (LAST
-  `x-forwarded-for` entry — CloudFront appends it; earlier entries are
-  spoofable). Buckets are per-instance; CloudFront-cached responses never
-  reach middleware at all — it only guards compute hits.
+- Client IP comes from `CloudFront-Viewer-Address` (unspoofable; last XFF
+  entry is Amplify's rotating internal proxy, NOT the client). Per-instance IP
+  budgets can't aggregate under Lambda fan-out — they're a backstop only.
+  PRIMARY defense is stateless: scraper UA / empty UA / proven-fake crawler /
+  RHA_CHALLENGE_COUNTRIES → challenged on EVERY request. `/api/revalidate`
+  exempt (dashboard calls it server-to-server). CloudFront-cached responses
+  never reach middleware — it only guards compute hits.
 - Two layers per IP — per-minute burst + per-day budget (min/day): verified
   search crawlers 600/30k, other declared bots 300/10k, browsers w/ Sec-Fetch
   120/5k, browser-UA w/o Sec-Fetch 60/2k (UA spoofers), scraper/fake-crawler
