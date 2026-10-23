@@ -104,8 +104,7 @@ export async function middleware(request) {
   const diag = () =>
     `v1 c=${country || '??'} pk=${process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ? 1 : 0}` +
     ` sk=${process.env.TURNSTILE_SECRET_KEY ? 1 : 0}` +
-    ` xff=${request.headers.get('x-forwarded-for') || '-'}` +
-    ` cva=${request.headers.get('cloudfront-viewer-address') || '-'}` +
+    ` ip=${ip}` +
     ` xri=${request.headers.get('x-real-ip') || '-'}`;
 
   const ua = request.headers.get('user-agent') || '';
