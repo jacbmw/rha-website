@@ -92,7 +92,11 @@ export async function middleware(request) {
   if (process.env.RHA_RATE_LIMIT_DISABLED === '1') return NextResponse.next();
 
   const { pathname, search } = request.nextUrl;
-  if (pathname === '/challenge' || pathname.startsWith('/api/challenge')) {
+  if (
+    pathname === '/challenge' ||
+    pathname.startsWith('/api/challenge') ||
+    pathname.startsWith('/api/revalidate') // dashboard calls this server-to-server, authed by its own secret
+  ) {
     return NextResponse.next();
   }
 
@@ -129,6 +133,11 @@ export async function middleware(request) {
     return r;
   }
 
+  // Per-instance IP budgets can't aggregate under Lambda fan-out, so they are
+  // only a backstop. The PRIMARY defense is stateless: anything that doesn't
+  // look like a real browser — scraper UA, no UA, proven-fake crawler — is
+  // challenged on EVERY request, no counting needed.
+  const suspicious = !ua || crawlerStatus === 'no' || SCRAPER_UA.test(ua);
   // TURNSTILE_SECRET_KEY never reaches the middleware env sandbox on Amplify;
   // the (public) site key is build-time inlined and is the reliable signal
   // that Turnstile is configured. The secret itself is only used in the
@@ -136,7 +145,7 @@ export async function middleware(request) {
   const challengeConfigured = !!process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const challenged =
     challengeConfigured &&
-    (challengeCountries.has(viewerCountry(request)) || limited || crawlerStatus === 'no');
+    (suspicious || challengeCountries.has(country) || limited);
 
   if (challenged) {
     if (!rateLimited(`proxy-log:${ip}`, { limit: 1, windowMs: MINUTE_MS })) {
