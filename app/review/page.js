@@ -10,10 +10,10 @@ const logoUrl = '/images/rha-logo-dark.png';
 const jacobImage = `${SITE_URL}/images/story-jacob-field.webp`;
 
 export const metadata = pageMetadata({
-  title: 'Book a Discovery Call | Ripehouse Advisory',
-  description: 'Book a free 15-minute Property Investment Discovery Call with Ripehouse Advisory. Get clarity on your position, your questions answered, and an honest view on whether structured advisory is right for you.',
-  ogTitle: 'Book a Free Discovery Call | Ripehouse Advisory',
-  ogDescription: 'Fifteen minutes to review your position, answer your questions and decide whether structured advisory makes sense for you. No pressure — if it\u2019s not the right step, we\u2019ll tell you.',
+  title: 'Investor Decision Review | Ripehouse Advisory',
+  description: 'Book a free 15-minute phone review with Ripehouse. Discuss your property investment goals, clarify your next decision and see whether our advisory service fits.',
+  ogTitle: 'Investor Decision Review | Ripehouse Advisory',
+  ogDescription: 'Book a free 15-minute phone review with Ripehouse. Discuss your property investment goals, clarify your next decision and see whether our advisory service fits.',
   path: '/review',
   image: { url: jacobImage, alt: 'Jacob Field, founder and CEO of Ripehouse Advisory' },
 });
@@ -29,12 +29,12 @@ export default async function ReviewPage({ searchParams }) {
         <Link className="brand" href="/" aria-label="Ripehouse Advisory home">
           <img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" />
         </Link>
-        <span className="book-header-note">{content.meta?.headerNote || 'Free 15-minute call · No obligation'}</span>
+        <span className="book-header-note">{content.meta?.headerNote || 'Free 15-minute phone call | No obligation'}</span>
       </header>
 
       <SectionRenderer pageKey="review" sections={content.sections} />
 
-      <Footer />
+      <Footer compact />
 
       <StickyBookBar />
       <VariantTracker pageKey="review" variantId={variant.id} preview={preview} />

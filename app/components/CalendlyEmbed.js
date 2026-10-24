@@ -87,8 +87,8 @@ export default function CalendlyEmbed() {
 
   return (
     <div className="calendly-frame" id="book">
-      {booked && <p className="calendly-booked" role="status">You&apos;re booked. A confirmation and calendar invite are on their way to your inbox.</p>}
-      <div ref={containerRef} className="calendly-widget" aria-label="Book your discovery call" />
+      {booked && <p className="calendly-booked" role="status">You&apos;re booked. Myles will call you at your selected time — your confirmation and calendar invite are on their way to your inbox.</p>}
+      <div ref={containerRef} className="calendly-widget" aria-label="Book your free review" />
     </div>
   );
 }

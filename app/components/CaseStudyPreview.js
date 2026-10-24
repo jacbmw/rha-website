@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { assignSlugs, displayName, validProperties } from '../../lib/case-studies';
+import { rich } from './page-sections/rich';
 
 async function getRandomStudy() {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || (process.env.NODE_ENV === 'development' ? `http://localhost:${process.env.PORT || 3000}` : 'https://new.ripehouseadvisory.com.au');
@@ -18,7 +19,14 @@ function initials(title) {
   return String(title || '').split(/\s+/).slice(0, 2).map((word) => word[0]).join('').toUpperCase();
 }
 
-export default async function CaseStudyPreview() {
+export default async function CaseStudyPreview({
+  label = 'Client outcomes, measured',
+  heading,
+  intro,
+  ctaLabel = 'Read the full story',
+  showMetrics = true,
+  footnote,
+}) {
   const study = await getRandomStudy();
   if (!study) return null;
   const properties = validProperties(study.properties);
@@ -26,7 +34,9 @@ export default async function CaseStudyPreview() {
 
   return (
     <section className="case-preview section-shell" aria-labelledby="case-preview-title">
-      <div className="section-label">Client outcomes, measured</div>
+      <div className="section-label">{label}</div>
+      {heading && <h2 className="case-preview-heading" id="case-preview-title">{rich(heading)}</h2>}
+      {intro && <p className="case-preview-intro">{intro}</p>}
       <Link className="case-preview-panel" href={`/case-studies/${study.slug}`}>
         <div className="case-preview-copy">
           <div className="case-preview-person">
@@ -37,16 +47,17 @@ export default async function CaseStudyPreview() {
             )}
             <p className="case-eyebrow">Client case study</p>
           </div>
-          <h2 id="case-preview-title">{displayName(study.title)}</h2>
+          <h2 id={heading ? undefined : 'case-preview-title'}>{displayName(study.title)}</h2>
           {(study.subtitle || study.description) && <p className="case-preview-sub">{study.subtitle || study.description}</p>}
-          <span className="text-link dark-link">Read the full story <span aria-hidden="true">↗</span></span>
+          <span className="text-link dark-link">{ctaLabel} <span aria-hidden="true">↗</span></span>
         </div>
-        {properties.length > 0 && <div className="case-preview-meta">
+        {showMetrics && properties.length > 0 && <div className="case-preview-meta">
           <div><strong>{properties.length}</strong><span>properties acquired</span></div>
           <div><strong>{study.portfolioCagr != null ? `+${study.portfolioCagr.toFixed(1)}%` : '—'}</strong><span>portfolio CAGR</span></div>
-          {study.totalGrowth > 0 && <div><strong>${Math.round(study.totalGrowth).toLocaleString('en-AU')}</strong><span>measured growth</span></div>}
+          {study.totalGrowth > 0 && <div><strong>$${Math.round(study.totalGrowth).toLocaleString('en-AU')}</strong><span>measured growth</span></div>}
         </div>}
       </Link>
+      {footnote && <p className="case-preview-note">{footnote}</p>}
       <div className="case-preview-foot"><Link className="text-link" href="/case-studies">Browse all case studies <span aria-hidden="true">↗</span></Link></div>
     </section>
   );

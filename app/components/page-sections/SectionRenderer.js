@@ -23,7 +23,7 @@ const featuredLogos = [
 
 const Arrow = () => <span aria-hidden="true">↗</span>;
 
-function BookHero({ eyebrow, headline, lede, promise, trustChips = [] }) {
+function BookHero({ eyebrow, headline, lede, promise, promiseNote, cta, host, calendarHeading, calendarSub, trustChips = [] }) {
   return (
     <section className="book-hero section-shell">
       <div className="book-hero-copy">
@@ -31,15 +31,29 @@ function BookHero({ eyebrow, headline, lede, promise, trustChips = [] }) {
         <h1>{rich(headline)}</h1>
         <p className="book-lede">{lede}</p>
         {promise && <p className="book-promise">{promise}</p>}
-        {trustChips.length > 0 && (
-          <ul className="book-trust-chips">
-            {trustChips.map((chip) => <li key={chip.label}><strong>{chip.value}</strong><span>{chip.label}</span></li>)}
-          </ul>
+        {promiseNote && <p className="book-promise-note">{promiseNote}</p>}
+        {cta?.label && (
+          <p className="book-hero-cta">
+            <a className="button button-primary" href={cta.href || '#book'}>{cta.label} <Arrow /></a>
+          </p>
         )}
       </div>
       <div className="book-hero-calendar">
+        {calendarHeading && <h2 className="book-calendar-heading">{calendarHeading}</h2>}
+        {calendarSub && <p className="book-calendar-sub">{calendarSub}</p>}
+        {host?.name && (
+          <div className="book-host-row">
+            <img src={host.image || mylesImage} alt={host.imageAlt || ''} width="60" height="60" />
+            <p><strong>{host.name}</strong><span>{host.line}</span></p>
+          </div>
+        )}
         <CalendlyEmbed />
       </div>
+      {trustChips.length > 0 && (
+        <ul className="book-trust-chips">
+          {trustChips.map((chip) => <li key={chip.label}><strong>{chip.value}</strong><span>{chip.label}</span></li>)}
+        </ul>
+      )}
     </section>
   );
 }
@@ -88,7 +102,7 @@ function Steps({ pageKey, label, steps = [] }) {
   );
 }
 
-function SuitedGrid({ eyebrow, heading, items = [] }) {
+function SuitedGrid({ eyebrow, heading, items = [], footnote }) {
   return (
     <section className="book-suited">
       <div className="section-shell">
@@ -99,6 +113,7 @@ function SuitedGrid({ eyebrow, heading, items = [] }) {
             <article key={item.title}><h3>{item.title}</h3><p>{item.text}</p></article>
           ))}
         </div>
+        {footnote && <p className="book-suited-note">{footnote}</p>}
       </div>
     </section>
   );
@@ -122,7 +137,7 @@ function Founder({ eyebrow, heading, role, paragraphs = [], image, imageAlt }) {
     <section className="book-founder">
       <div className="section-shell book-founder-grid">
         <div className="book-founder-photo">
-          <img src={image || mylesImage} alt={imageAlt || 'Myles White, Strategic Wealth Consultant at Ripehouse Advisory'} loading="lazy" />
+          <img src={image || mylesImage} alt={imageAlt || 'Myles White from Ripehouse Advisory'} loading="lazy" />
         </div>
         <div className="book-founder-copy">
           <p className="eyebrow light"><span /> {eyebrow}</p>
@@ -135,6 +150,36 @@ function Founder({ eyebrow, heading, role, paragraphs = [], image, imageAlt }) {
   );
 }
 
+function BookAdvisory({ eyebrow, heading, intro, groups = [], closing, image }) {
+  return (
+    <section className="book-advisory">
+      <div className="section-shell book-advisory-grid">
+        <div className="book-advisory-copy">
+          <p className="eyebrow"><span /> {eyebrow}</p>
+          <h2>{rich(heading)}</h2>
+          {intro && <p className="book-advisory-intro">{intro}</p>}
+          {groups.length > 0 && (
+            <div className="book-advisory-groups">
+              {groups.map((group) => (
+                <div key={group.title}>
+                  <h3>{group.title}</h3>
+                  <p>{group.text}</p>
+                </div>
+              ))}
+            </div>
+          )}
+          {closing && <p className="book-advisory-closing">{closing}</p>}
+        </div>
+        {image && (
+          <figure className="book-advisory-figure">
+            <img src={image} alt="" loading="lazy" />
+          </figure>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function Faq({ label, heading, items = [] }) {
   return (
     <section className="book-faq section-shell">
@@ -142,8 +187,8 @@ function Faq({ label, heading, items = [] }) {
       <div className="book-faq-grid">
         <h2>{rich(heading)}</h2>
         <div className="book-faq-list">
-          {items.map((item) => (
-            <details className="book-faq-item" key={item.question}>
+          {items.map((item, index) => (
+            <details className="book-faq-item" key={item.question} open={index === 0}>
               <summary>{item.question}<span aria-hidden="true">+</span></summary>
               <p>{item.answer}</p>
             </details>
@@ -169,7 +214,7 @@ function MethodStats({ eyebrow, heading, stats = [], finePrint }) {
   );
 }
 
-function FinalCta({ pageKey, eyebrow, heading, text, buttonLabel, buttonHref }) {
+function FinalCta({ pageKey, eyebrow, heading, text, buttonLabel, buttonHref, subline }) {
   const sectionClass = pageKey === 'five-markets' ? 'ebook-final section-shell' : 'book-final section-shell';
   const defaultHref = pageKey === 'five-markets' ? '#report' : '#book';
   const href = typeof buttonHref === 'string' && buttonHref.startsWith('#') ? buttonHref : defaultHref;
@@ -180,6 +225,7 @@ function FinalCta({ pageKey, eyebrow, heading, text, buttonLabel, buttonHref }) 
         <h2>{rich(heading)}</h2>
         <p>{text}</p>
         <a className="button button-light" href={href}>{buttonLabel} <Arrow /></a>
+        {subline && <p className="book-final-subline">{subline}</p>}
       </div>
     </section>
   );
@@ -194,6 +240,7 @@ const REGISTRY = {
   reviews: ReviewsCarousel,
   caseStudy: CaseStudyPreview,
   founder: Founder,
+  advisory: BookAdvisory,
   faq: Faq,
   methodStats: MethodStats,
   finalCta: FinalCta,

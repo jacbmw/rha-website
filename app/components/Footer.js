@@ -93,7 +93,26 @@ const FOOTER_TOP_50_LGAS = [
   { name: 'Wagga Wagga', state: 'NSW', path: '/locations/lgas/nsw/wagga-wagga' },
 ];
 
-export default function Footer({ backHref = '/', backLabel = 'Back home ↑' }) {
+export default function Footer({ backHref = '/', backLabel = 'Back home ↑', compact = false }) {
+  if (compact) {
+    return (
+      <footer className="site-footer footer-compact">
+        <div className="footer-row">
+          <Link className="brand footer-brand" href="/">
+            <img className="brand-logo" src={logoUrl} alt="Ripehouse Advisory" />
+          </Link>
+          <p>© 2026 Ripehouse Advisory. All rights reserved.</p>
+          <div>
+            <Link href="/locations">Property research</Link>
+            <Link href="/legal/privacy-policy">Privacy</Link>
+            <Link href="/legal/terms-and-conditions">Terms</Link>
+            <Link href="/#contact">Contact</Link>
+            <a href="https://ripehold.com.au" target="_blank" rel="noreferrer">Commercial advisory</a>
+          </div>
+        </div>
+      </footer>
+    );
+  }
   return (
     <footer className="site-footer">
       <div className="footer-seo-directory section-shell">

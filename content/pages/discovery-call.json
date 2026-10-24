@@ -1,96 +1,201 @@
 {
   "pageKey": "discovery-call",
   "meta": {
-    "headerNote": "Free 15-minute call · No obligation"
+    "headerNote": "Free 15-minute phone call | No obligation"
   },
   "sections": [
     {
       "type": "bookHero",
       "props": {
         "eyebrow": "Investor Decision Review",
-        "headline": "Get clarity on *your next move.*",
-        "lede": "A free 15-minute call with a Ripehouse specialist. We review your position, answer your key questions, and help you decide whether structured advisory makes sense for you.",
-        "promise": "No pressure. If it's not the right step, we'll tell you.",
+        "headline": "Give your next property decision a *clear direction.*",
+        "lede": "Speak with Myles from Ripehouse Advisory about what you want your next investment to achieve, where you are up to, and the questions holding up your decision. We will help identify what needs checking next and whether our property advisory and acquisition service could help you move forward.",
+        "promise": "Free 15-minute phone call. No paperwork required. No obligation to continue.",
+        "promiseNote": "Myles will call the number you provide at your selected time.",
+        "cta": {
+          "label": "Book my free review",
+          "href": "#book"
+        },
+        "calendarHeading": "Choose a time for your free review",
+        "calendarSub": "15 minutes | Phone call | Myles calls you",
+        "host": {
+          "name": "Myles White",
+          "line": "Your review host | Ripehouse Advisory",
+          "image": "/images/myles-white.png",
+          "imageAlt": "Myles White from Ripehouse Advisory"
+        },
         "trustChips": [
-          { "value": "300+", "label": "five-star Google reviews" },
-          { "value": "$2B+", "label": "purchased for clients" },
-          { "value": "2011", "label": "advising ever since" }
+          {
+            "value": "300+",
+            "label": "five-star Google reviews"
+          },
+          {
+            "value": "$2B+",
+            "label": "purchased for clients"
+          },
+          {
+            "value": "2011",
+            "label": "advising ever since"
+          }
         ]
       }
     },
     {
       "type": "steps",
       "props": {
-        "label": "What happens on the call",
+        "label": "What we will cover together",
         "steps": [
-          { "number": "01", "title": "We review your position", "text": "Where you are now: income, equity, goals and time horizon. Ten minutes of listening before any talking." },
-          { "number": "02", "title": "You get straight answers", "text": "Ask us anything — the market, our approach, the numbers behind our client outcomes. No jargon, no scripts." },
-          { "number": "03", "title": "You decide the next step", "text": "If structured advisory makes sense, we map what happens next. If it doesn't, we'll tell you honestly." }
+          {
+            "number": "01",
+            "title": "Start with your goal",
+            "text": "What do you want your next investment to achieve? We will start with your priorities, time horizon and current position."
+          },
+          {
+            "number": "02",
+            "title": "Clarify the decision",
+            "text": "We will identify the main question holding you up and what needs checking, whether that concerns finance, timing, property approach or the support you need."
+          },
+          {
+            "number": "03",
+            "title": "Agree a useful next step",
+            "text": "If Ripehouse could help, we will explain why and discuss a deeper consultation. Otherwise, we will identify what needs attention before you move forward."
+          }
+        ]
+      }
+    },
+    {
+      "type": "founder",
+      "props": {
+        "eyebrow": "Meet your review host",
+        "heading": "Myles *White*",
+        "role": "Property investment advisory | Ripehouse Advisory",
+        "image": "/images/myles-white.png",
+        "imageAlt": "Myles White from Ripehouse Advisory",
+        "paragraphs": [
+          "Myles will speak with you about what you want to achieve, where you are up to, and the decision you need help making.",
+          "He will explain the parts of Ripehouse's property advisory and acquisition service relevant to your situation, and discuss whether a deeper consultation would be useful.",
+          "Your review is a 15-minute phone call. You can bring rough figures, unanswered questions, or simply a clearer idea of what you want your next investment to do."
         ]
       }
     },
     {
       "type": "suitedGrid",
       "props": {
-        "eyebrow": "Is this call for you?",
-        "heading": "This conversation is\ntypically *suitable for:*",
+        "eyebrow": "Who the review helps",
+        "heading": "Is this the conversation *you need?*",
         "items": [
-          { "title": "Homeowners with equity", "text": "You own a home or investment property with usable equity, and want it working harder toward your future." },
-          { "title": "Households earning $175k+", "text": "Strong income, less certainty it is converting into long-term wealth. We help you sequence the next move." },
-          { "title": "Time-poor professionals", "text": "You want research, strategy and execution handled by a team — not another spreadsheet to maintain." },
-          { "title": "Long-term wealth builders", "text": "You think in decades, not headlines. Legacy, choices and financial independence are the goal." }
-        ]
+          {
+            "title": "Your first investment",
+            "text": "You want to understand how an investment property could fit your goals and what you need to check before proceeding."
+          },
+          {
+            "title": "Your next portfolio decision",
+            "text": "You already own property and want the next purchase to support a clearer longer-term direction."
+          },
+          {
+            "title": "Your financial starting point",
+            "text": "You have cash or equity available, or are exploring finance, and want to identify the questions to work through with your broker."
+          },
+          {
+            "title": "The right support",
+            "text": "You are weighing up doing it yourself or using an adviser, and want to understand the research, service and fees."
+          }
+        ],
+        "footnote": "This review focuses on property investment. You can attend while you are still checking finance, and you are welcome to keep working with your existing broker."
       }
     },
     {
-      "type": "featuredLogos",
-      "props": { "label": "As featured in" }
+      "type": "advisory",
+      "props": {
+        "eyebrow": "How Ripehouse can help",
+        "heading": "A clear brief. A considered *purchase.*",
+        "intro": "A property needs to earn its place in your plans. Our advisory and acquisition service connects what you want to achieve with the work of assessing and securing a suitable investment.",
+        "groups": [
+          {
+            "title": "Clarify the brief",
+            "text": "Bring your objectives, budget, practical constraints and investment criteria into a clear search brief."
+          },
+          {
+            "title": "Assess the opportunity",
+            "text": "Connect location research with the street, the property, the price and the risks that need checking."
+          },
+          {
+            "title": "Support the acquisition",
+            "text": "Coordinate the search, due diligence, negotiation and purchase process around the agreed brief."
+          }
+        ],
+        "closing": "The free review helps us establish whether this service is relevant to your next decision.",
+        "image": "/images/advisory-brief-table.webp"
+      }
+    },
+    {
+      "type": "caseStudy",
+      "props": {
+        "label": "See the approach in practice",
+        "heading": "How a purchase fits a *bigger plan*",
+        "intro": "Explore a client story to see how their objectives shaped the property decisions they made with Ripehouse.",
+        "ctaLabel": "Read the client story",
+        "showMetrics": false,
+        "footnote": "Individual circumstances and outcomes differ. The case study explains the client's experience and the basis of any reported results."
+      }
     },
     {
       "type": "reviews",
       "props": {}
     },
     {
-      "type": "founder",
+      "type": "featuredLogos",
       "props": {
-        "eyebrow": "Who you'll be speaking with",
-        "heading": "Myles *White*",
-        "role": "Strategic Wealth Consultant, Ripehouse Advisory",
-        "image": "/images/myles-white.png",
-        "imageAlt": "Myles White, Strategic Wealth Consultant at Ripehouse Advisory",
-        "paragraphs": [
-          "Myles is a Strategic Wealth Consultant on the Ripehouse strategy team. He spends most of the call listening — your income, equity, goals and time horizon — then gives you straight answers on whether structured advisory is the right next step for you.",
-          "Every call runs on the data-driven method our founder Jacob Field has built since 2011 — the same research and strategy process behind more than $2B purchased for clients across Australia."
-        ]
+        "label": "As featured in"
       }
     },
     {
       "type": "faq",
       "props": {
-        "label": "Before you book",
-        "heading": "Questions we're\nasked *most often.*",
+        "label": "Before you choose a time",
+        "heading": "A few practical *questions*",
         "items": [
-          { "question": "Is this a sales call?", "answer": "No. It's a diagnostic conversation. We spend most of it listening, and we'll tell you plainly if structured advisory isn't the right step for you." },
-          { "question": "What does the call cost?", "answer": "Nothing. The 15 minutes are free, and there's no obligation to go further afterwards." },
-          { "question": "Do I need to prepare anything?", "answer": "No documents needed. A rough sense of your income, equity and goals is enough — we'll guide the conversation from there." },
-          { "question": "What happens after the call?", "answer": "If it makes sense, the next step is a deeper wealth consultation. If it doesn't, you leave with honest clarity on your position — either way, you decide." },
-          { "question": "Who will I actually speak with?", "answer": "Myles White, a Strategic Wealth Consultant on our strategy team — not a call centre. The same team that runs our research and advisory process." }
+          {
+            "question": "Will you discuss your paid services?",
+            "answer": "Yes, where they are relevant. We will first understand your situation and what you need help deciding. If there is a useful fit, we will explain our service and may recommend a deeper consultation. You are under no obligation to proceed."
+          },
+          {
+            "question": "Is the review free?",
+            "answer": "Yes. The 15-minute Investor Decision Review is free. Our ongoing property advisory and acquisition service is paid, and we will explain the applicable fees before you decide whether to engage us."
+          },
+          {
+            "question": "Do I need finance approval first?",
+            "answer": "No. You can attend while you are still exploring your options. Let us know what you have confirmed and what is still an estimate. If finance needs attention first, we will identify the questions to discuss with your broker."
+          },
+          {
+            "question": "What should I have ready?",
+            "answer": "Bring the main question you would like help with and a rough sense of your goals and current position. No documents are required for this initial review. It is fine if some figures still need checking."
+          },
+          {
+            "question": "Will I receive a property shortlist or a complete plan?",
+            "answer": "The review is an initial conversation to clarify your decision and assess whether our service is a fit. A personalised property search and detailed acquisition work are part of a separate engagement."
+          },
+          {
+            "question": "Who calls whom?",
+            "answer": "Myles White will call the number you provide at the time you select. The confirmation email will show the appointment details and calling number. Check the timezone before completing your booking."
+          },
+          {
+            "question": "What happens after the review?",
+            "answer": "If a deeper conversation would be useful, we can arrange a consultation to explore our approach, service and your next decision. Sometimes there is a finance question or another step to resolve first. We will agree the next action together."
+          }
         ]
       }
     },
     {
       "type": "finalCta",
       "props": {
-        "eyebrow": "No pressure, just a conversation",
-        "heading": "Ready when\n*you are.*",
-        "text": "Fifteen minutes to review your position, answer your questions and decide whether structured advisory makes sense for you.",
-        "buttonLabel": "Book your discovery call",
-        "buttonHref": "#book"
+        "eyebrow": "Your next property decision",
+        "heading": "Start with the question that matters to *you.*",
+        "text": "Tell us what you are working towards and what you need help deciding. We will use the review to identify what needs checking next and whether Ripehouse could help.",
+        "buttonLabel": "Book my free review",
+        "buttonHref": "#book",
+        "subline": "15 minutes | By phone with Myles | Free | No obligation"
       }
-    },
-    {
-      "type": "caseStudy",
-      "props": {}
     }
   ]
 }

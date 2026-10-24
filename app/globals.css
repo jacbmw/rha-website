@@ -1245,3 +1245,54 @@ main.article-page{overflow:visible}.article-layout{display:grid;grid-template-co
 .rha-advisory-box{background:var(--cream);border:1px solid var(--line);border-left:3px solid var(--lime);display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:center;margin-top:28px;padding:24px 28px}
 .rha-advisory-box h3{font-family:Georgia,serif;font-size:22px;font-weight:400;letter-spacing:-.03em;margin:0 0 6px}
 .rha-advisory-box p{color:var(--muted);font-size:13.5px;line-height:1.6;margin:0;max-width:680px}
+/* ── Investor Decision Review page (2026-10-24 brief) ───────────────────── */
+.book-page .book-hero h1{font-size:clamp(42px,4.8vw,68px);letter-spacing:-.035em;line-height:1.03}
+.book-page .book-promise{margin-bottom:12px}
+.book-promise-note{border-left:2px solid var(--line);color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 38px;padding-left:14px}
+.book-hero-cta{margin:0 0 38px}
+.book-hero-cta .button{margin:0}
+.book-calendar-heading{font-family:Georgia,serif;font-size:clamp(28px,3vw,38px);font-weight:400;letter-spacing:-.045em;line-height:1;margin:0 0 10px}
+.book-calendar-sub{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.12em;margin:0 0 20px;text-transform:uppercase}
+.book-host-row{align-items:center;border-top:1px solid var(--line);display:flex;gap:14px;margin:0 0 16px;padding-top:16px}
+.book-host-row img{border-radius:50%;display:block;height:60px;object-fit:cover;object-position:center top;width:60px}
+.book-host-row p{margin:0}
+.book-host-row strong{display:block;font-size:14px;letter-spacing:-.01em}
+.book-host-row span{color:var(--muted);display:block;font-size:10px;font-weight:700;letter-spacing:.14em;margin-top:3px;text-transform:uppercase}
+.book-page .book-hero .book-trust-chips{grid-column:1/-1}
+
+.book-advisory{padding:64px 0}
+.book-advisory-grid{align-items:start;display:grid;gap:70px;grid-template-columns:minmax(0,3fr) minmax(0,2fr)}
+.book-advisory h2{font-family:Georgia,serif;font-size:clamp(38px,4.2vw,58px);font-weight:400;letter-spacing:-.06em;line-height:.95;margin:0 0 22px}
+.book-advisory h2 i{font-style:italic}
+.book-advisory-intro{color:var(--muted);font-size:16px;line-height:1.65;margin:0;max-width:560px}
+.book-advisory-groups{display:grid;gap:26px;margin-top:38px}
+.book-advisory-groups h3{font-family:Georgia,serif;font-size:22px;font-weight:400;letter-spacing:-.035em;margin:0 0 8px}
+.book-advisory-groups p{color:var(--muted);font-size:14px;line-height:1.6;margin:0;max-width:520px}
+.book-advisory-closing{border-left:2px solid var(--lime);color:var(--ink);font-size:14px;line-height:1.55;margin:34px 0 0;max-width:520px;padding-left:14px}
+.book-advisory-figure{margin:0}
+.book-advisory-figure img{aspect-ratio:4/3;display:block;height:auto;object-fit:cover;width:100%}
+
+.book-page .book-founder-grid{gap:60px;grid-template-columns:minmax(0,.35fr) minmax(0,.65fr);padding-bottom:56px;padding-top:56px}
+.book-page .book-founder-photo{max-height:320px}
+.book-page .book-founder-photo img{aspect-ratio:4/5}
+
+.book-page .book-featured{padding:30px 0}
+.book-page .book-featured-logos{margin-top:20px}
+
+.case-preview-heading{font-family:Georgia,serif;font-size:clamp(38px,4.5vw,60px);font-weight:400;letter-spacing:-.06em;line-height:.95;margin:26px 0 18px;max-width:640px}
+.case-preview-heading i{font-style:italic}
+.case-preview-intro{color:var(--muted);font-size:16px;line-height:1.65;margin:0;max-width:520px}
+.case-preview-note{color:var(--muted);font-size:12px;line-height:1.55;margin:22px 0 0;max-width:640px}
+
+.book-final-subline{color:rgba(255,255,255,.6);font-size:11px;font-weight:700;letter-spacing:.14em;margin:22px 0 0;text-transform:uppercase}
+
+@media(max-width:1000px){
+  .book-advisory{padding:40px 0}
+  .book-advisory-grid{display:block}
+  .book-advisory-figure{margin-top:36px}
+  .book-page .book-founder-grid{display:block;padding-bottom:32px;padding-top:32px}
+  .book-page .book-founder-photo{margin-bottom:30px;max-height:320px}
+  .book-page .book-hero h1{font-size:clamp(36px,9vw,48px)}
+  .book-promise-note{margin-bottom:28px}
+  .book-hero-cta{margin-bottom:28px}
+}
